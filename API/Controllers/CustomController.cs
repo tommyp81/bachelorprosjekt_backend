@@ -28,7 +28,7 @@ namespace API.Controllers
             _config = configuration;
         }
 
-        // POST: AddDocument
+        // POST: UploadDocument
         [HttpPost]
         public async Task<ActionResult<DocumentDTO>> UploadDocument(
             [FromForm] IFormFile file, [FromForm] int? userId, [FromForm] int? postId, [FromForm] int? commentId)
