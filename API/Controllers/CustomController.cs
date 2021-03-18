@@ -58,9 +58,9 @@ namespace API.Controllers
 
                 return CreatedAtAction(nameof(GetDocumentInfo), new { id = newDocument.Id }, newDocument);
             }
-            catch (Exception)
+            catch (Exception e) //"Feil ved opplasting av nytt dokument"
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved opplasting av nytt dokument");
+                return StatusCode(StatusCodes.Status500InternalServerError, e);
             }
         }
 

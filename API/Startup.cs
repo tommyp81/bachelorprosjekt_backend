@@ -17,10 +17,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Azure;
-//using Azure.Storage.Queues; // Må installeres først (NuGet) om den skal brukes
+//using Azure.Storage.Queues;
 using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
-using Azure.Storage.Queues;
 
 namespace API
 {
@@ -90,7 +89,6 @@ namespace API
         }
     }
 
-    // Bruker kun Blobs for nå, kan legge til Queues om det blir nødvendig?!
     internal static class StartupExtensions
     {
         public static IAzureClientBuilder<BlobServiceClient, BlobClientOptions> AddBlobServiceClient(

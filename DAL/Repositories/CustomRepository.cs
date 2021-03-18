@@ -27,16 +27,31 @@ namespace DAL.Repositories
         // POST: AddDocument
         public async Task<Document> AddDocument(IFormFile file, int? userId, int? postId, int? commentId)
         {
-            // Informasjon om fil
+            // Informasjon om filnavn og type
             var fileName = Path.GetFileName(file.FileName);
             var fileType = Path.GetExtension(fileName);
-            var fileSize = Math.Round((file.Length / 1024f) / 1024f, 2).ToString() + " MB";
 
-            // Unikt navn for Azure
-            string uniqueName = fileName + "_" + Guid.NewGuid().ToString();
+            // Vise filstørrelse som MB, kB eller byte
+            string fileSize = null;
+            if (file.Length >= 1048576)
+            {
+                fileSize = Math.Round((file.Length / 1024f) / 1024f).ToString() + " MB";
+            }
+            else if (file.Length >= 1024)
+            {
+                fileSize = Math.Round((file.Length / 1024f)).ToString() + " kB";
+            }
+            else if (file.Length <= 1024)
+            {
+                fileSize = file.Length.ToString() + " byte";
+            }
 
-            // Navn på container
-            string container = "test";
+            // Unikt navn for Azure Storage Blob
+            string uniqueName = fileName + " (" + Guid.NewGuid().ToString() + ")";
+
+            // Navn på container (her brukes username nå)
+            var user = await _context.Users.FindAsync(userId);
+            string container = user.Username;
 
             // Azure Storage connection
             BlobContainerClient containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), container);
@@ -79,32 +94,40 @@ namespace DAL.Repositories
         // POST: UploadDocument
         public async Task<Document> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId)
         {
-            var result = await AddDocument(file, userId, postId, commentId);
+            // Legg til det nye dokumentet
+            var document = await AddDocument(file, userId, postId, commentId);
 
             // Oppdater eventuell post med referanse til dette dokumentet
             if (postId != null)
             {
-                var update = await _context.Posts.FindAsync(postId);
-                if (update != null)
+                // Slett dokumentet om posten har dokument fra før
+                var post = await _context.Posts.FindAsync(postId);
+                if (post.DocumentId != null)
                 {
-                    update.DocumentId = result.Id;
+                    await DeleteDocument((int)post.DocumentId);
                 }
+
+                // Oppdater posten med nytt dokument
+                post.DocumentId = document.Id;
             }
 
             // Oppdater eventuell kommentar med referanse til dette dokumentet
             if (commentId != null)
             {
-                // Oppdater denne kommentaren med DocumentId
-                var update = await _context.Comments.FindAsync(commentId);
-                if (update != null)
+                // Slett dokumentet om posten har dokument fra før
+                var comment = await _context.Posts.FindAsync(postId);
+                if (comment.DocumentId != null)
                 {
-                    update.DocumentId = result.Id;
+                    await DeleteDocument((int)comment.DocumentId);
                 }
+
+                // Oppdater denne kommentaren med DocumentId
+                comment.DocumentId = document.Id;
             }
 
             // Lagre endringer til databasen
             await _context.SaveChangesAsync();
-            return result;
+            return document;
         }
 
         // GET: GetDocumentInfo/1
@@ -132,20 +155,20 @@ namespace DAL.Repositories
                     await containerClient.DeleteIfExistsAsync();
                 }
 
-                // Oppdater eventuell kommentar så den ikke har en referanse til dette dokumentet
-                if (result.CommentId != null)
+                // Oppdater eventuell post så den ikke har en referanse til dette dokumentet
+                if (result.PostId != null)
                 {
-                    var update = await _context.Comments.FindAsync(result.CommentId);
+                    var update = await _context.Posts.FindAsync(result.PostId);
                     if (update != null)
                     {
                         update.DocumentId = null;
                     }
                 }
 
-                // Oppdater eventuell post så den ikke har en referanse til dette dokumentet
-                if (result.PostId != null)
+                // Oppdater eventuell kommentar så den ikke har en referanse til dette dokumentet
+                if (result.CommentId != null)
                 {
-                    var update = await _context.Posts.FindAsync(result.PostId);
+                    var update = await _context.Comments.FindAsync(result.CommentId);
                     if (update != null)
                     {
                         update.DocumentId = null;
