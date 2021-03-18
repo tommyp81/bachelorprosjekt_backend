@@ -1,0 +1,102 @@
+﻿using DAL.Database_configuration;
+using DAL.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Model.Domain_models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DAL.Repositories
+{
+    public class CommentRepository : ICommentRepository
+    {
+        private readonly DBContext _context;
+        private readonly ICustomRepository _customRepository;
+
+        public CommentRepository(DBContext context, ICustomRepository _customRepository)
+        {
+            _context = context;
+            this._customRepository = _customRepository;
+        }
+
+        // GET: Comment
+        public async Task<ICollection<Comment>> GetComments()
+        {
+            return await _context.Comments.ToListAsync();
+        }
+
+        // GET: Comment/1
+        public async Task<Comment> GetComment(int id)
+        {
+            return await _context.Comments.FindAsync(id);
+        }
+
+        // POST: Comment
+        public async Task<Comment> AddComment(IFormFile file, Comment comment)
+        {
+            // Lagre ny kommentar i databasen først
+            var result = await _context.Comments.AddAsync(comment);
+            await _context.SaveChangesAsync();
+
+            // Se etter fil og last opp hvis den er sendt med
+            if (file != null)
+            {
+                if (file.Length > 0)
+                {
+                    // Kaller på AddDocument metoden fra CustomRepository, så vi får en ny oppføring i databasen til Documents
+                    var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, null, result.Entity.Id);
+
+                    // Oppdater denne kommentaren med DocumentId
+                    var update = await _context.Comments.FindAsync(result.Entity.Id);
+                    if (update != null)
+                    {
+                        update.DocumentId = newDocument.Id;
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return result.Entity;
+        }
+
+        // PUT: Comment/1
+        public async Task<Comment> UpdateComment(Comment comment)
+        {
+            var result = await _context.Comments.FindAsync(comment.Id);
+            if (result != null)
+            {
+                result.Id = comment.Id;
+                result.Content = comment.Content;
+                result.Date = comment.Date;
+                result.UserId = comment.UserId;
+                result.PostId = comment.PostId;
+                result.DocumentId = comment.DocumentId;
+                await _context.SaveChangesAsync();
+                return result;
+            }
+            return null;
+        }
+
+        // DELETE: Comment/1
+        public async Task<Comment> DeleteComment(int id)
+        {
+            var result = await _context.Comments.FindAsync(id);
+            if (result != null)
+            {
+                // Hvis denne kommentaren har et dokument, må dette slettes!
+                if (result.DocumentId != null)
+                {
+                    await _customRepository.DeleteDocument((int)result.DocumentId);
+                }
+
+                _context.Comments.Remove(result);
+                await _context.SaveChangesAsync();
+                return result;
+            }
+            return null;
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/webforum/databases/webforum",
+      "type": "mssql.azure",
+      "connectionId": "AzureDatabase",
+      "secretStore": "AzureAppSettings"
+    },
+    "storage1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/webforum",
+      "type": "storage.azure",
+      "connectionId": "AzureStorageKey",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}
