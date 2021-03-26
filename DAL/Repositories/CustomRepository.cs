@@ -115,8 +115,8 @@ namespace DAL.Repositories
             // Oppdater eventuell kommentar med referanse til dette dokumentet
             if (commentId != null)
             {
-                // Slett dokumentet om posten har dokument fra før
-                var comment = await _context.Posts.FindAsync(postId);
+                // Slett dokumentet om kommentaren har dokument fra før
+                var comment = await _context.Comments.FindAsync(commentId);
                 if (comment.DocumentId != null)
                 {
                     await DeleteDocument((int)comment.DocumentId);
