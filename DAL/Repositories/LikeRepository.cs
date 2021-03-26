@@ -28,11 +28,11 @@ namespace DAL.Repositories
         // GET: GetLike
         public async Task<Like> GetLike(Like like)
         {
-            // Finne likes etter userId og postId eller commentId
+            // GetLike skal finne likes med UserId og PostId eller CommentId
             ICollection<Like> allLikes = await _context.Likes.ToListAsync();
             ICollection<Like> likesByUser = new List<Like>();
 
-            // Lag en ny liste over likes med riktig userId
+            // Legg til alle likes fra gitt UserId i en liste (likesByUser)
             foreach (var item in allLikes)
             {
                 if (item.UserId == like.UserId)
@@ -41,27 +41,27 @@ namespace DAL.Repositories
                 }
             }
 
-            // Finn like på postId fra likesByUser
+            // Finn riktig like med PostId fra likesByUser hvis denne er lagt ved
             if (like.PostId != null)
             {
                 foreach (var item in likesByUser)
                 {
                     if (item.PostId == like.PostId)
                     {
-                        // Send tilbake like med riktig userId og postId
+                        // Send tilbake like med riktig UserId og PostId
                         return item;
                     }
                 }
             }
 
-            // Finn like på commentId fra likesByUser
+            // Finn riktig like med CommentId fra likesByUser hvis denne er lagt ved
             if (like.CommentId != null)
             {
                 foreach (var item in likesByUser)
                 {
                     if (item.CommentId == like.CommentId)
                     {
-                        // Send tilbake like med riktig userId og commentId
+                        // Send tilbake like med riktig UserId og CommentId
                         return item;
                     }
                 }
@@ -87,7 +87,7 @@ namespace DAL.Repositories
                 return updateLike;
             }
 
-            // Lagre endringer til databasen
+            // Legg til ny like i databasen om den ikke eksisterer
             var result = await _context.Likes.AddAsync(like);
             await _context.SaveChangesAsync();
             return result.Entity;
