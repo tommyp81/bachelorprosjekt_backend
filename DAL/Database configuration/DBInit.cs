@@ -15,6 +15,7 @@ namespace DAL.Database_configuration
             if (context.Users.Any() |
                 context.Posts.Any() |
                 context.Comments.Any() |
+                context.InfoTopics.Any() |
                 context.Topics.Any() |
                 context.SubTopics.Any())
             {
@@ -73,7 +74,9 @@ namespace DAL.Database_configuration
                 new User{Username="erik",FirstName="Erik",LastName="S. Larsen",Password="0000"},
                 new User{Username="pia",FirstName="Pia K.",LastName="Aamodt ",Password="0000"},
                 new User{Username="sepita",FirstName="Sepideh",LastName="Tajik",Password="0000"},
-                new User{Username="test",FirstName="Test",LastName="User",Password="0000"}
+                new User{Username="test",FirstName="Test",LastName="User",Password="0000"},
+                new User{Username="charlotte",FirstName="Charlotte",LastName="Støelen",Password="0000"},
+                new User{Username="admin",FirstName="Superbruker",LastName="Badminton",Password="1234"}
             };
             foreach (User user in users)
             {
@@ -124,6 +127,31 @@ namespace DAL.Database_configuration
             foreach (Comment comment in comments)
             {
                 context.Comments.Add(comment);
+                context.SaveChanges();
+            }
+
+            // Opprette nye temaer (INFOTOPICS)
+            var infotopics = new InfoTopic[]
+            {
+                new InfoTopic{Title="Klubbutvikling",Description="Informasjon om Klubbutvikling. Fylles ut senere!",ImageUrl="..."},
+                new InfoTopic{Title="Trener",Description="Informasjon om Trener. Fylles ut senere!",ImageUrl="..."},
+                new InfoTopic{Title="Spiller",Description="Informasjon om Spiller. Fylles ut senere!",ImageUrl="..."},
+                new InfoTopic{Title="Dommer",Description="Informasjon om Dommer. Fylles ut senere!",ImageUrl="..."}
+            };
+            foreach (InfoTopic infotopic in infotopics)
+            {
+                context.InfoTopics.Add(infotopic);
+                context.SaveChanges();
+            }
+
+            // Opprette nye videoer (VIDEOS)
+            var videos = new Video[]
+            {
+                new Video{Title="Tittel på video her",Description="Blablabla",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=1}
+            };
+            foreach (Video video in videos)
+            {
+                context.Videos.Add(video);
                 context.SaveChanges();
             }
         }

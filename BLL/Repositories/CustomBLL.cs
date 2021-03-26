@@ -15,11 +15,13 @@ namespace BLL.Repositories
     {
         private readonly ICustomRepository _repository;
         private readonly ICommentRepository _commentRepository;
+        private readonly ILikeRepository _likeRepository;
 
-        public CustomBLL(ICustomRepository _repository, ICommentRepository _commentRepository)
+        public CustomBLL(ICustomRepository _repository, ICommentRepository _commentRepository, ILikeRepository _likeRepository)
         {
             this._repository = _repository;
             this._commentRepository = _commentRepository;
+            this._likeRepository = _likeRepository;
         }
 
         // GET: GetCommentCount/1
@@ -33,6 +35,36 @@ namespace BLL.Repositories
                                select comment;
 
             return commentcount.Count();
+        }
+
+        // GET: GetLikeCount
+        public async Task<int> GetLikeCount(int? postId, int? commentId)
+        {
+            // Telle antall likes til poster eller kommentarer
+            ICollection<Like> likes = await _likeRepository.GetLikes();
+            if (likes == null) { return 0; }
+
+            // Telle for poster hvis vi får postId
+            if (postId != null)
+            {
+                var likecount = from like in likes.AsEnumerable()
+                                where like.PostId == postId
+                                select like;
+
+                return likecount.Count();
+            }
+
+            // Telle for kommentarer hvis vi får commentId
+            if (commentId != null)
+            {
+                var likecount = from like in likes.AsEnumerable()
+                                where like.CommentId == commentId
+                                select like;
+
+                return likecount.Count();
+            }
+
+            return 0;
         }
 
         // For å lage DTOs for Documents

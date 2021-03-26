@@ -54,6 +54,9 @@ namespace API
             services.AddTransient<ITopicBLL, TopicBLL>();
             services.AddTransient<ISubTopicBLL, SubTopicBLL>();
             services.AddTransient<ICustomBLL, CustomBLL>();
+            services.AddTransient<ILikeBLL, LikeBLL>();
+            services.AddTransient<IVideoBLL, VideoBLL>();
+            services.AddTransient<IInfoTopicBLL, InfoTopicBLL>();
 
             // For DAL
             services.AddScoped<IUserRepository, UserRepository>();
@@ -62,6 +65,9 @@ namespace API
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<ISubTopicRepository, SubTopicRepository>();
             services.AddScoped<ICustomRepository, CustomRepository>();
+            services.AddScoped<ILikeRepository, LikeRepository>();
+            services.AddScoped<IVideoRepository, VideoRepository>();
+            services.AddScoped<IInfoTopicRepository, InfoTopicRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

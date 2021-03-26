@@ -19,6 +19,9 @@ namespace DAL.Database_configuration
         public DbSet<Topic> Topics { get; set; }
         public DbSet<SubTopic> SubTopics { get; set; }
         public DbSet<Document> Documents { get; set; }
+        public DbSet<InfoTopic> InfoTopics { get; set; }
+        public DbSet<Video> Videos { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
         // Fluent API - diverse konfigurering
         protected override void OnModelCreating(ModelBuilder modelBuilder)

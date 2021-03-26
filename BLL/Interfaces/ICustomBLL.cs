@@ -14,6 +14,9 @@ namespace BLL.Interfaces
         // GetCommentCount ligger kun i BLL, og brukes bare til DTOs
         Task<int> GetCommentCount(int id);
 
+        // GetLikeCount ligger kun i BLL, og brukes bare til DTOs
+        Task<int> GetLikeCount(int? postId, int? commentId);
+
         DocumentDTO AddDTO(Document document);
         Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId);
         Task<DocumentDTO> GetDocumentInfo(int id);

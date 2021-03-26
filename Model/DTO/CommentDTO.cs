@@ -14,5 +14,6 @@ namespace Model.DTO
         public int? UserId { get; set; }
         public int PostId { get; set; }
         public int? DocumentId { get; set; }
+        public int Like_Count { get; set; }
     }
 }

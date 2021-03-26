@@ -53,9 +53,13 @@ namespace BLL.Repositories
                 // Telle hvor mange kommentarer hver enkelt post har
                 int commentcount = await _customRepository.GetCommentCount(post.Id);
 
-                // Lag en DTO og legg til feltet for commentcount
+                // Telle antall likes til hver enkelt post
+                int likecount = await _customRepository.GetLikeCount(post.Id, null);
+
+                // Lag en DTO og legg til feltet for commentcount og likecount
                 PostDTO postDTO = AddDTO(getPost);
                 postDTO.Comment_Count = commentcount; // Comment_Count vises kun med DTO
+                postDTO.Like_Count = likecount; // Like_Count vises kun med DTO
 
                 // Legg disse til i lista
                 postDTOs.Add(postDTO);
@@ -71,8 +75,12 @@ namespace BLL.Repositories
             // Telle hvor mange kommentarer denne posten har
             int commentcount = await _customRepository.GetCommentCount(id);
 
+            // Telle antall likes til hver enkelt post
+            int likecount = await _customRepository.GetLikeCount(id, null);
+
             PostDTO postDTO = AddDTO(getPost);
             postDTO.Comment_Count = commentcount; // Comment_Count vises kun med DTO
+            postDTO.Like_Count = likecount; // Like_Count vises kun med DTO
 
             return postDTO;
         }

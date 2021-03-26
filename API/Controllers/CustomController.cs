@@ -58,9 +58,9 @@ namespace API.Controllers
 
                 return CreatedAtAction(nameof(GetDocumentInfo), new { id = newDocument.Id }, newDocument);
             }
-            catch (Exception e) //"Feil ved opplasting av nytt dokument"
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, e);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved opplasting av nytt dokument");
             }
         }
 
@@ -102,6 +102,7 @@ namespace API.Controllers
                 {
                     // Finn filen i Azure Storage og last ned
                     var file = await blobClient.DownloadAsync();
+
                     // Returner filen med filnavn fra databasen (så bruker ikke laster ned fil med unikt navn)
                     return File(file.Value.Content, file.Value.ContentType, document.FileName);
                 }
@@ -121,10 +122,12 @@ namespace API.Controllers
             try
             {
                 var document = await _repository.GetDocumentInfo(id);
+
                 if (document == null)
                 {
                     return NotFound($"Dokument med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.DeleteDocument(id);
             }
             catch (Exception)

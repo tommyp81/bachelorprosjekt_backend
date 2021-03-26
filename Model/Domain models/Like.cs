@@ -8,19 +8,11 @@ using System.Threading.Tasks;
 
 namespace Model.Domain_models
 {
-    public class Document
+    public class Like
     {
-        // Database for dokumenter
+        // Database for likes
         [Key]
         public int Id { get; set; }
-        public string FileName { get; set; }
-        public string FileType { get; set; }
-        public string FileSize { get; set; }
-        public DateTime Uploaded { get; set; }
-
-        // Informasjon for Azure Storage
-        public string UniqueName { get; set; }
-        public string Container { get; set; }
 
         // Relasjoner
         [ForeignKey("User")]
@@ -34,9 +26,5 @@ namespace Model.Domain_models
         [ForeignKey("Comment")]
         public int? CommentId { get; set; }
         public Comment Comment { get; set; }
-
-        [ForeignKey("InfoTopic")]
-        public int InfoTopicId { get; set; }
-        public InfoTopic InfoTopic { get; set; }
     }
 }
