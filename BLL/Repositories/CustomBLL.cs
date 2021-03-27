@@ -81,15 +81,16 @@ namespace BLL.Repositories
                 Container = document.Container,
                 UserId = document.UserId,
                 PostId = document.PostId,
-                CommentId = document.CommentId
+                CommentId = document.CommentId,
+                InfoTopicId = document.InfoTopicId
             };
             return DTO;
         }
 
         // POST: AddDocument
-        public async Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId)
+        public async Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId)
         {
-            Document addDocument = await _repository.UploadDocument(file, userId, postId, commentId);
+            Document addDocument = await _repository.UploadDocument(file, userId, postId, commentId, infoTopicId);
             if (addDocument == null) { return null; }
             DocumentDTO documentDTO = AddDTO(addDocument);
             return documentDTO;

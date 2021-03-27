@@ -31,7 +31,7 @@ namespace API.Controllers
         // POST: UploadDocument
         [HttpPost]
         public async Task<ActionResult<DocumentDTO>> UploadDocument(
-            [FromForm] IFormFile file, [FromForm] int? userId, [FromForm] int? postId, [FromForm] int? commentId)
+            [FromForm] IFormFile file, [FromForm] int? userId, [FromForm] int? postId, [FromForm] int? commentId, [FromForm] int? infoTopicId)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace API.Controllers
                 }
 
                 // Legg til fil på Azure Storage og i databasen
-                var newDocument = await _repository.UploadDocument(file, userId, postId, commentId);
+                var newDocument = await _repository.UploadDocument(file, userId, postId, commentId, infoTopicId);
 
                 return CreatedAtAction(nameof(GetDocumentInfo), new { id = newDocument.Id }, newDocument);
             }

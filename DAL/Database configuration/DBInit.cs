@@ -88,17 +88,17 @@ namespace DAL.Database_configuration
             var posts = new Post[]
             {
                 new Post{Title="Test for tema: Konkurranse",Content="Dette er en test! Den skal ligge under Dommer / oppmann",
-                    Date=DateTime.UtcNow,UserId=6,TopicId=1,SubTopicId=1},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,TopicId=1,SubTopicId=1},
                 new Post{Title="Test for tema: Konkurranse",Content="Denne skal ligge under Seriespill",
-                    Date=DateTime.UtcNow,UserId=6,TopicId=1,SubTopicId=2},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,TopicId=1,SubTopicId=2},
                 new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening",
-                    Date=DateTime.UtcNow,UserId=6,TopicId=2,SubTopicId=6},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,TopicId=2,SubTopicId=6},
                 new Post{Title="Test for tema: Utvikling",Content="Dette er enda en test. Den skal ligge under Klubbutvikling",
-                    Date=DateTime.UtcNow,UserId=6,TopicId=3,SubTopicId=9},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,TopicId=3,SubTopicId=9},
                 new Post{Title="Test for tema: Toppidrett",Content="Dette er en test!!! Denne skal ligge under Junior",
-                    Date=DateTime.UtcNow,UserId=6,TopicId=4,SubTopicId=13},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,TopicId=4,SubTopicId=13},
                 new Post{Title="Test for tema: Toppidrett",Content="Denne testen skal man kunne se under Trening",
-                    Date=DateTime.UtcNow,UserId=6,TopicId=4,SubTopicId=16}
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,TopicId=4,SubTopicId=16}
             };
             foreach (Post post in posts)
             {
@@ -110,19 +110,19 @@ namespace DAL.Database_configuration
             var comments = new Comment[]
             {
                 new Comment{Content="Dette er et testsvar til en post :)",
-                    Date=DateTime.UtcNow,UserId=6,PostId=1},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,PostId=1},
                 new Comment{Content="Dette svaret er kun en test!!!",
-                    Date=DateTime.UtcNow,UserId=6,PostId=2},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,PostId=2},
                 new Comment{Content="Hei, det ser ut som posten ligger under riktig tema :)",
-                    Date=DateTime.UtcNow,UserId=6,PostId=3},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,PostId=3},
                 new Comment{Content="Dette testsvaret er ikke så viktig.",
-                    Date=DateTime.UtcNow,UserId=6,PostId=3},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,PostId=3},
                 new Comment{Content="Dette skal være det nyeste svaret på denne posten.",
-                    Date=DateTime.UtcNow,UserId=6,PostId=3},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,PostId=3},
                 new Comment{Content="Dette skal være det første svaret til posten under Toppidrett - > Trening",
-                    Date=DateTime.UtcNow,UserId=6,PostId=6},
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,PostId=6},
                 new Comment{Content="I posten under Toppidrett og Trening, blir dette det neste svar",
-                    Date=DateTime.UtcNow,UserId=6,PostId=6}
+                    Date=DateTime.UtcNow.AddHours(1),UserId=6,PostId=6}
             };
             foreach (Comment comment in comments)
             {

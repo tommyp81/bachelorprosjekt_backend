@@ -26,7 +26,7 @@ namespace DAL.Repositories
         }
 
         // POST: AddDocument
-        public async Task<Document> AddDocument(IFormFile file, int? userId, int? postId, int? commentId)
+        public async Task<Document> AddDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId)
         {
             // Informasjon om filnavn og type
             var fileName = Path.GetFileName(file.FileName);
@@ -76,12 +76,13 @@ namespace DAL.Repositories
                 FileName = fileName,
                 FileType = fileType,
                 FileSize = fileSize,
-                Uploaded = DateTime.UtcNow,
+                Uploaded = DateTime.UtcNow.AddHours(1), // For riktig tid (UTC + 1 time)
                 UniqueName = uniqueName,
                 Container = container,
                 UserId = userId,
                 PostId = postId,
-                CommentId = commentId
+                CommentId = commentId,
+                InfoTopicId = infoTopicId
             };
 
             // Legg til den nye filen i databasen
@@ -93,10 +94,10 @@ namespace DAL.Repositories
         }
 
         // POST: UploadDocument
-        public async Task<Document> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId)
+        public async Task<Document> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId)
         {
             // Legg til det nye dokumentet
-            var document = await AddDocument(file, userId, postId, commentId);
+            var document = await AddDocument(file, userId, postId, commentId, infoTopicId);
 
             // Oppdater eventuell post med referanse til dette dokumentet
             if (postId != null)

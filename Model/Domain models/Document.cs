@@ -36,7 +36,7 @@ namespace Model.Domain_models
         public Comment Comment { get; set; }
 
         [ForeignKey("InfoTopic")]
-        public int InfoTopicId { get; set; }
+        public int? InfoTopicId { get; set; }
         public InfoTopic InfoTopic { get; set; }
     }
 }

@@ -38,6 +38,7 @@ namespace DAL.Repositories
         public async Task<Comment> AddComment(IFormFile file, Comment comment)
         {
             // Lagre ny kommentar i databasen først
+            comment.Date = DateTime.UtcNow.AddHours(1); // For riktig tid (UTC + 1 time)
             var result = await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
 
@@ -47,7 +48,7 @@ namespace DAL.Repositories
                 if (file.Length > 0)
                 {
                     // Kaller på AddDocument metoden fra CustomRepository, så vi får en ny oppføring i databasen til Documents
-                    var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, null, result.Entity.Id);
+                    var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, null, result.Entity.Id, null);
 
                     // Oppdater denne kommentaren med DocumentId
                     var update = await _context.Comments.FindAsync(result.Entity.Id);
@@ -70,7 +71,7 @@ namespace DAL.Repositories
             {
                 result.Id = comment.Id;
                 result.Content = comment.Content;
-                result.Date = comment.Date;
+                result.Date = DateTime.UtcNow.AddHours(1); // For riktig tid (UTC + 1 time)
                 result.UserId = comment.UserId;
                 result.PostId = comment.PostId;
                 result.DocumentId = comment.DocumentId;

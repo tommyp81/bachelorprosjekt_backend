@@ -18,6 +18,6 @@ namespace Model.DTO
         public int? UserId { get; set; }
         public int? PostId { get; set; }
         public int? CommentId { get; set; }
-        public int InfoTopicId { get; set; }
+        public int? InfoTopicId { get; set; }
     }
 }

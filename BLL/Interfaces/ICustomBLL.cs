@@ -18,7 +18,7 @@ namespace BLL.Interfaces
         Task<int> GetLikeCount(int? postId, int? commentId);
 
         DocumentDTO AddDTO(Document document);
-        Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId);
+        Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId);
         Task<DocumentDTO> GetDocumentInfo(int id);
         Task<DocumentDTO> DeleteDocument(int id);
     }
