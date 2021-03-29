@@ -40,7 +40,8 @@ namespace DAL.Repositories
         public async Task<Post> AddPost(IFormFile file, Post post)
         {
             // Lagre ny posten i databasen først
-            post.Date = DateTime.UtcNow.AddHours(1); // For riktig tid (UTC + 1 time)
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            post.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
             var result = await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
 
@@ -68,13 +69,14 @@ namespace DAL.Repositories
         // PUT: Posts/1
         public async Task<Post> UpdatePost(Post post)
         {
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             var result = await _context.Posts.FindAsync(post.Id);
             if (result != null)
             {
                 result.Id = post.Id;
                 result.Title = post.Title;
                 result.Content = post.Content;
-                result.Date = DateTime.UtcNow.AddHours(1); // For riktig tid (UTC + 1 time)
+                result.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
                 result.UserId = post.UserId;
                 result.TopicId = post.TopicId;
                 result.SubTopicId = post.SubTopicId;

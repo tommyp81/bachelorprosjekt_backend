@@ -70,13 +70,15 @@ namespace DAL.Repositories
                 uploadFileStream.Close();
             }
 
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+
             // Legge til informasjon om filen
             Document document = new Document
             {
                 FileName = fileName,
                 FileType = fileType,
                 FileSize = fileSize,
-                Uploaded = DateTime.UtcNow.AddHours(1), // For riktig tid (UTC + 1 time)
+                Uploaded = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone),
                 UniqueName = uniqueName,
                 Container = container,
                 UserId = userId,

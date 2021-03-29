@@ -38,7 +38,8 @@ namespace DAL.Repositories
         public async Task<Comment> AddComment(IFormFile file, Comment comment)
         {
             // Lagre ny kommentar i databasen først
-            comment.Date = DateTime.UtcNow.AddHours(1); // For riktig tid (UTC + 1 time)
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            comment.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
             var result = await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
 
@@ -66,12 +67,13 @@ namespace DAL.Repositories
         // PUT: Comment/1
         public async Task<Comment> UpdateComment(Comment comment)
         {
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             var result = await _context.Comments.FindAsync(comment.Id);
             if (result != null)
             {
                 result.Id = comment.Id;
                 result.Content = comment.Content;
-                result.Date = DateTime.UtcNow.AddHours(1); // For riktig tid (UTC + 1 time)
+                result.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
                 result.UserId = comment.UserId;
                 result.PostId = comment.PostId;
                 result.DocumentId = comment.DocumentId;
