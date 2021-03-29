@@ -2,11 +2,13 @@
 <br />
 <p><b>ASP.NET Core API Backend - Bachelorprosjekt for gruppe 29</b></p>
 <br />
-<p>Kommentarer: <a href="https://webforum.azurewebsites.net/comments" target="_blank">https://webforum.azurewebsites.net/comments</a></p>
-<p>Poster: <a href="https://webforum.azurewebsites.net/posts" target="_blank">https://webforum.azurewebsites.net/posts</a></p>
-<p>Undertema: <a href="https://webforum.azurewebsites.net/subtopics" target="_blank">https://webforum.azurewebsites.net/subtopics</a></p>
-<p>Tema: <a href="https://webforum.azurewebsites.net/topics" target="_blank">https://webforum.azurewebsites.net/topics</a></p>
-<p>Brukere: <a href="https://webforum.azurewebsites.net/users" target="_blank">https://webforum.azurewebsites.net/users</a></p>
+<p>Posts: <a href="https://webforum.azurewebsites.net/posts" target="_blank">https://webforum.azurewebsites.net/posts</a></p>
+<p>Comments: <a href="https://webforum.azurewebsites.net/comments" target="_blank">https://webforum.azurewebsites.net/comments</a></p>
+<p>Users: <a href="https://webforum.azurewebsites.net/users" target="_blank">https://webforum.azurewebsites.net/users</a></p>
+<p>SubTopics: <a href="https://webforum.azurewebsites.net/subtopics" target="_blank">https://webforum.azurewebsites.net/subtopics</a></p>
+<p>Topics: <a href="https://webforum.azurewebsites.net/topics" target="_blank">https://webforum.azurewebsites.net/topics</a></p>
+<p>Videos: <a href="https://webforum.azurewebsites.net/videos" target="_blank">https://webforum.azurewebsites.net/videos</a></p>
+<p>InfoTopics: <a href="https://webforum.azurewebsites.net/infotopics" target="_blank">https://webforum.azurewebsites.net/infotopics</a></p>
 <br />
 <p><b>CustomController</b></p>
 <p>Diverse metoder som brukes utenom vanlig API</p>
