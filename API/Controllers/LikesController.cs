@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    [Route("[controller]")]
+    [Route("[action]")]
     [ApiController]
     public class LikesController : ControllerBase
     {
@@ -23,8 +23,8 @@ namespace API.Controllers
             this._repository = _repository;
         }
 
-        // GET: GetLike
-        [HttpGet]
+        // POST: GetLike
+        [HttpPost]
         public async Task<ActionResult<LikeDTO>> GetLike(Like like)
         {
             try
