@@ -41,9 +41,7 @@ namespace BLL.Repositories
             ICollection<VideoDTO> videoDTOs = new List<VideoDTO>();
             foreach (Video video in videos)
             {
-                Video getVideo = await _repository.GetVideo(video.Id);
-                if (getVideo == null) { return null; }
-                videoDTOs.Add(AddDTO(getVideo));
+                videoDTOs.Add(AddDTO(video));
             }
             return videoDTOs;
         }

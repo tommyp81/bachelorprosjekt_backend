@@ -39,9 +39,7 @@ namespace BLL.Repositories
             ICollection<InfoTopicDTO> infotopicDTOs = new List<InfoTopicDTO>();
             foreach (InfoTopic infotopic in infotopics)
             {
-                InfoTopic getInfoTopic = await _repository.GetInfoTopic(infotopic.Id);
-                if (getInfoTopic == null) { return null; }
-                infotopicDTOs.Add(AddDTO(getInfoTopic));
+                infotopicDTOs.Add(AddDTO(infotopic));
             }
             return infotopicDTOs;
         }

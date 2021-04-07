@@ -15,6 +15,8 @@ namespace DAL.Interfaces
 
         // UploadDocument kommer fra controller og brukes ved oppdatering av poster eller kommentarer
         Task<Document> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId);
+
+        Task<ICollection<Document>> GetDocuments();
         Task<Document> GetDocumentInfo(int id);
         Task<Document> DeleteDocument(int id);
     }

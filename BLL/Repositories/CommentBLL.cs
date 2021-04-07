@@ -45,14 +45,11 @@ namespace BLL.Repositories
 
             foreach (Comment comment in comments)
             {
-                Comment getComment = await _repository.GetComment(comment.Id);
-                if (getComment == null) { return null; }
-
                 // Telle antall likes til hver enkelt kommentar
                 int likecount = await _customRepository.GetLikeCount(null, comment.Id);
 
                 // Lag en DTO og legg til feltet for likecount
-                CommentDTO commentDTO = AddDTO(getComment);
+                CommentDTO commentDTO = AddDTO(comment);
                 commentDTO.Like_Count = likecount; // Like_Count vises kun med DTO
 
                 // Legg disse til i lista

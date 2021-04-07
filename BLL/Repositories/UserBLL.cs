@@ -40,9 +40,7 @@ namespace BLL.Repositories
             ICollection<UserDTO> userDTOs = new List<UserDTO>();
             foreach (User user in users)
             {
-                User getUser = await _repository.GetUser(user.Id);
-                if (getUser == null) { return null; }
-                userDTOs.Add(AddDTO(getUser));
+                userDTOs.Add(AddDTO(user));
             }
             return userDTOs;
         }

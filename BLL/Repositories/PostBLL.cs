@@ -47,9 +47,6 @@ namespace BLL.Repositories
 
             foreach (Post post in posts)
             {
-                Post getPost = await _repository.GetPost(post.Id);
-                if (getPost == null) { return null; }
-
                 // Telle hvor mange kommentarer hver enkelt post har
                 int commentcount = await _customRepository.GetCommentCount(post.Id);
 
@@ -57,7 +54,7 @@ namespace BLL.Repositories
                 int likecount = await _customRepository.GetLikeCount(post.Id, null);
 
                 // Lag en DTO og legg til feltet for commentcount og likecount
-                PostDTO postDTO = AddDTO(getPost);
+                PostDTO postDTO = AddDTO(post);
                 postDTO.Comment_Count = commentcount; // Comment_Count vises kun med DTO
                 postDTO.Like_Count = likecount; // Like_Count vises kun med DTO
 

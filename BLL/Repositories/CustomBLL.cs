@@ -87,6 +87,27 @@ namespace BLL.Repositories
             return DTO;
         }
 
+        // GET: GetDocuments
+        public async Task<ICollection<DocumentDTO>> GetDocuments()
+        {
+            ICollection<Document> documents = await _repository.GetDocuments();
+            if (documents == null) { return null; }
+            ICollection<DocumentDTO> documentDTOs = new List<DocumentDTO>();
+
+            foreach (Document document in documents)
+            {
+                // Sjekke om dokumentet har InfoTopicId
+                if (document.InfoTopicId != null)
+                {
+                    // Legg dokumentet til i listen
+                    documentDTOs.Add(AddDTO(document));
+                }
+            }
+
+            // Returnerer alle dokumenter som har en InfoTopicId
+            return documentDTOs;
+        }
+
         // POST: AddDocument
         public async Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId)
         {
@@ -105,7 +126,7 @@ namespace BLL.Repositories
             return documentDTO;
         }
 
-        // GET: GetDocumentInfo/1
+        // DELETE: DeleteDocument/1
         public async Task<DocumentDTO> DeleteDocument(int id)
         {
             Document deleteDocument = await _repository.DeleteDocument(id);

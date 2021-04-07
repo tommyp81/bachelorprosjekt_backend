@@ -134,6 +134,12 @@ namespace DAL.Repositories
             return document;
         }
 
+        // GET: GetDocuments
+        public async Task<ICollection<Document>> GetDocuments()
+        {
+            return await _context.Documents.ToListAsync();
+        }
+
         // GET: GetDocumentInfo/1
         public async Task<Document> GetDocumentInfo(int id)
         {

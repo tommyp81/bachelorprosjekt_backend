@@ -28,6 +28,21 @@ namespace API.Controllers
             _config = configuration;
         }
 
+        // GET: GetDocuments
+        [HttpGet]
+        public async Task<ActionResult<ICollection<DocumentDTO>>> GetDocuments()
+        {
+            try
+            {
+                // Viser kun dokumenter som har en InfoTopicId
+                return Ok(await _repository.GetDocuments());
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av dokumenter");
+            }
+        }
+
         // POST: UploadDocument
         [HttpPost]
         public async Task<ActionResult<DocumentDTO>> UploadDocument(
@@ -44,13 +59,17 @@ namespace API.Controllers
                 {
                     return BadRequest("Det må legges ved en bruker ID");
                 }
-                if (postId == null && commentId == null)
+                if (postId == null && commentId == null && infoTopicId == null)
                 {
-                    return BadRequest("Det må legges ved enten post ID eller kommentar ID");
+                    return BadRequest("Det må legges ved enten post ID, kommentar ID eller InfoTopic ID");
                 }
-                if (postId != null && commentId != null)
+                if (postId != null && commentId != null && infoTopicId == null)
                 {
                     return BadRequest("Det kan ikke legges ved både post ID og kommentar ID");
+                }
+                if (postId != null && commentId != null && infoTopicId != null)
+                {
+                    return BadRequest("Det kan ikke legges ved tre IDer (post ID, kommentar ID og InfoTopic ID)");
                 }
 
                 // Legg til fil på Azure Storage og i databasen

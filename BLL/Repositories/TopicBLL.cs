@@ -39,9 +39,7 @@ namespace BLL.Repositories
             ICollection<TopicDTO> topicDTOs = new List<TopicDTO>();
             foreach (Topic topic in topics)
             {
-                Topic getTopic = await _repository.GetTopic(topic.Id);
-                if (getTopic == null) { return null; }
-                topicDTOs.Add(AddDTO(getTopic));
+                topicDTOs.Add(AddDTO(topic));
             }
             return topicDTOs;
         }
