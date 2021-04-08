@@ -37,11 +37,8 @@ namespace DAL.Repositories
             var newVideo = new Video
             {
                 YouTubeId = video.YouTubeId,
-
-                // YouTubeAPI kommer her
-                Title = "Title",
-                Description = "Description",
-
+                Title = video.Title,
+                Description = video.Description,
                 UserId = video.UserId,
                 InfoTopicId = video.InfoTopicId
             };
@@ -59,11 +56,8 @@ namespace DAL.Repositories
             {
                 result.Id = video.Id;
                 result.YouTubeId = video.YouTubeId;
-
-                // YouTubeAPI kommer her
-                result.Title = "Title";
-                result.Description = "Description";
-                
+                result.Title = video.Title;
+                result.Description = video.Description;
                 result.UserId = video.UserId;
                 result.InfoTopic = video.InfoTopic;
                 await _context.SaveChangesAsync();

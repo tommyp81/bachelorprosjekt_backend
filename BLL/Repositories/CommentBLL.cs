@@ -52,7 +52,7 @@ namespace BLL.Repositories
                 CommentDTO commentDTO = AddDTO(comment);
                 commentDTO.Like_Count = likecount; // Like_Count vises kun med DTO
 
-                // Legg disse til i lista
+                // Legg dette til i listen
                 commentDTOs.Add(commentDTO);
             }
 
@@ -64,8 +64,8 @@ namespace BLL.Repositories
             Comment getComment = await _repository.GetComment(id);
             if (getComment == null) { return null; }
 
-            // Telle antall likes til hver enkelt kommentar
-            int likecount = await _customRepository.GetLikeCount(null, id);
+            // Telle antall likes til denne kommentaren
+            int likecount = await _customRepository.GetLikeCount(null, getComment.Id);
 
             CommentDTO commentDTO = AddDTO(getComment);
             commentDTO.Like_Count = likecount; // Like_Count vises kun med DTO
@@ -85,7 +85,12 @@ namespace BLL.Repositories
         {
             Comment updateComment = await _repository.UpdateComment(comment);
             if (updateComment == null) { return null; }
+
+            // Telle antall likes til denne kommentaren
+            int likecount = await _customRepository.GetLikeCount(null, updateComment.Id);
             CommentDTO commentDTO = AddDTO(updateComment);
+            commentDTO.Like_Count = likecount; // Like_Count vises kun med DTO
+
             return commentDTO;
         }
 

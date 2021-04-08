@@ -70,10 +70,10 @@ namespace BLL.Repositories
             if (getPost == null) { return null; }
 
             // Telle hvor mange kommentarer denne posten har
-            int commentcount = await _customRepository.GetCommentCount(id);
+            int commentcount = await _customRepository.GetCommentCount(getPost.Id);
 
-            // Telle antall likes til hver enkelt post
-            int likecount = await _customRepository.GetLikeCount(id, null);
+            // Telle antall likes til denne posten
+            int likecount = await _customRepository.GetLikeCount(getPost.Id, null);
 
             PostDTO postDTO = AddDTO(getPost);
             postDTO.Comment_Count = commentcount; // Comment_Count vises kun med DTO
@@ -94,7 +94,17 @@ namespace BLL.Repositories
         {
             Post updatePost = await _repository.UpdatePost(post);
             if (updatePost == null) { return null; }
+
+            // Telle hvor mange kommentarer denne posten har
+            int commentcount = await _customRepository.GetCommentCount(updatePost.Id);
+
+            // Telle antall likes til denne posten
+            int likecount = await _customRepository.GetLikeCount(updatePost.Id, null);
+
             PostDTO postDTO = AddDTO(updatePost);
+            postDTO.Comment_Count = commentcount; // Comment_Count vises kun med DTO
+            postDTO.Like_Count = likecount; // Like_Count vises kun med DTO
+
             return postDTO;
         }
 
