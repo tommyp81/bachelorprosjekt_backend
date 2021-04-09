@@ -58,7 +58,12 @@ namespace DAL.Repositories
             BlobContainerClient containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), container);
 
             // Lag ny container om den ikke eksisterer
-            await containerClient.CreateIfNotExistsAsync();
+            //await containerClient.CreateIfNotExistsAsync();
+            // Lag ny container om den ikke eksisterer -> Dette burde gi mindre errors i Azure Portal
+            if (!await containerClient.ExistsAsync())
+            {
+                await containerClient.CreateAsync();
+            }
 
             // Referanse til Blob (selve filen)
             BlobClient blobClient = containerClient.GetBlobClient(uniqueName);
@@ -157,12 +162,19 @@ namespace DAL.Repositories
                 BlobClient blobClient = containerClient.GetBlobClient(result.UniqueName);
 
                 // Slette filen fra Azure Storage
-                await blobClient.DeleteIfExistsAsync();
+                //await blobClient.DeleteIfExistsAsync();
+                // Sjekk om den finnes først, og slett hvis. Burde gi mindre feilmeldinger i Azure Portal
+                if (await blobClient.ExistsAsync())
+                {
+                    await blobClient.DeleteAsync();
+                }
 
                 // Slette container fra Azure Storage om den er tom
                 if (!containerClient.GetBlobs().Any())
                 {
-                    await containerClient.DeleteIfExistsAsync();
+                    //await containerClient.DeleteIfExistsAsync();
+                    // Slett med en gang siden denne er tom! Burde gi mindre feilmeldinger i Azure Portal
+                    await containerClient.DeleteAsync();
                 }
 
                 // Oppdater eventuell post så den ikke har en referanse til dette dokumentet

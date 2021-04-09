@@ -45,6 +45,16 @@ namespace API
                 //builder.AddQueueServiceClient(Configuration["ConnectionStrings:AzureStorageKey:queue"], preferMsi: true);
             });
 
+            // Allow CORS (for localhost) - Fjærn den kommenterte koden under når du skal kjøre frontend mot lokal database
+            //services.AddCors(options =>
+            //{
+            //    options.AddDefaultPolicy(
+            //        builder =>
+            //        {
+            //            builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+            //        });
+            //});
+
             services.AddControllers();
 
             // For BLL
@@ -77,6 +87,9 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Allow CORS (for localhost) - Fjærn den kommenterte koden under når du skal kjøre frontend mot lokal database
+            //app.UseCors();
 
             // For å vise wwwroot/index.html
             app.UseDefaultFiles();
