@@ -58,7 +58,7 @@ namespace API.Controllers
 
         // POST: Users
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> CreateUser(User user)
+        public async Task<ActionResult<UserDTO>> AddUser(User user)
         {
             try
             {

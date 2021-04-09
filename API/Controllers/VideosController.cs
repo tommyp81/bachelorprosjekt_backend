@@ -58,7 +58,7 @@ namespace API.Controllers
 
         // POST: Videos
         [HttpPost]
-        public async Task<ActionResult<VideoDTO>> CreateUser(Video video)
+        public async Task<ActionResult<VideoDTO>> AddVideo(Video video)
         {
             try
             {
