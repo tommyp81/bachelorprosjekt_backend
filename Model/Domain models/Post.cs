@@ -22,10 +22,6 @@ namespace Model.Domain_models
         public int? UserId { get; set; }
         public User User { get; set; }
 
-        [ForeignKey("Topic")]
-        public int? TopicId { get; set; }
-        public Topic Topic { get; set; }
-
         [ForeignKey("SubTopic")]
         public int SubTopicId { get; set; }
         public SubTopic SubTopic { get; set; }

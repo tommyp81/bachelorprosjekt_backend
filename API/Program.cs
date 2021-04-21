@@ -15,7 +15,6 @@ namespace API
     {
         public static void Main(string[] args)
         {
-            //CreateHostBuilder(args).Build().Run();
             var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
@@ -29,10 +28,9 @@ namespace API
                     // Slett database
                     // Husk å kommentere ut denne så den ikke sletter hver eneste gang!
                     // OBS! Fungerer kun på lokal database. Kjøres den i Azure, så slettes databasen men opprettes ikke på nytt.
-                    //context.Database.EnsureDeleted();
+                    context.Database.EnsureDeleted();
 
                     // Opprett database med seeds
-                    // Tom database med riktig navn må først opprettes i Azure
                     context.Database.EnsureCreated();
                     DBInit.Initialize(context);
                 }

@@ -22,9 +22,9 @@ namespace Model.Domain_models
         public int? UserId { get; set; }
         public User User { get; set; }
 
-        [ForeignKey("Document")]
-        public int? DocumentId { get; set; }
-        public Document Document { get; set; }
+        [ForeignKey("Post")]
+        public int PostId { get; set; }
+        public Post Post { get; set; }
 
         [ForeignKey("InfoTopic")]
         public int InfoTopicId { get; set; }

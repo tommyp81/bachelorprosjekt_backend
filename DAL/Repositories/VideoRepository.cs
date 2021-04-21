@@ -40,9 +40,9 @@ namespace DAL.Repositories
                 Title = video.Title,
                 Description = video.Description,
                 UserId = video.UserId,
+                PostId = video.Id,
                 InfoTopicId = video.InfoTopicId
             };
-
             var result = await _context.Videos.AddAsync(newVideo);
             await _context.SaveChangesAsync();
             return result.Entity;
@@ -59,6 +59,7 @@ namespace DAL.Repositories
                 result.Title = video.Title;
                 result.Description = video.Description;
                 result.UserId = video.UserId;
+                result.PostId = video.PostId;
                 result.InfoTopic = video.InfoTopic;
                 await _context.SaveChangesAsync();
                 return result;

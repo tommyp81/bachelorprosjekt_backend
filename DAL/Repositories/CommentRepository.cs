@@ -15,11 +15,13 @@ namespace DAL.Repositories
     {
         private readonly DBContext _context;
         private readonly ICustomRepository _customRepository;
+        private readonly ILikeRepository _likeRepository;
 
-        public CommentRepository(DBContext context, ICustomRepository _customRepository)
+        public CommentRepository(DBContext context, ICustomRepository _customRepository, ILikeRepository _likeRepository)
         {
             _context = context;
             this._customRepository = _customRepository;
+            this._likeRepository = _likeRepository;
         }
 
         // GET: Comment
@@ -93,6 +95,16 @@ namespace DAL.Repositories
                 if (result.DocumentId != null)
                 {
                     await _customRepository.DeleteDocument((int)result.DocumentId);
+                }
+
+                // Hvis denne kommentaren har likes, må de slettes!
+                var likes = await _likeRepository.GetLikes();
+                foreach (var like in likes)
+                {
+                    if (like.CommentId == result.Id)
+                    {
+                        await _likeRepository.DeleteLike(like);
+                    }
                 }
 
                 _context.Comments.Remove(result);

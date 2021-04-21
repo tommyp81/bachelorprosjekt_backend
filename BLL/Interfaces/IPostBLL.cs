@@ -11,7 +11,7 @@ namespace BLL.Interfaces
 {
     public interface IPostBLL
     {
-        PostDTO AddDTO(Post post);
+        Task<PostDTO> AddDTO(Post post);
         Task<ICollection<PostDTO>> GetPosts();
         Task<PostDTO> GetPost(int id);
         Task<PostDTO> AddPost(IFormFile file, Post post);

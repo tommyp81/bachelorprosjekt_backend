@@ -17,11 +17,15 @@ namespace DAL.Repositories
     {
         private readonly DBContext _context;
         private readonly ICustomRepository _customRepository;
+        private readonly ICommentRepository _commentRepository;
+        private readonly ILikeRepository _likeRepository;
 
-        public PostRepository(DBContext context, ICustomRepository _customRepository)
+        public PostRepository(DBContext context, ICustomRepository _customRepository, ICommentRepository _commentRepository, ILikeRepository _likeRepository)
         {
             _context = context;
             this._customRepository = _customRepository;
+            this._commentRepository = _commentRepository;
+            this._likeRepository = _likeRepository;
         }
 
         // GET: Posts
@@ -78,7 +82,6 @@ namespace DAL.Repositories
                 result.Content = post.Content;
                 result.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
                 result.UserId = post.UserId;
-                result.TopicId = post.TopicId;
                 result.SubTopicId = post.SubTopicId;
                 result.DocumentId = post.DocumentId;
                 await _context.SaveChangesAsync();
@@ -97,6 +100,26 @@ namespace DAL.Repositories
                 if (result.DocumentId != null)
                 {
                     await _customRepository.DeleteDocument((int)result.DocumentId);
+                }
+
+                // Hvis denne posten har kommentarer, må disse slettes!
+                var comments = await _commentRepository.GetComments();
+                foreach (var comment in comments)
+                {
+                    if (comment.PostId == result.Id)
+                    {
+                        await _commentRepository.DeleteComment(comment.Id);
+                    }
+                }
+
+                // Hvis denne posten har likes, må de slettes!
+                var likes = await _likeRepository.GetLikes();
+                foreach (var like in likes)
+                {
+                    if (like.PostId == result.Id)
+                    {
+                        await _likeRepository.DeleteLike(like);
+                    }
                 }
 
                 _context.Posts.Remove(result);

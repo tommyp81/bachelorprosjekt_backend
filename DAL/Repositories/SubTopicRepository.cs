@@ -13,10 +13,12 @@ namespace DAL.Repositories
     public class SubTopicRepository : ISubTopicRepository
     {
         private readonly DBContext _context;
+        private readonly IPostRepository _postRepository;
 
-        public SubTopicRepository(DBContext context)
+        public SubTopicRepository(DBContext context, IPostRepository _postRepository)
         {
             _context = context;
+            this._postRepository = _postRepository;
         }
 
         // GET: SubTopics
@@ -61,6 +63,16 @@ namespace DAL.Repositories
             var result = await _context.SubTopics.FindAsync(id);
             if (result != null)
             {
+                // Hvis dette underemnet har noen poster, skal disse slettes!
+                var posts = await _postRepository.GetPosts();
+                foreach (var post in posts)
+                {
+                    if (post.SubTopicId == result.Id)
+                    {
+                        await _postRepository.DeletePost(post.Id);
+                    }
+                }
+
                 _context.SubTopics.Remove(result);
                 await _context.SaveChangesAsync();
                 return result;

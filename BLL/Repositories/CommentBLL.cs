@@ -23,8 +23,11 @@ namespace BLL.Repositories
         }
 
         // For å lage DTOs for Comments
-        public CommentDTO AddDTO(Comment comment)
+        public async Task<CommentDTO> AddDTO(Comment comment)
         {
+            // Telle antall likes til hver enkelt kommentar
+            int likecount = await _customRepository.GetLikeCount(null, comment.Id);
+
             CommentDTO DTO = new CommentDTO
             {
                 Id = comment.Id,
@@ -32,7 +35,8 @@ namespace BLL.Repositories
                 Date = comment.Date,
                 UserId = comment.UserId,
                 PostId = comment.PostId,
-                DocumentId = comment.DocumentId
+                DocumentId = comment.DocumentId,
+                Like_Count = likecount // Like_Count vises kun med DTO
             };
             return DTO;
         }
@@ -42,20 +46,10 @@ namespace BLL.Repositories
             ICollection<Comment> comments = await _repository.GetComments();
             if (comments == null) { return null; }
             ICollection<CommentDTO> commentDTOs = new List<CommentDTO>();
-
             foreach (Comment comment in comments)
             {
-                // Telle antall likes til hver enkelt kommentar
-                int likecount = await _customRepository.GetLikeCount(null, comment.Id);
-
-                // Lag en DTO og legg til feltet for likecount
-                CommentDTO commentDTO = AddDTO(comment);
-                commentDTO.Like_Count = likecount; // Like_Count vises kun med DTO
-
-                // Legg dette til i listen
-                commentDTOs.Add(commentDTO);
+                commentDTOs.Add(await AddDTO(comment));
             }
-
             return commentDTOs;
         }
 
@@ -63,13 +57,7 @@ namespace BLL.Repositories
         {
             Comment getComment = await _repository.GetComment(id);
             if (getComment == null) { return null; }
-
-            // Telle antall likes til denne kommentaren
-            int likecount = await _customRepository.GetLikeCount(null, getComment.Id);
-
-            CommentDTO commentDTO = AddDTO(getComment);
-            commentDTO.Like_Count = likecount; // Like_Count vises kun med DTO
-
+            CommentDTO commentDTO = await AddDTO(getComment);
             return commentDTO;
         }
 
@@ -77,7 +65,7 @@ namespace BLL.Repositories
         {
             Comment addComment = await _repository.AddComment(file, comment);
             if (addComment == null) { return null; }
-            CommentDTO commentDTO = AddDTO(addComment);
+            CommentDTO commentDTO = await AddDTO(addComment);
             return commentDTO;
         }
 
@@ -85,12 +73,7 @@ namespace BLL.Repositories
         {
             Comment updateComment = await _repository.UpdateComment(comment);
             if (updateComment == null) { return null; }
-
-            // Telle antall likes til denne kommentaren
-            int likecount = await _customRepository.GetLikeCount(null, updateComment.Id);
-            CommentDTO commentDTO = AddDTO(updateComment);
-            commentDTO.Like_Count = likecount; // Like_Count vises kun med DTO
-
+            CommentDTO commentDTO = await AddDTO(updateComment);
             return commentDTO;
         }
 
@@ -98,7 +81,7 @@ namespace BLL.Repositories
         {
             Comment deleteComment = await _repository.DeleteComment(id);
             if (deleteComment == null) { return null; }
-            CommentDTO commentDTO = AddDTO(deleteComment);
+            CommentDTO commentDTO = await AddDTO(deleteComment);
             return commentDTO;
         }
     }

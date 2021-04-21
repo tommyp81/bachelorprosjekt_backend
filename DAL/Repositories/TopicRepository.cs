@@ -13,10 +13,12 @@ namespace DAL.Repositories
     public class TopicRepository : ITopicRepository
     {
         private readonly DBContext _context;
+        private readonly ISubTopicRepository _subTopicRepository;
 
-        public TopicRepository(DBContext context)
+        public TopicRepository(DBContext context, ISubTopicRepository _subTopicRepository)
         {
             _context = context;
+            this._subTopicRepository = _subTopicRepository;
         }
 
         // GET: Topics
@@ -34,6 +36,30 @@ namespace DAL.Repositories
         // POST: Topics
         public async Task<Topic> AddTopic(Topic topic)
         {
+            // For å legge til en fil, må metoden også få en IFormFile file
+            // Koden er kommentert ut her fordi den ikke brukes.
+            //if (file != null)
+            //{
+            //    // Informasjon om filnavn
+            //    var fileName = Path.GetFileName(file.FileName);
+            //    topic.ImageUrl = "images/" + fileName; // Legg filnavnet til objektet
+
+            //    // Hvis filen finnes fra før, så slett den
+            //    if (File.Exists(fileName))
+            //    {
+            //        File.Delete(fileName);
+            //    }
+
+            //    // Lag en ny lokalfil for applikasjonen
+            //    using (var localFile = File.OpenWrite("wwwroot/images/" + fileName))
+            //    using (var uploadedFile = file.OpenReadStream())
+            //    {
+            //        // Last opp den nye filen
+            //        uploadedFile.CopyTo(localFile);
+
+            //    }
+            //}
+
             var result = await _context.Topics.AddAsync(topic);
             await _context.SaveChangesAsync();
             return result.Entity;
@@ -61,6 +87,16 @@ namespace DAL.Repositories
             var result = await _context.Topics.FindAsync(id);
             if (result != null)
             {
+                // Hvis dette emnet har noen underemner, skal disse slettes!
+                var subtopics = await _subTopicRepository.GetSubTopics();
+                foreach(var subtopic in subtopics)
+                {
+                    if(subtopic.TopicId == result.Id)
+                    {
+                        await _subTopicRepository.DeleteSubTopic(subtopic.Id);
+                    }
+                }
+
                 _context.Topics.Remove(result);
                 await _context.SaveChangesAsync();
                 return result;

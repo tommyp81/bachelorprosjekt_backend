@@ -36,35 +36,28 @@ namespace DAL.Database_configuration
                 .HasMany<Post>(u => u.Posts)
                 .WithOne(p => p.User)
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.SetNull); // Sett poster til null om bruker slettes
+                .OnDelete(DeleteBehavior.SetNull); // Sett poster sin userId til null om bruker slettes
 
             // En bruker kan ha mange svar
             modelBuilder.Entity<User>()
                 .HasMany<Comment>(u => u.Comments)
-                .WithOne(a => a.User)
-                .HasForeignKey(a => a.UserId)
-                .OnDelete(DeleteBehavior.SetNull); // Sett kommentarer til null om bruker slettes
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.SetNull); // Sett kommentarer sin userId til null om bruker slettes
 
-            // En post kan ha mange svar
-            modelBuilder.Entity<Post>()
-                .HasMany<Comment>(p => p.Comments)
-                .WithOne(a => a.Post)
-                .HasForeignKey(a => a.PostId)
-                .OnDelete(DeleteBehavior.Cascade); // Slett alle svar om en post slettes
+            // En bruker kan ha mange dokumenter
+            modelBuilder.Entity<User>()
+                .HasMany<Document>(u => u.Documents)
+                .WithOne(d => d.User)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.SetNull); // Sett dokumenter sin userId til null om bruker slettes
 
-            // Et tema kan ha mange undertemaer
-            modelBuilder.Entity<Topic>()
-                .HasMany<SubTopic>(t => t.SubTopics)
-                .WithOne(s => s.Topic)
-                .HasForeignKey(s => s.TopicId)
-                .OnDelete(DeleteBehavior.Cascade); // Slett alle undertemaer om et tema slettes
-
-            // Et undertema kan ha mange poster
-            modelBuilder.Entity<SubTopic>()
-                .HasMany<Post>(s => s.Posts)
-                .WithOne(p => p.SubTopic)
-                .HasForeignKey(p => p.SubTopicId)
-                .OnDelete(DeleteBehavior.Cascade); // Slett alle poster om et undertema slettes
+            // En bruker kan ha mange videoer
+            modelBuilder.Entity<User>()
+                .HasMany<Video>(u => u.Videos)
+                .WithOne(v => v.User)
+                .HasForeignKey(v => v.UserId)
+                .OnDelete(DeleteBehavior.SetNull); // Sett videoer sin userId til null om bruker slettes
         }
     }
 }

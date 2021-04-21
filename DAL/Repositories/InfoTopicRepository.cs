@@ -13,10 +13,14 @@ namespace DAL.Repositories
     public class InfoTopicRepository: IInfoTopicRepository
     {
         private readonly DBContext _context;
+        private readonly ICustomRepository _customRepository;
+        private readonly IVideoRepository _videoRepository;
 
-        public InfoTopicRepository(DBContext context)
+        public InfoTopicRepository(DBContext context, ICustomRepository _customRepository, IVideoRepository _videoRepository)
         {
             _context = context;
+            this._customRepository = _customRepository;
+            this._videoRepository = _videoRepository;
         }
 
         // GET: InfoTopics
@@ -48,7 +52,6 @@ namespace DAL.Repositories
                 result.Id = infotopic.Id;
                 result.Title = infotopic.Title;
                 result.Description = infotopic.Description;
-                result.ImageUrl = infotopic.ImageUrl;
                 await _context.SaveChangesAsync();
                 return result;
             }
@@ -61,6 +64,26 @@ namespace DAL.Repositories
             var result = await _context.InfoTopics.FindAsync(id);
             if (result != null)
             {
+                // Slett alle dokumenter først
+                var documents = await _customRepository.GetDocuments();
+                foreach (var document in documents)
+                {
+                    if (document.InfoTopicId == result.Id)
+                    {
+                        await _customRepository.DeleteDocument(document.Id);
+                    }
+                }
+
+                // Slett alle videoer først
+                var videos = await _videoRepository.GetVideos();
+                foreach (var video in videos)
+                {
+                    if (video.InfoTopicId == result.Id)
+                    {
+                        await _videoRepository.DeleteVideo(video.Id);
+                    }
+                }
+
                 _context.InfoTopics.Remove(result);
                 await _context.SaveChangesAsync();
                 return result;

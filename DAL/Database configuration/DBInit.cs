@@ -32,7 +32,8 @@ namespace DAL.Database_configuration
                 new Topic{Title="Konkurranse",Description="Informasjon om Konkurranse. Fylles ut senere!",ImageUrl="images/kategori.konkurranse.jpg"},
                 new Topic{Title="Kompetanse",Description="Informasjon om Kompetanse. Fylles ut senere!",ImageUrl="images/kategori.kompetanse.jpg"},
                 new Topic{Title="Utvikling",Description="Informasjon om Utvikling. Fylles ut senere!",ImageUrl="images/kategori.utvikling.jpg"},
-                new Topic{Title="Toppidrett",Description="Informasjon om Toppidrett. Fylles ut senere!",ImageUrl="images/kategori.toppidrett.jpg"}
+                new Topic{Title="Toppidrett",Description="Informasjon om Toppidrett. Fylles ut senere!",ImageUrl="images/kategori.toppidrett.jpg"},
+                new Topic{Title="Kunnskapsportalen",Description="Informasjon om Kunnskapsportalen. Fylles ut senere!",ImageUrl="images/kategori.kunnskapsportalen.jpg"}
             };
             foreach (Topic topic in topics)
             {
@@ -58,7 +59,11 @@ namespace DAL.Database_configuration
                 new SubTopic{Title="Junior",Description="Informasjon om Junior. Fylles ut senere!",TopicId=4},
                 new SubTopic{Title="Senior",Description="Informasjon om Senior. Fylles ut senere!",TopicId=4},
                 new SubTopic{Title="Para",Description="Informasjon om Para. Fylles ut senere!",TopicId=4},
-                new SubTopic{Title="Trening",Description="Informasjon om Trening. Fylles ut senere!",TopicId=4}
+                new SubTopic{Title="Trening",Description="Informasjon om Trening. Fylles ut senere!",TopicId=4},
+                new SubTopic{Title="Klubbutvikling",Description="Informasjon om Klubbutvikling. Fylles ut senere!",TopicId=5},
+                new SubTopic{Title="Trener",Description="Informasjon om Trener. Fylles ut senere!",TopicId=5},
+                new SubTopic{Title="Spiller",Description="Informasjon om Spiller. Fylles ut senere!",TopicId=5},
+                new SubTopic{Title="Dommer",Description="Informasjon om Dommer. Fylles ut senere!",TopicId=5}
             };
             foreach (SubTopic subtopic in subtopics)
             {
@@ -87,12 +92,12 @@ namespace DAL.Database_configuration
             // Opprette nye poster (POSTS)
             var posts = new Post[]
             {
-                new Post{Title="Test for tema: Konkurranse",Content="Dette er en test! Den skal ligge under Dommer / oppmann",Date=now,UserId=6,TopicId=1,SubTopicId=1},
-                new Post{Title="Test for tema: Konkurranse",Content="Denne skal ligge under Seriespill",Date=now,UserId=6,TopicId=1,SubTopicId=2},
-                new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening",Date=now,UserId=6,TopicId=2,SubTopicId=6},
-                new Post{Title="Test for tema: Utvikling",Content="Dette er enda en test. Den skal ligge under Klubbutvikling",Date=now,UserId=6,TopicId=3,SubTopicId=9},
-                new Post{Title="Test for tema: Toppidrett",Content="Dette er en test!!! Denne skal ligge under Junior",Date=now,UserId=6,TopicId=4,SubTopicId=13},
-                new Post{Title="Test for tema: Toppidrett",Content="Denne testen skal man kunne se under Trening",Date=now,UserId=6,TopicId=4,SubTopicId=16}
+                new Post{Title="Test for tema: Konkurranse",Content="Dette er en test! Den skal ligge under Dommer / oppmann",Date=now,UserId=6,SubTopicId=1},
+                new Post{Title="Test for tema: Konkurranse",Content="Denne skal ligge under Seriespill",Date=now,UserId=6,SubTopicId=2},
+                new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening",Date=now,UserId=6,SubTopicId=6},
+                new Post{Title="Test for tema: Utvikling",Content="Dette er enda en test. Den skal ligge under Klubbutvikling",Date=now,UserId=6,SubTopicId=9},
+                new Post{Title="Test for tema: Toppidrett",Content="Dette er en test!!! Denne skal ligge under Junior",Date=now,UserId=6,SubTopicId=13},
+                new Post{Title="Test for tema: Toppidrett",Content="Denne testen skal man kunne se under Trening",Date=now,UserId=6,SubTopicId=16}
             };
             foreach (Post post in posts)
             {
@@ -120,10 +125,10 @@ namespace DAL.Database_configuration
             // Opprette nye temaer (INFOTOPICS)
             var infotopics = new InfoTopic[]
             {
-                new InfoTopic{Title="Klubbutvikling",Description="Informasjon om Klubbutvikling. Fylles ut senere!",ImageUrl="..."},
-                new InfoTopic{Title="Trener",Description="Informasjon om Trener. Fylles ut senere!",ImageUrl="..."},
-                new InfoTopic{Title="Spiller",Description="Informasjon om Spiller. Fylles ut senere!",ImageUrl="..."},
-                new InfoTopic{Title="Dommer",Description="Informasjon om Dommer. Fylles ut senere!",ImageUrl="..."}
+                new InfoTopic{Title="Klubbutvikling",Description="Informasjon om Klubbutvikling. Fylles ut senere!"},
+                new InfoTopic{Title="Trener",Description="Informasjon om Trener. Fylles ut senere!"},
+                new InfoTopic{Title="Spiller",Description="Informasjon om Spiller. Fylles ut senere!"},
+                new InfoTopic{Title="Dommer",Description="Informasjon om Dommer. Fylles ut senere!"}
             };
             foreach (InfoTopic infotopic in infotopics)
             {
@@ -132,18 +137,18 @@ namespace DAL.Database_configuration
             }
 
             // Opprette nye videoer (VIDEOS)
-            var videos = new Video[]
-            {
-                new Video{Title="Video nummer 1",Description="Denne skal ligge i Klubbutvikling",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=1},
-                new Video{Title="Video nummer 2",Description="Denne skal ligge i Trener",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=2},
-                new Video{Title="Video nummer 3",Description="Denne skal ligge i Spiller",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=3},
-                new Video{Title="Video nummer 4",Description="Denne skal ligge i Dommer",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=4}
-            };
-            foreach (Video video in videos)
-            {
-                context.Videos.Add(video);
-                context.SaveChanges();
-            }
+            //var videos = new Video[]
+            //{
+            //    new Video{Title="Video nummer 1",Description="Denne skal ligge i Klubbutvikling",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=1},
+            //    new Video{Title="Video nummer 2",Description="Denne skal ligge i Trener",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=2},
+            //    new Video{Title="Video nummer 3",Description="Denne skal ligge i Spiller",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=3},
+            //    new Video{Title="Video nummer 4",Description="Denne skal ligge i Dommer",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=4}
+            //};
+            //foreach (Video video in videos)
+            //{
+            //    context.Videos.Add(video);
+            //    context.SaveChanges();
+            //}
         }
     }
 }

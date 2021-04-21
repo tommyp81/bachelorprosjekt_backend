@@ -15,16 +15,27 @@ namespace BLL.Repositories
     {
         private readonly IPostRepository _repository;
         private readonly ICustomBLL _customRepository;
+        private readonly ISubTopicRepository _subTopicRepository;
 
-        public PostBLL(IPostRepository _repository, ICustomBLL _customRepository)
+        public PostBLL(IPostRepository _repository, ICustomBLL _customRepository, ISubTopicRepository _subTopicRepository)
         {
             this._repository = _repository;
             this._customRepository = _customRepository;
+            this._subTopicRepository = _subTopicRepository;
         }
 
         // For å lage DTOs for Posts
-        public PostDTO AddDTO(Post post)
+        public async Task<PostDTO> AddDTO(Post post)
         {
+            // Hente SubTopic
+            var subtopic = await _subTopicRepository.GetSubTopic(post.SubTopicId);
+
+            // Telle hvor mange kommentarer hver enkelt post har
+            int commentcount = await _customRepository.GetCommentCount(post.Id);
+
+            // Telle antall likes til hver enkelt post
+            int likecount = await _customRepository.GetLikeCount(post.Id, null);
+
             PostDTO DTO = new PostDTO
             {
                 Id = post.Id,
@@ -32,9 +43,11 @@ namespace BLL.Repositories
                 Content = post.Content,
                 Date = post.Date,
                 UserId = post.UserId,
-                TopicId = post.TopicId,
+                TopicId = subtopic.TopicId, // Hentes fra SubTopic og vises kun med DTO
                 SubTopicId = post.SubTopicId,
-                DocumentId = post.DocumentId
+                DocumentId = post.DocumentId,
+                Comment_Count = commentcount, // Comment_Count vises kun med DTO
+                Like_Count = likecount // Like_Count vises kun med DTO
             };
             return DTO;
         }
@@ -44,22 +57,9 @@ namespace BLL.Repositories
             ICollection<Post> posts = await _repository.GetPosts();
             if (posts == null) { return null; }
             ICollection<PostDTO> postDTOs = new List<PostDTO>();
-
             foreach (Post post in posts)
             {
-                // Telle hvor mange kommentarer hver enkelt post har
-                int commentcount = await _customRepository.GetCommentCount(post.Id);
-
-                // Telle antall likes til hver enkelt post
-                int likecount = await _customRepository.GetLikeCount(post.Id, null);
-
-                // Lag en DTO og legg til feltet for commentcount og likecount
-                PostDTO postDTO = AddDTO(post);
-                postDTO.Comment_Count = commentcount; // Comment_Count vises kun med DTO
-                postDTO.Like_Count = likecount; // Like_Count vises kun med DTO
-
-                // Legg disse til i lista
-                postDTOs.Add(postDTO);
+                postDTOs.Add(await AddDTO(post));
             }
             return postDTOs;
         }
@@ -68,17 +68,7 @@ namespace BLL.Repositories
         {
             Post getPost = await _repository.GetPost(id);
             if (getPost == null) { return null; }
-
-            // Telle hvor mange kommentarer denne posten har
-            int commentcount = await _customRepository.GetCommentCount(getPost.Id);
-
-            // Telle antall likes til denne posten
-            int likecount = await _customRepository.GetLikeCount(getPost.Id, null);
-
-            PostDTO postDTO = AddDTO(getPost);
-            postDTO.Comment_Count = commentcount; // Comment_Count vises kun med DTO
-            postDTO.Like_Count = likecount; // Like_Count vises kun med DTO
-
+            PostDTO postDTO = await AddDTO(getPost);
             return postDTO;
         }
 
@@ -86,7 +76,7 @@ namespace BLL.Repositories
         {
             Post addPost = await _repository.AddPost(file, post);
             if (addPost == null) { return null; }
-            PostDTO postDTO = AddDTO(addPost);
+            PostDTO postDTO = await AddDTO(addPost);
             return postDTO;
         }
 
@@ -94,17 +84,7 @@ namespace BLL.Repositories
         {
             Post updatePost = await _repository.UpdatePost(post);
             if (updatePost == null) { return null; }
-
-            // Telle hvor mange kommentarer denne posten har
-            int commentcount = await _customRepository.GetCommentCount(updatePost.Id);
-
-            // Telle antall likes til denne posten
-            int likecount = await _customRepository.GetLikeCount(updatePost.Id, null);
-
-            PostDTO postDTO = AddDTO(updatePost);
-            postDTO.Comment_Count = commentcount; // Comment_Count vises kun med DTO
-            postDTO.Like_Count = likecount; // Like_Count vises kun med DTO
-
+            PostDTO postDTO = await AddDTO (updatePost);
             return postDTO;
         }
 
@@ -112,7 +92,7 @@ namespace BLL.Repositories
         {
             Post deletePost = await _repository.DeletePost(id);
             if (deletePost == null) { return null; }
-            PostDTO postDTO = AddDTO(deletePost);
+            PostDTO postDTO = await AddDTO(deletePost);
             return postDTO;
         }
     }

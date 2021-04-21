@@ -25,7 +25,7 @@ namespace DAL.Repositories
             return await _context.Likes.ToListAsync();
         }
 
-        // GET: GetLike
+        // POST: GetLike
         public async Task<Like> GetLike(Like like)
         {
             // GetLike skal finne likes med UserId og PostId eller CommentId

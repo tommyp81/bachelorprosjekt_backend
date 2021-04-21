@@ -21,5 +21,6 @@ namespace Model.Domain_models
         public ICollection<Post> Posts { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Document> Documents { get; set; }
+        public ICollection<Video> Videos { get; set; }
     }
 }

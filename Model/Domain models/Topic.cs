@@ -17,7 +17,6 @@ namespace Model.Domain_models
         public string ImageUrl { get; set; }
 
         // Relasjoner
-        public ICollection<Post> Posts { get; set; }
         public ICollection<SubTopic> SubTopics { get; set; }
     }
 }

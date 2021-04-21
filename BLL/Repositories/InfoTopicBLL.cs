@@ -26,8 +26,7 @@ namespace BLL.Repositories
             {
                 Id = infotopic.Id,
                 Title = infotopic.Title,
-                Description = infotopic.Description,
-                ImageUrl = infotopic.ImageUrl
+                Description = infotopic.Description
             };
             return DTO;
         }

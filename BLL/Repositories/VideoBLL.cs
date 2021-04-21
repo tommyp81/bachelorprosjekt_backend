@@ -29,6 +29,7 @@ namespace BLL.Repositories
                 Title = video.Title,
                 Description = video.Description,
                 UserId = video.UserId,
+                PostId = video.PostId,
                 InfoTopicId = video.InfoTopicId
         };
             return DTO;
