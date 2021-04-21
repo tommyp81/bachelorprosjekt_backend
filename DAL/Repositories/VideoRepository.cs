@@ -34,16 +34,7 @@ namespace DAL.Repositories
         // POST: Videos
         public async Task<Video> AddVideo(Video video)
         {
-            var newVideo = new Video
-            {
-                YouTubeId = video.YouTubeId,
-                Title = video.Title,
-                Description = video.Description,
-                UserId = video.UserId,
-                PostId = video.Id,
-                InfoTopicId = video.InfoTopicId
-            };
-            var result = await _context.Videos.AddAsync(newVideo);
+            var result = await _context.Videos.AddAsync(video);
             await _context.SaveChangesAsync();
             return result.Entity;
         }
