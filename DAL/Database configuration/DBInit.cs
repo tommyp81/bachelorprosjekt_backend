@@ -44,26 +44,26 @@ namespace DAL.Database_configuration
             // Opprette nye undertemaer (SUBTOPICS)
             var subtopics = new SubTopic[]
             {
-                new SubTopic{Title="Dommer / oppmann",Description="Her kan du  slå av en prat om dommer / oppmann",TopicId=1},
-                new SubTopic{Title="Seriespill",Description="Her kan du  slå av en prat om seriespill",TopicId=1},
-                new SubTopic{Title="Lokale turneringer",Description="Her kan du  slå av en prat om lokale turneringer",TopicId=1},
-                new SubTopic{Title="Rankingturneringer",Description="Her kan du  slå av en prat om rankingturneringer",TopicId=1},
-                new SubTopic{Title="Mesterskap",Description="Her kan du  slå av en prat om mesterskap",TopicId=1},
-                new SubTopic{Title="Trening bredde",Description="Her kan du  slå av en prat om trening bredde",TopicId=2},
-                new SubTopic{Title="Trenere",Description="Her kan du  slå av en prat om trenere",TopicId=2},
-                new SubTopic{Title="Skolebadminton",Description="Her kan du  slå av en prat om skolebadminton",TopicId=2},
-                new SubTopic{Title="Klubbutvikling",Description="Her kan du  slå av en prat om klubbutvikling",TopicId=3},
-                new SubTopic{Title="Rekruttering",Description="Her kan du  slå av en prat om rekruttering",TopicId=3},
-                new SubTopic{Title="Parabadminton",Description="Her kan du  slå av en prat om parabadminton",TopicId=3},
-                new SubTopic{Title="Anlegg",Description="Her kan du  slå av en prat om anlegg",TopicId=3},
-                new SubTopic{Title="Junior",Description="Her kan du  slå av en prat om junior",TopicId=4},
-                new SubTopic{Title="Senior",Description="Her kan du  slå av en prat om senior",TopicId=4},
-                new SubTopic{Title="Para",Description="Her kan du  slå av en prat om para",TopicId=4},
-                new SubTopic{Title="Trening",Description="Her kan du  slå av en prat om trening",TopicId=4},
-                new SubTopic{Title="Klubbutvikling",Description="Her kan du  slå av en prat om klubbutvikling",TopicId=5},
-                new SubTopic{Title="Trener",Description="Her kan du  slå av en prat om trener",TopicId=5},
-                new SubTopic{Title="Spiller",Description="Her kan du  slå av en prat om spiller",TopicId=5},
-                new SubTopic{Title="Dommer",Description="Her kan du  slå av en prat om dommer",TopicId=5}
+                new SubTopic{Title="Dommer / oppmann",Description="Her kan du slå av en prat om dommer / oppmann",TopicId=1},
+                new SubTopic{Title="Seriespill",Description="Her kan du slå av en prat om seriespill",TopicId=1},
+                new SubTopic{Title="Lokale turneringer",Description="Her kan du slå av en prat om lokale turneringer",TopicId=1},
+                new SubTopic{Title="Rankingturneringer",Description="Her kan du slå av en prat om rankingturneringer",TopicId=1},
+                new SubTopic{Title="Mesterskap",Description="Her kan du slå av en prat om mesterskap",TopicId=1},
+                new SubTopic{Title="Trening bredde",Description="Her kan du slå av en prat om trening bredde",TopicId=2},
+                new SubTopic{Title="Trenere",Description="Her kan du slå av en prat om trenere",TopicId=2},
+                new SubTopic{Title="Skolebadminton",Description="Her kan du slå av en prat om skolebadminton",TopicId=2},
+                new SubTopic{Title="Klubbutvikling",Description="Her kan du slå av en prat om klubbutvikling",TopicId=3},
+                new SubTopic{Title="Rekruttering",Description="Her kan du slå av en prat om rekruttering",TopicId=3},
+                new SubTopic{Title="Parabadminton",Description="Her kan du slå av en prat om parabadminton",TopicId=3},
+                new SubTopic{Title="Anlegg",Description="Her kan du slå av en prat om anlegg",TopicId=3},
+                new SubTopic{Title="Junior",Description="Her kan du slå av en prat om junior",TopicId=4},
+                new SubTopic{Title="Senior",Description="Her kan du slå av en prat om senior",TopicId=4},
+                new SubTopic{Title="Para",Description="Her kan du slå av en prat om para",TopicId=4},
+                new SubTopic{Title="Trening",Description="Her kan du slå av en prat om trening",TopicId=4},
+                new SubTopic{Title="Klubbutvikling",Description="Her kan du slå av en prat om klubbutvikling",TopicId=5},
+                new SubTopic{Title="Trener",Description="Her kan du slå av en prat om trener",TopicId=5},
+                new SubTopic{Title="Spiller",Description="Her kan du slå av en prat om spiller",TopicId=5},
+                new SubTopic{Title="Dommer",Description="Her kan du slå av en prat om dommer",TopicId=5}
             };
             foreach (SubTopic subtopic in subtopics)
             {
