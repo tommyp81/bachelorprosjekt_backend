@@ -48,6 +48,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Post med ID {id} ble ikke funnet");
                 }
+
                 return post;
             }
             catch (Exception)
@@ -88,11 +89,13 @@ namespace API.Controllers
                 {
                     return BadRequest("Post ID stemmer ikke");
                 }
+
                 var updatePost = await _repository.GetPost(id);
                 if (updatePost == null)
                 {
                     return NotFound($"Post med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.UpdatePost(post);
             }
             catch (Exception)
@@ -112,6 +115,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Post med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.DeletePost(id);
             }
             catch (Exception)

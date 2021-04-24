@@ -48,6 +48,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Kommentar med ID {id} ble ikke funnet");
                 }
+
                 return comment;
             }
             catch (Exception)
@@ -88,11 +89,13 @@ namespace API.Controllers
                 {
                     return BadRequest("Kommentar ID stemmer ikke");
                 }
+
                 var updateComment = await _repository.GetComment(id);
                 if (updateComment == null)
                 {
                     return NotFound($"Kommentar med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.UpdateComment(comment);
             }
             catch (Exception)
@@ -112,6 +115,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Kommentar med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.DeleteComment(id);
             }
             catch (Exception)

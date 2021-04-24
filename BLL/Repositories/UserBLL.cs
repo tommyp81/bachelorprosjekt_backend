@@ -27,7 +27,8 @@ namespace BLL.Repositories
                 Id = user.Id,
                 Username = user.Username,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                isAdmin = user.isAdmin
             };
             return DTO;
         }
@@ -52,7 +53,7 @@ namespace BLL.Repositories
             return userDTO;
         }
 
-        public async Task<UserDTO> AddUser(User user)
+        public async Task<UserDTO> AddUser(authUser user)
         {
             User addUser = await _repository.AddUser(user);
             if (addUser == null) { return null; }
@@ -60,7 +61,7 @@ namespace BLL.Repositories
             return userDTO;
         }
 
-        public async Task<UserDTO> UpdateUser(User user)
+        public async Task<UserDTO> UpdateUser(authUser user)
         {
             User updateUser = await _repository.UpdateUser(user);
             if (updateUser == null) { return null; }

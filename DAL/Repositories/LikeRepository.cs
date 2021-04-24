@@ -66,7 +66,6 @@ namespace DAL.Repositories
                     }
                 }
             }
-
             return null;
         }
 
@@ -106,7 +105,6 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return deleteLike;
             }
-
             return null;
         }
     }

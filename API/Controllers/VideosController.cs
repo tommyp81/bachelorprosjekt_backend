@@ -48,6 +48,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Video med ID {id} ble ikke funnet");
                 }
+
                 return Ok(video);
             }
             catch (Exception)
@@ -66,6 +67,7 @@ namespace API.Controllers
                 {
                     return BadRequest();
                 }
+
                 var newVideo = await _repository.AddVideo(video);
                 return CreatedAtAction(nameof(GetVideo), new { id = newVideo.Id }, newVideo);
             }
@@ -85,11 +87,13 @@ namespace API.Controllers
                 {
                     return BadRequest("Video ID stemmer ikke");
                 }
+
                 var updateVideo = await _repository.GetVideo(id);
                 if (updateVideo == null)
                 {
                     return NotFound($"Video med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.UpdateVideo(video);
             }
             catch (Exception)
@@ -109,6 +113,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Video med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.DeleteVideo(id);
             }
             catch (Exception)

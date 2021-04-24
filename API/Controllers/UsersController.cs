@@ -48,6 +48,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
                 }
+
                 return Ok(user);
             }
             catch (Exception)
@@ -58,7 +59,7 @@ namespace API.Controllers
 
         // POST: Users
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> AddUser(User user)
+        public async Task<ActionResult<UserDTO>> AddUser(authUser user)
         {
             try
             {
@@ -72,6 +73,7 @@ namespace API.Controllers
                 {
                     return BadRequest("Brukernavn eksisterer allerede");
                 }
+
                 return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
             }
             catch (Exception)
@@ -82,7 +84,7 @@ namespace API.Controllers
 
         // PUT: Users/1
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<UserDTO>> UpdateUser(int id, User user)
+        public async Task<ActionResult<UserDTO>> UpdateUser(int id, authUser user)
         {
             try
             {
@@ -90,12 +92,19 @@ namespace API.Controllers
                 {
                     return BadRequest("Bruker ID stemmer ikke");
                 }
-                var updateUser = await _repository.GetUser(id);
-                if (updateUser == null)
+
+                var checkUser = await _repository.GetUser(id);
+                if (checkUser == null)
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
                 }
-                return await _repository.UpdateUser(user);
+
+                var updateUser = await _repository.UpdateUser(user);
+                if (updateUser == null)
+                {
+                    return BadRequest("Brukernavn eksisterer allerede");
+                }
+                return updateUser;
             }
             catch (Exception)
             {
@@ -114,6 +123,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.DeleteUser(id);
             }
             catch (Exception)

@@ -62,7 +62,6 @@ namespace DAL.Repositories
                     }
                 }
             }
-
             return result.Entity;
         }
 

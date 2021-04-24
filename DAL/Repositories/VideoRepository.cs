@@ -13,10 +13,12 @@ namespace DAL.Repositories
     public class VideoRepository : IVideoRepository
     {
         private readonly DBContext _context;
+        private readonly IPostRepository _postRepository;
 
-        public VideoRepository(DBContext context)
+        public VideoRepository(DBContext context, IPostRepository _postRepository)
         {
             _context = context;
+            this._postRepository = _postRepository;
         }
 
         // GET: Videos
@@ -64,6 +66,16 @@ namespace DAL.Repositories
             var result = await _context.Videos.FindAsync(id);
             if (result != null)
             {
+                // Slette den posten som ble laget for denne videoen
+                var post = await _postRepository.GetPost(result.PostId);
+                if (post != null)
+                {
+                    // Slett posten, så vil posten fjærne denne videoen!
+                    await _postRepository.DeletePost(post.Id);
+                    return result;
+                }
+
+                // Fjerne video fra databasen om posten ikke finnes
                 _context.Videos.Remove(result);
                 await _context.SaveChangesAsync();
                 return result;

@@ -48,6 +48,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Underemne med ID {id} ble ikke funnet");
                 }
+
                 return Ok(subtopic);
             }
             catch (Exception)
@@ -66,6 +67,7 @@ namespace API.Controllers
                 {
                     return BadRequest();
                 }
+
                 var newSubTopic = await _repository.AddSubTopic(subtopic);
                 return CreatedAtAction(nameof(GetSubTopic), new { id = newSubTopic.Id }, newSubTopic);
             }
@@ -85,11 +87,13 @@ namespace API.Controllers
                 {
                     return BadRequest("Underemne ID stemmer ikke");
                 }
+
                 var updateSubTopic = await _repository.GetSubTopic(id);
                 if (updateSubTopic == null)
                 {
                     return NotFound($"Underemne med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.UpdateSubTopic(subtopic);
             }
             catch (Exception)
@@ -109,6 +113,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Underemne med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.DeleteSubTopic(id);
             }
             catch (Exception)

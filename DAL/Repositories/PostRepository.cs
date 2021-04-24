@@ -66,7 +66,6 @@ namespace DAL.Repositories
                     }
                 }
             }
-
             return result.Entity;
         }
 
@@ -96,6 +95,20 @@ namespace DAL.Repositories
             var result = await _context.Posts.FindAsync(id);
             if (result != null)
             {
+                // Hvis denne posten hører til en video, må denne slettes!
+                var videos = await _context.Videos.ToListAsync(); ;
+                if (videos != null)
+                {
+                    foreach (var video in videos)
+                    {
+                        if (video.PostId == result.Id)
+                        {
+                            _context.Videos.Remove(video);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+
                 // Hvis denne posten har et dokument, må dette slettes!
                 if (result.DocumentId != null)
                 {
@@ -104,24 +117,31 @@ namespace DAL.Repositories
 
                 // Hvis denne posten har kommentarer, må disse slettes!
                 var comments = await _commentRepository.GetComments();
-                foreach (var comment in comments)
+                if (comments != null)
                 {
-                    if (comment.PostId == result.Id)
+                    foreach (var comment in comments)
                     {
-                        await _commentRepository.DeleteComment(comment.Id);
+                        if (comment.PostId == result.Id)
+                        {
+                            await _commentRepository.DeleteComment(comment.Id);
+                        }
                     }
                 }
 
                 // Hvis denne posten har likes, må de slettes!
                 var likes = await _likeRepository.GetLikes();
-                foreach (var like in likes)
+                if (likes != null)
                 {
-                    if (like.PostId == result.Id)
+                    foreach (var like in likes)
                     {
-                        await _likeRepository.DeleteLike(like);
+                        if (like.PostId == result.Id)
+                        {
+                            await _likeRepository.DeleteLike(like);
+                        }
                     }
                 }
 
+                // Lagre endringe til databasen
                 _context.Posts.Remove(result);
                 await _context.SaveChangesAsync();
                 return result;

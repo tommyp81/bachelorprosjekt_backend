@@ -1,4 +1,5 @@
 ﻿using Model.Domain_models;
+using Model.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace DAL.Interfaces
     {
         Task<ICollection<User>> GetUsers();
         Task<User> GetUser(int id);
-        Task<User> AddUser(User user);
-        Task<User> UpdateUser(User user);
+        Task<User> AddUser(authUser user);
+        Task<User> UpdateUser(authUser user);
         Task<User> DeleteUser(int id);
     }
 }

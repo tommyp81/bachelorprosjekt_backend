@@ -48,6 +48,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
+
                 return Ok(infotopic);
             }
             catch (Exception)
@@ -66,6 +67,7 @@ namespace API.Controllers
                 {
                     return BadRequest();
                 }
+
                 var newInfoTopic = await _repository.AddInfoTopic(infotopic);
                 return CreatedAtAction(nameof(GetInfoTopic), new { id = newInfoTopic.Id }, newInfoTopic);
             }
@@ -85,11 +87,13 @@ namespace API.Controllers
                 {
                     return BadRequest("Emne ID stemmer ikke");
                 }
+
                 var updateInfoTopic = await _repository.GetInfoTopic(id);
                 if (updateInfoTopic == null)
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.UpdateInfoTopic(infotopic);
             }
             catch (Exception)
@@ -109,6 +113,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
+
                 return await _repository.DeleteInfoTopic(id);
             }
             catch (Exception)

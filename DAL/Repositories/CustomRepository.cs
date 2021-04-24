@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -214,11 +215,19 @@ namespace DAL.Repositories
             {
                 foreach (var user in users)
                 {
-                    // Sjekk om brukernavn og passord stemmer
-                    if (user.Username == username && user.Password == password)
+                    // Sjekk om brukernavn stemmer
+                    if (user.Username == username)
                     {
-                        // Sende tilbake brukerobjekt hvis ok
-                        return user;
+                        // Sjekk passord med kryptering
+                        const int keyLength = 24;
+                        var pbkdf2 = new Rfc2898DeriveBytes(password, user.Salt, 1000);
+                        byte[] passwordTest = pbkdf2.GetBytes(keyLength);
+                        bool authUser = user.Password.SequenceEqual(passwordTest);
+                        if (authUser == true)
+                        {
+                            // Sende tilbake brukerobjekt hvis ok
+                            return user;
+                        }
                     }
                 }
             }

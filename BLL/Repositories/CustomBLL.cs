@@ -138,16 +138,17 @@ namespace BLL.Repositories
         // POST: Login
         public async Task<UserDTO> Login(string username, string password)
         {
-            var userLogin = await _repository.Login(username, password);
-            if (userLogin != null)
+            var user = await _repository.Login(username, password);
+            if (user != null)
             {
                 // Login ok, return userDTO
                 UserDTO userDTO = new UserDTO
                 {
-                    Id = userLogin.Id,
-                    Username = userLogin.Username,
-                    FirstName = userLogin.FirstName,
-                    LastName = userLogin.LastName
+                    Id = user.Id,
+                    Username = user.Username,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    isAdmin = user.isAdmin
                 };
                 return userDTO;
             }

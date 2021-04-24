@@ -15,7 +15,9 @@ namespace Model.Domain_models
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Password { get; set; }
+        public bool isAdmin { get; set; }
+        public byte[] Password { get; set; }
+        public byte[] Salt { get; set; }
 
         // Relasjoner
         public ICollection<Post> Posts { get; set; }

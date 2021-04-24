@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +15,8 @@ namespace DAL.Database_configuration
             // Se om noe eksisterer i databasen
             if (context.Topics.Any() |
                 context.SubTopics.Any() |
-                context.InfoTopics.Any())
+                context.InfoTopics.Any() |
+                context.Users.Any())
             {
                 return;
             }
@@ -22,11 +24,11 @@ namespace DAL.Database_configuration
             // Opprette nye temaer (TOPICS)
             var topics = new Topic[]
             {
-                new Topic{Title="Konkurranse",Description="Informasjon om Konkurranse. Fylles ut senere!",ImageUrl="images/kategori.konkurranse.jpg"},
-                new Topic{Title="Kompetanse",Description="Informasjon om Kompetanse. Fylles ut senere!",ImageUrl="images/kategori.kompetanse.jpg"},
-                new Topic{Title="Utvikling",Description="Informasjon om Utvikling. Fylles ut senere!",ImageUrl="images/kategori.utvikling.jpg"},
-                new Topic{Title="Toppidrett",Description="Informasjon om Toppidrett. Fylles ut senere!",ImageUrl="images/kategori.toppidrett.jpg"},
-                new Topic{Title="Kunnskapsportalen",Description="Informasjon om Kunnskapsportalen. Fylles ut senere!",ImageUrl="images/kategori.kunnskapsportalen.jpg"}
+                new Topic{Title="Konkurranse",Description="Informasjon om Konkurranse.",ImageUrl="images/kategori.konkurranse.jpg"},
+                new Topic{Title="Kompetanse",Description="Informasjon om Kompetanse.",ImageUrl="images/kategori.kompetanse.jpg"},
+                new Topic{Title="Utvikling",Description="Informasjon om Utvikling.",ImageUrl="images/kategori.utvikling.jpg"},
+                new Topic{Title="Toppidrett",Description="Informasjon om Toppidrett.",ImageUrl="images/kategori.toppidrett.jpg"},
+                new Topic{Title="Kunnskapsportalen",Description="Informasjon om Kunnskapsportalen.",ImageUrl="images/kategori.kunnskapsportalen.jpg"}
             };
             foreach (Topic topic in topics)
             {
@@ -67,10 +69,10 @@ namespace DAL.Database_configuration
             // Opprette nye temaer (INFOTOPICS)
             var infotopics = new InfoTopic[]
             {
-                new InfoTopic{Title="Klubbutvikling",Description="Informasjon om Klubbutvikling. Fylles ut senere!"},
-                new InfoTopic{Title="Trener",Description="Informasjon om Trener. Fylles ut senere!"},
-                new InfoTopic{Title="Spiller",Description="Informasjon om Spiller. Fylles ut senere!"},
-                new InfoTopic{Title="Dommer",Description="Informasjon om Dommer. Fylles ut senere!"}
+                new InfoTopic{Title="Klubbutvikling",Description="Informasjon om Klubbutvikling."},
+                new InfoTopic{Title="Trener",Description="Informasjon om Trener."},
+                new InfoTopic{Title="Spiller",Description="Informasjon om Spiller."},
+                new InfoTopic{Title="Dommer",Description="Informasjon om Dommer."}
             };
             foreach (InfoTopic infotopic in infotopics)
             {
@@ -79,55 +81,54 @@ namespace DAL.Database_configuration
             }
 
             // Opprette nye brukere (USERS)
-            //var users = new User[]
-            //{
-            //    new User{Username="tommy",FirstName="Tommy",LastName="Ø. Pedersen",Password="0000"},
-            //    new User{Username="henrik",FirstName="Henrik",LastName="N. Hjellup",Password="0000"},
-            //    new User{Username="erik",FirstName="Erik",LastName="S. Larsen",Password="0000"},
-            //    new User{Username="pia",FirstName="Pia K.",LastName="Aamodt ",Password="0000"},
-            //    new User{Username="sepita",FirstName="Sepideh",LastName="Tajik",Password="0000"},
-            //    new User{Username="test",FirstName="Test",LastName="User",Password="0000"},
-            //    new User{Username="charlotte",FirstName="Charlotte",LastName="Støelen",Password="0000"},
-            //    new User{Username="admin",FirstName="Superbruker",LastName="Badminton",Password="1234"}
-            //};
-            //foreach (User user in users)
-            //{
-            //    context.Users.Add(user);
-            //    context.SaveChanges();
-            //}
+            byte[] salt = AddSalt();
+            byte[] hash = AddHash("password", salt);
+            var users = new User[]
+            {
+                new User{Username="admin",FirstName="Superbruker",LastName="NFB",isAdmin=true,Password=hash,Salt=salt}
+            };
+            foreach (User user in users)
+            {
+                context.Users.Add(user);
+                context.SaveChanges();
+            }
+
+            // Instillinger for tidsone
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
 
             // Opprette nye poster (POSTS)
-            //var posts = new Post[]
-            //{
-            //    new Post{Title="Test for tema: Konkurranse",Content="Dette er en test! Den skal ligge under Dommer / oppmann",Date=now,UserId=6,SubTopicId=1},
-            //    new Post{Title="Test for tema: Konkurranse",Content="Denne skal ligge under Seriespill",Date=now,UserId=6,SubTopicId=2},
-            //    new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening",Date=now,UserId=6,SubTopicId=6},
-            //    new Post{Title="Test for tema: Utvikling",Content="Dette er enda en test. Den skal ligge under Klubbutvikling",Date=now,UserId=6,SubTopicId=9},
-            //    new Post{Title="Test for tema: Toppidrett",Content="Dette er en test!!! Denne skal ligge under Junior",Date=now,UserId=6,SubTopicId=13},
-            //    new Post{Title="Test for tema: Toppidrett",Content="Denne testen skal man kunne se under Trening",Date=now,UserId=6,SubTopicId=16}
-            //};
-            //foreach (Post post in posts)
-            //{
-            //    context.Posts.Add(post);
-            //    context.SaveChanges();
-            //}
+            var posts = new Post[]
+            {
+                new Post{Title="Test for tema: Konkurranse",Content="Dette er en test! Den skal ligge under Dommer / oppmann",Date=now,UserId=1,SubTopicId=1},
+                new Post{Title="Test for tema: Konkurranse",Content="Denne skal ligge under Seriespill",Date=now,UserId=1,SubTopicId=2},
+                new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening",Date=now,UserId=1,SubTopicId=6},
+                new Post{Title="Test for tema: Utvikling",Content="Dette er enda en test. Den skal ligge under Klubbutvikling",Date=now,UserId=1,SubTopicId=9},
+                new Post{Title="Test for tema: Toppidrett",Content="Dette er en test!!! Denne skal ligge under Junior",Date=now,UserId=1,SubTopicId=13},
+                new Post{Title="Test for tema: Toppidrett",Content="Denne testen skal man kunne se under Trening",Date=now,UserId=1,SubTopicId=16}
+            };
+            foreach (Post post in posts)
+            {
+                context.Posts.Add(post);
+                context.SaveChanges();
+            }
 
             // Opprette nye kommentarer (COMMENTS)
-            //var comments = new Comment[]
-            //{
-            //    new Comment{Content="Dette er et testsvar til en post :)",Date=now,UserId=6,PostId=1},
-            //    new Comment{Content="Dette svaret er kun en test!!!",Date=now,UserId=6,PostId=2},
-            //    new Comment{Content="Hei, det ser ut som posten ligger under riktig tema :)",Date=now,UserId=6,PostId=3},
-            //    new Comment{Content="Dette testsvaret er ikke så viktig.",Date=now,UserId=6,PostId=3},
-            //    new Comment{Content="Dette skal være det nyeste svaret på denne posten.",Date=now,UserId=6,PostId=3},
-            //    new Comment{Content="Dette skal være det første svaret til posten under Toppidrett - > Trening",Date=now,UserId=6,PostId=6},
-            //    new Comment{Content="I posten under Toppidrett og Trening, blir dette det neste svar",Date=now,UserId=6,PostId=6}
-            //};
-            //foreach (Comment comment in comments)
-            //{
-            //    context.Comments.Add(comment);
-            //    context.SaveChanges();
-            //}
+            var comments = new Comment[]
+            {
+                new Comment{Content="Dette er et testsvar til en post :)",Date=now,UserId=1,PostId=1},
+                new Comment{Content="Dette svaret er kun en test!!!",Date=now,UserId=1,PostId=2},
+                new Comment{Content="Hei, det ser ut som posten ligger under riktig tema :)",Date=now,UserId=1,PostId=3},
+                new Comment{Content="Dette testsvaret er ikke så viktig.",Date=now,UserId=1,PostId=3},
+                new Comment{Content="Dette skal være det nyeste svaret på denne posten.",Date=now,UserId=1,PostId=3},
+                new Comment{Content="Dette skal være det første svaret til posten under Toppidrett - > Trening",Date=now,UserId=1,PostId=6},
+                new Comment{Content="I posten under Toppidrett og Trening, blir dette det neste svar",Date=now,UserId=1,PostId=6}
+            };
+            foreach (Comment comment in comments)
+            {
+                context.Comments.Add(comment);
+                context.SaveChanges();
+            }
 
             // Opprette nye videoer (VIDEOS)
             //var videos = new Video[]
@@ -142,6 +143,21 @@ namespace DAL.Database_configuration
             //    context.Videos.Add(video);
             //    context.SaveChanges();
             //}
+        }
+
+        public static byte[] AddHash(string password, byte[] salt)
+        {
+            const int keyLength = 24;
+            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 1000);
+            return pbkdf2.GetBytes(keyLength);
+        }
+
+        public static byte[] AddSalt()
+        {
+            var csprng = new RNGCryptoServiceProvider();
+            var salt = new byte[24];
+            csprng.GetBytes(salt);
+            return salt;
         }
     }
 }
