@@ -206,7 +206,7 @@ namespace DAL.Repositories
         }
 
         // POST: Login
-        public async Task<bool> Login(string username, string password)
+        public async Task<User> Login(string username, string password)
         {
             // Liste over alle eksisterende brukere
             var users = await _context.Users.ToListAsync();
@@ -216,11 +216,11 @@ namespace DAL.Repositories
                 if (user.Username == username && user.Password == password)
                 {
                     // Return true hvis ok
-                    return true;
+                    return user;
                 }
             }
             // Return false hvis bruker eller passord er feil
-            return false;
+            return null;
         }
     }
 }

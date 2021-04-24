@@ -157,16 +157,16 @@ namespace API.Controllers
 
         // POST: Login
         [HttpPost]
-        public async Task<ActionResult<bool>> Login([FromForm] string username, [FromForm] string password)
+        public async Task<ActionResult<UserDTO>> Login([FromForm] string username, [FromForm] string password)
         {
             try
             {
-                bool login = await _repository.Login(username, password);
+                var user = await _repository.Login(username, password);
 
-                if (login == true)
+                if (user != null)
                 {
                     // Ok hvis brukernavn og passord stemmer
-                    return Ok($"Logget inn som {username}");
+                    return Ok(user);
                 }
 
                 return StatusCode(StatusCodes.Status401Unauthorized, "Feil ved brukernavn eller passord");

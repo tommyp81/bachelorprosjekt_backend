@@ -22,6 +22,6 @@ namespace BLL.Interfaces
         Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId);
         Task<DocumentDTO> GetDocumentInfo(int id);
         Task<DocumentDTO> DeleteDocument(int id);
-        Task<bool> Login(string username, string password);
+        Task<UserDTO> Login(string username, string password);
     }
 }
