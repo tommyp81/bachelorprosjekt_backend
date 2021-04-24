@@ -210,16 +210,19 @@ namespace DAL.Repositories
         {
             // Liste over alle eksisterende brukere
             var users = await _context.Users.ToListAsync();
-            foreach (var user in users)
+            if (users != null)
             {
-                // Sjekk om brukernavn og passord stemmer
-                if (user.Username == username && user.Password == password)
+                foreach (var user in users)
                 {
-                    // Return true hvis ok
-                    return user;
+                    // Sjekk om brukernavn og passord stemmer
+                    if (user.Username == username && user.Password == password)
+                    {
+                        // Sende tilbake brukerobjekt hvis ok
+                        return user;
+                    }
                 }
             }
-            // Return false hvis bruker eller passord er feil
+            // Sende tilbake null hvis bruker eller passord er feil
             return null;
         }
     }
