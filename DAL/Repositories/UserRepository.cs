@@ -34,6 +34,19 @@ namespace DAL.Repositories
         // POST: Users
         public async Task<User> AddUser(User user)
         {
+            // Sjekke om brukernavn eksisterer først
+            var users = await _context.Users.ToArrayAsync();
+            if (users != null)
+            {
+                foreach (var existingUser in users)
+                {
+                    if (existingUser.Username == user.Username)
+                    {
+                        return null;
+                    }
+                }
+            }
+            
             var result = await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return result.Entity;

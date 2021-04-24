@@ -134,5 +134,17 @@ namespace BLL.Repositories
             DocumentDTO documentDTO = AddDTO(deleteDocument);
             return documentDTO;
         }
+
+        // POST: Login
+        public async Task<bool> Login(string username, string password)
+        {
+            bool login = await _repository.Login(username, password);
+            if (login == true)
+            {
+                // Login ok, return true
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -27,8 +27,7 @@ namespace BLL.Repositories
                 Id = user.Id,
                 Username = user.Username,
                 FirstName = user.FirstName,
-                LastName = user.LastName,
-                Password = user.Password
+                LastName = user.LastName
             };
             return DTO;
         }

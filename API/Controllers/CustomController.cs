@@ -154,5 +154,27 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved sletting av dokument");
             }
         }
+
+        // POST: Login
+        [HttpPost]
+        public async Task<ActionResult<bool>> Login([FromForm] string username, [FromForm] string password)
+        {
+            try
+            {
+                bool login = await _repository.Login(username, password);
+
+                if (login == true)
+                {
+                    // Ok hvis brukernavn og passord stemmer
+                    return Ok($"Logget inn som {username}");
+                }
+
+                return StatusCode(StatusCodes.Status401Unauthorized, "Feil ved brukernavn eller passord");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e); //"Feil ved login"
+            }
+        }
     }
 }

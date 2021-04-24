@@ -204,5 +204,23 @@ namespace DAL.Repositories
             }
             return null;
         }
+
+        // POST: Login
+        public async Task<bool> Login(string username, string password)
+        {
+            // Liste over alle eksisterende brukere
+            var users = await _context.Users.ToListAsync();
+            foreach (var user in users)
+            {
+                // Sjekk om brukernavn og passord stemmer
+                if (user.Username == username && user.Password == password)
+                {
+                    // Return true hvis ok
+                    return true;
+                }
+            }
+            // Return false hvis bruker eller passord er feil
+            return false;
+        }
     }
 }
