@@ -51,8 +51,8 @@ namespace DAL.Repositories
             }
 
             // Krypter passord
-            byte[] salt = AddSalt();
-            byte[] hash = AddHash(user.Password, salt);
+            byte[] passwordSalt = AddSalt();
+            byte[] passwordHash = AddHash(user.Password, passwordSalt);
 
             // Lage en ny bruker
             User newUser = new User
@@ -60,9 +60,10 @@ namespace DAL.Repositories
                 Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                isAdmin = false,
-                Password = hash,
-                Salt = salt
+                Email = user.Email,
+                Admin = false,
+                Password = passwordHash,
+                Salt = passwordSalt
 
             };
 
@@ -93,16 +94,17 @@ namespace DAL.Repositories
                 }
 
                 // Krypter passord
-                byte[] salt = AddSalt();
-                byte[] hash = AddHash(user.Password, salt);
+                byte[] passwordSalt = AddSalt();
+                byte[] passwordHash = AddHash(user.Password, passwordSalt);
 
                 result.Id = user.Id;
                 result.Username = user.Username;
                 result.FirstName = user.FirstName;
                 result.LastName = user.LastName;
-                result.isAdmin = user.isAdmin;
-                result.Password = hash;
-                result.Salt = salt;
+                result.Email = user.Email;
+                result.Admin = user.Admin;
+                result.Password = passwordHash;
+                result.Salt = passwordSalt;
                 await _context.SaveChangesAsync();
                 return result;
             }

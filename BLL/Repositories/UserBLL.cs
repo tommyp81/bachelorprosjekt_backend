@@ -28,7 +28,8 @@ namespace BLL.Repositories
                 Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                isAdmin = user.isAdmin
+                Email = user.Email,
+                Admin = user.Admin
             };
             return DTO;
         }

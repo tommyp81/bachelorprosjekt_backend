@@ -81,11 +81,11 @@ namespace DAL.Database_configuration
             }
 
             // Opprette nye brukere (USERS)
-            byte[] salt = AddSalt();
-            byte[] hash = AddHash("password", salt);
+            byte[] passwordSalt = AddSalt();
+            byte[] passwordHash = AddHash("password", passwordSalt);
             var users = new User[]
             {
-                new User{Username="admin",FirstName="Superbruker",LastName="NFB",isAdmin=true,Password=hash,Salt=salt}
+                new User{Username="sysadmin",FirstName="Superbruker",LastName="NFB",isAdmin=true,Password=passwordHash,Salt=passwordSalt}
             };
             foreach (User user in users)
             {
