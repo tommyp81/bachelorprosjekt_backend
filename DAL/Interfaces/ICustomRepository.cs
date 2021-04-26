@@ -19,6 +19,6 @@ namespace DAL.Interfaces
         Task<ICollection<Document>> GetDocuments();
         Task<Document> GetDocumentInfo(int id);
         Task<Document> DeleteDocument(int id);
-        Task<User> Login(string username, string password);
+        Task<User> Login(string username, string email, string password);
     }
 }

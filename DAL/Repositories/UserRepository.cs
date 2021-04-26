@@ -36,15 +36,15 @@ namespace DAL.Repositories
         // POST: Users
         public async Task<User> AddUser(authUser user)
         {
-            // Sjekke om brukernavn eksisterer først
+            // Sjekke om brukernavn eller epost eksisterer først
             var users = await _context.Users.ToArrayAsync();
             if (users != null)
             {
                 foreach (var existingUser in users)
                 {
-                    if (existingUser.Username == user.Username)
+                    if (existingUser.Username == user.Username || existingUser.Email == user.Email)
                     {
-                        // Returnerer null hvis bruker finnes fra før
+                        // Returnerer null hvis bruker eller epost finnes fra før
                         return null;
                     }
                 }
@@ -84,10 +84,10 @@ namespace DAL.Repositories
                 {
                     foreach (var existingUser in users)
                     {
-                        // Se etter samme brukernavn hvis ID ikke er lik
-                        if (existingUser.Id != user.Id && existingUser.Username == user.Username)
+                        // Se etter samme brukernavn og epost hvis ID ikke er lik
+                        if (existingUser.Id != user.Id && (existingUser.Username == user.Username || existingUser.Email == user.Email))
                         {
-                            // Returnerer null hvis bruker finnes fra før
+                            // Returnerer null hvis bruker eller epost finnes fra før
                             return null;
                         }
                     }

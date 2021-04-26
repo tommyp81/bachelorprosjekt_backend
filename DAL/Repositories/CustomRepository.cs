@@ -207,7 +207,7 @@ namespace DAL.Repositories
         }
 
         // POST: Login
-        public async Task<User> Login(string username, string password)
+        public async Task<User> Login(string username, string email, string password)
         {
             // Liste over alle eksisterende brukere
             var users = await _context.Users.ToListAsync();
@@ -215,8 +215,8 @@ namespace DAL.Repositories
             {
                 foreach (var user in users)
                 {
-                    // Sjekk om brukernavn stemmer
-                    if (user.Username == username)
+                    // Sjekk om brukernavn eller epost stemmer
+                    if (user.Username == username || user.Email == email)
                     {
                         // Sjekk passord med kryptering
                         const int keyLength = 24;

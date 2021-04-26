@@ -85,7 +85,7 @@ namespace DAL.Database_configuration
             byte[] passwordHash = AddHash("password", passwordSalt);
             var users = new User[]
             {
-                new User{Username="sysadmin",FirstName="Superbruker",LastName="NFB",Admin=true,Password=passwordHash,Salt=passwordSalt}
+                new User{Username="sysadmin",FirstName="Superbruker",LastName="NFB",Email="admin@badminton.no",Admin=true,Password=passwordHash,Salt=passwordSalt}
             };
             foreach (User user in users)
             {
@@ -102,7 +102,7 @@ namespace DAL.Database_configuration
             {
                 new Post{Title="Test for tema: Konkurranse",Content="Dette er en test! Den skal ligge under Dommer / oppmann",Date=now,UserId=1,SubTopicId=1},
                 new Post{Title="Test for tema: Konkurranse",Content="Denne skal ligge under Seriespill",Date=now,UserId=1,SubTopicId=2},
-                new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening",Date=now,UserId=1,SubTopicId=6},
+                new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening bredde",Date=now,UserId=1,SubTopicId=6},
                 new Post{Title="Test for tema: Utvikling",Content="Dette er enda en test. Den skal ligge under Klubbutvikling",Date=now,UserId=1,SubTopicId=9},
                 new Post{Title="Test for tema: Toppidrett",Content="Dette er en test!!! Denne skal ligge under Junior",Date=now,UserId=1,SubTopicId=13},
                 new Post{Title="Test for tema: Toppidrett",Content="Denne testen skal man kunne se under Trening",Date=now,UserId=1,SubTopicId=16}

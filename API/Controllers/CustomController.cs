@@ -157,23 +157,23 @@ namespace API.Controllers
 
         // POST: Login
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> Login([FromForm] string username, [FromForm] string password)
+        public async Task<ActionResult<UserDTO>> Login([FromForm] string username, [FromForm] string email, [FromForm] string password)
         {
             try
             {
-                var user = await _repository.Login(username, password);
+                var user = await _repository.Login(username, email, password);
 
                 if (user != null)
                 {
-                    // Ok hvis brukernavn og passord stemmer
+                    // Ok hvis brukernavn/epost og passord stemmer
                     return Ok(user);
                 }
 
-                return StatusCode(StatusCodes.Status401Unauthorized, "Feil ved brukernavn eller passord");
+                return StatusCode(StatusCodes.Status401Unauthorized, "Feil ved brukernavn, epost eller passord");
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, e); //"Feil ved login"
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved login");
             }
         }
     }

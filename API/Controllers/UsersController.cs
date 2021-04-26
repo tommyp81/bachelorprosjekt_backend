@@ -71,7 +71,7 @@ namespace API.Controllers
                 var newUser = await _repository.AddUser(user);
                 if (newUser == null)
                 {
-                    return BadRequest("Brukernavn eksisterer allerede");
+                    return BadRequest("Brukernavn eller epost eksisterer allerede");
                 }
 
                 return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
@@ -102,7 +102,7 @@ namespace API.Controllers
                 var updateUser = await _repository.UpdateUser(user);
                 if (updateUser == null)
                 {
-                    return BadRequest("Brukernavn eksisterer allerede");
+                    return BadRequest("Brukernavn eller epost eksisterer allerede");
                 }
                 return updateUser;
             }
