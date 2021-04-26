@@ -85,7 +85,7 @@ namespace DAL.Database_configuration
             byte[] passwordHash = AddHash("password", passwordSalt);
             var users = new User[]
             {
-                new User{Username="sysadmin",FirstName="Superbruker",LastName="NFB",isAdmin=true,Password=passwordHash,Salt=passwordSalt}
+                new User{Username="sysadmin",FirstName="Superbruker",LastName="NFB",Admin=true,Password=passwordHash,Salt=passwordSalt}
             };
             foreach (User user in users)
             {
