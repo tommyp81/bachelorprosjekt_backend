@@ -26,7 +26,11 @@
 <p>Legg til dokumentId i url. F.eks: https://webforum.azurewebsites.net/DeleteDocument/1</p>
 <br />
 <p><b>UploadDocument</b> - For å laste opp nytt dokument (som en del av å oppdatere post/kommentar)</p>
-<p>Her må det legges ved fil, userId og postId, commentId eller infoTopicId i et form til https://webforum.azurewebsites.net/UploadDocument</p>
+<p>Her må det legges ved fil, userId og postId, commentId eller infoTopicId i et form til: https://webforum.azurewebsites.net/UploadDocument</p>
+<br />
+<p><b>Login</b> - For å logge inn med brukernavn eller epost</p>
+<p>Legg ved username eller email og password i et form til: https://webforum.azurewebsites.net/Login</p>
+<p>Denne metoden returnerer user du logger inn med som et objekt hvis ok.</p>
 <br />
 <p>Har også lagt til likes som action metoder</p>
 <p>POST: GetLike for status: https://webforum.azurewebsites.net/GetLike</p>
