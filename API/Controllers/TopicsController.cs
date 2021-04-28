@@ -16,11 +16,11 @@ namespace API.Controllers
     {
         // Controller for Topics API Backend
 
-        private readonly ITopicBLL _repository;
+        private readonly ITopicBLL _topicBLL;
 
-        public TopicsController(ITopicBLL _repository)
+        public TopicsController(ITopicBLL topicBLL)
         {
-            this._repository = _repository;
+            _topicBLL = topicBLL;
         }
 
         // GET: Topics
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _repository.GetTopics());
+                return Ok(await _topicBLL.GetTopics());
             }
             catch (Exception)
             {
@@ -43,7 +43,7 @@ namespace API.Controllers
         {
             try
             {
-                var topic = await _repository.GetTopic(id);
+                var topic = await _topicBLL.GetTopic(id);
                 if (topic == null)
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
@@ -68,7 +68,7 @@ namespace API.Controllers
                     return BadRequest();
                 }
 
-                var newTopic = await _repository.AddTopic(topic);
+                var newTopic = await _topicBLL.AddTopic(topic);
                 return CreatedAtAction(nameof(GetTopic), new { id = newTopic.Id }, newTopic);
             }
             catch (Exception)
@@ -88,13 +88,13 @@ namespace API.Controllers
                     return BadRequest("Emne ID stemmer ikke");
                 }
 
-                var updateTopic = await _repository.GetTopic(id);
-                if (updateTopic == null)
+                var checkTopic = await _topicBLL.GetTopic(id);
+                if (checkTopic == null)
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.UpdateTopic(topic);
+                return Ok(await _topicBLL.UpdateTopic(topic));
             }
             catch (Exception)
             {
@@ -108,13 +108,13 @@ namespace API.Controllers
         {
             try
             {
-                var deleteTopic = await _repository.GetTopic(id);
-                if (deleteTopic == null)
+                var checkTopic = await _topicBLL.GetTopic(id);
+                if (checkTopic == null)
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.DeleteTopic(id);
+                return Ok(await _topicBLL.DeleteTopic(id));
             }
             catch (Exception)
             {

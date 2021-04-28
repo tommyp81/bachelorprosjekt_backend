@@ -16,11 +16,11 @@ namespace API.Controllers
     {
         // Controller for Posts API Backend
 
-        private readonly IPostBLL _repository;
+        private readonly IPostBLL _postBLL;
 
-        public PostsController(IPostBLL _repository)
+        public PostsController(IPostBLL postBLL)
         {
-            this._repository = _repository;
+            _postBLL = postBLL;
         }
 
         // GET: Posts
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _repository.GetPosts());
+                return Ok(await _postBLL.GetPosts());
             }
             catch (Exception)
             {
@@ -43,13 +43,13 @@ namespace API.Controllers
         {
             try
             {
-                var post = await _repository.GetPost(id);
+                var post = await _postBLL.GetPost(id);
                 if (post == null)
                 {
                     return NotFound($"Post med ID {id} ble ikke funnet");
                 }
 
-                return post;
+                return Ok(post);
             }
             catch (Exception)
             {
@@ -69,8 +69,7 @@ namespace API.Controllers
                 }
 
                 // Legg til posten i databasen og fil på Azure Storage og databasen hvis fil er sendt med
-                var newPost = await _repository.AddPost(file, post);
-
+                var newPost = await _postBLL.AddPost(file, post);
                 return CreatedAtAction(nameof(GetPost), new { id = newPost.Id }, newPost);
             }
             catch (Exception)
@@ -90,13 +89,13 @@ namespace API.Controllers
                     return BadRequest("Post ID stemmer ikke");
                 }
 
-                var updatePost = await _repository.GetPost(id);
-                if (updatePost == null)
+                var checkPost = await _postBLL.GetPost(id);
+                if (checkPost == null)
                 {
                     return NotFound($"Post med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.UpdatePost(post);
+                return Ok(await _postBLL.UpdatePost(post));
             }
             catch (Exception)
             {
@@ -110,13 +109,13 @@ namespace API.Controllers
         {
             try
             {
-                var deletePost = await _repository.GetPost(id);
-                if (deletePost == null)
+                var checkPost = await _postBLL.GetPost(id);
+                if (checkPost == null)
                 {
                     return NotFound($"Post med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.DeletePost(id);
+                return Ok(await _postBLL.DeletePost(id));
             }
             catch (Exception)
             {

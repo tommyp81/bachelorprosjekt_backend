@@ -14,15 +14,15 @@ namespace BLL.Repositories
     {
         private readonly ISubTopicRepository _repository;
 
-        public SubTopicBLL(ISubTopicRepository _repository)
+        public SubTopicBLL(ISubTopicRepository repository)
         {
-            this._repository = _repository;
+            _repository = repository;
         }
 
         // For å lage DTOs for SubTopics
         public SubTopicDTO AddDTO(SubTopic subtopic)
         {
-            SubTopicDTO DTO = new SubTopicDTO
+            var DTO = new SubTopicDTO
             {
                 Id = subtopic.Id,
                 Title = subtopic.Title,
@@ -34,9 +34,9 @@ namespace BLL.Repositories
 
         public async Task<ICollection<SubTopicDTO>> GetSubTopics()
         {
-            ICollection<SubTopic> subtopics = await _repository.GetSubTopics();
+            var subtopics = await _repository.GetSubTopics();
             if (subtopics == null) { return null; }
-            ICollection<SubTopicDTO> subtopicDTOs = new List<SubTopicDTO>();
+            var subtopicDTOs = new List<SubTopicDTO>();
             foreach (SubTopic subtopic in subtopics)
             {
                 subtopicDTOs.Add(AddDTO(subtopic));
@@ -46,33 +46,33 @@ namespace BLL.Repositories
 
         public async Task<SubTopicDTO> GetSubTopic(int id)
         {
-            SubTopic getSubTopic = await _repository.GetSubTopic(id);
+            var getSubTopic = await _repository.GetSubTopic(id);
             if (getSubTopic == null) { return null; }
-            SubTopicDTO subtopicDTO = AddDTO(getSubTopic);
+            var subtopicDTO = AddDTO(getSubTopic);
             return subtopicDTO;
         }
 
         public async Task<SubTopicDTO> AddSubTopic(SubTopic subtopic)
         {
-            SubTopic addSubTopic = await _repository.AddSubTopic(subtopic);
+            var addSubTopic = await _repository.AddSubTopic(subtopic);
             if (addSubTopic == null) { return null; }
-            SubTopicDTO subtopicDTO = AddDTO(addSubTopic);
+            var subtopicDTO = AddDTO(addSubTopic);
             return subtopicDTO;
         }
 
         public async Task<SubTopicDTO> UpdateSubTopic(SubTopic subtopic)
         {
-            SubTopic updateSubTopic = await _repository.UpdateSubTopic(subtopic);
+            var updateSubTopic = await _repository.UpdateSubTopic(subtopic);
             if (updateSubTopic == null) { return null; }
-            SubTopicDTO subtopicDTO = AddDTO(updateSubTopic);
+            var subtopicDTO = AddDTO(updateSubTopic);
             return subtopicDTO;
         }
 
         public async Task<SubTopicDTO> DeleteSubTopic(int id)
         {
-            SubTopic deleteSubTopic = await _repository.DeleteSubTopic(id);
+            var deleteSubTopic = await _repository.DeleteSubTopic(id);
             if (deleteSubTopic == null) { return null; }
-            SubTopicDTO subtopicDTO = AddDTO(deleteSubTopic);
+            var subtopicDTO = AddDTO(deleteSubTopic);
             return subtopicDTO;
         }
     }

@@ -14,15 +14,15 @@ namespace BLL.Repositories
     {
         private readonly ILikeRepository _repository;
 
-        public LikeBLL(ILikeRepository _repository)
+        public LikeBLL(ILikeRepository repository)
         {
-            this._repository = _repository;
+            _repository = repository;
         }
 
         // For å lage DTOs for Likes
         public LikeDTO AddDTO(Like like)
         {
-            LikeDTO DTO = new LikeDTO
+            var DTO = new LikeDTO
             {
                 Id = like.Id,
                 UserId = like.UserId,
@@ -34,25 +34,25 @@ namespace BLL.Repositories
 
         public async Task<LikeDTO> GetLike(Like like)
         {
-            Like getLike = await _repository.GetLike(like);
+            var getLike = await _repository.GetLike(like);
             if (getLike == null) { return null; }
-            LikeDTO likeDTO = AddDTO(getLike);
+            var likeDTO = AddDTO(getLike);
             return likeDTO;
         }
 
         public async Task<LikeDTO> AddLike(Like like)
         {
-            Like addLike = await _repository.AddLike(like);
+            var addLike = await _repository.AddLike(like);
             if (addLike == null) { return null; }
-            LikeDTO likeDTO = AddDTO(addLike);
+            var likeDTO = AddDTO(addLike);
             return likeDTO;
         }
 
         public async Task<LikeDTO> DeleteLike(Like like)
         {
-            Like deleteLike = await _repository.DeleteLike(like);
+            var deleteLike = await _repository.DeleteLike(like);
             if (deleteLike == null) { return null; }
-            LikeDTO likeDTO = AddDTO(deleteLike);
+            var likeDTO = AddDTO(deleteLike);
             return likeDTO;
         }
     }

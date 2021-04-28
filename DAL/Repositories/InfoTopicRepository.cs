@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
-    public class InfoTopicRepository: IInfoTopicRepository
+    public class InfoTopicRepository : IInfoTopicRepository
     {
         private readonly DBContext _context;
         private readonly ICustomRepository _customRepository;
         private readonly IVideoRepository _videoRepository;
 
-        public InfoTopicRepository(DBContext context, ICustomRepository _customRepository, IVideoRepository _videoRepository)
+        public InfoTopicRepository(DBContext context, ICustomRepository customRepository, IVideoRepository videoRepository)
         {
             _context = context;
-            this._customRepository = _customRepository;
-            this._videoRepository = _videoRepository;
+            _customRepository = customRepository;
+            _videoRepository = videoRepository;
         }
 
         // GET: InfoTopics

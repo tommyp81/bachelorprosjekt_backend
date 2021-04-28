@@ -16,11 +16,11 @@ namespace API.Controllers
     {
         // Controller for Comments API Backend
 
-        private readonly ICommentBLL _repository;
+        private readonly ICommentBLL _commentBLL;
 
-        public CommentsController(ICommentBLL _repository)
+        public CommentsController(ICommentBLL commentBLL)
         {
-            this._repository = _repository;
+            _commentBLL = commentBLL;
         }
 
         // GET: Comments
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _repository.GetComments());
+                return Ok(await _commentBLL.GetComments());
             }
             catch (Exception)
             {
@@ -43,13 +43,13 @@ namespace API.Controllers
         {
             try
             {
-                var comment = await _repository.GetComment(id);
+                var comment = await _commentBLL.GetComment(id);
                 if (comment == null)
                 {
                     return NotFound($"Kommentar med ID {id} ble ikke funnet");
                 }
 
-                return comment;
+                return Ok(comment);
             }
             catch (Exception)
             {
@@ -69,8 +69,7 @@ namespace API.Controllers
                 }
 
                 // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
-                var newComment = await _repository.AddComment(file, comment);
-
+                var newComment = await _commentBLL.AddComment(file, comment);
                 return CreatedAtAction(nameof(GetComment), new { id = newComment.Id }, newComment);
             }
             catch (Exception)
@@ -90,13 +89,13 @@ namespace API.Controllers
                     return BadRequest("Kommentar ID stemmer ikke");
                 }
 
-                var updateComment = await _repository.GetComment(id);
-                if (updateComment == null)
+                var checkComment = await _commentBLL.GetComment(id);
+                if (checkComment == null)
                 {
                     return NotFound($"Kommentar med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.UpdateComment(comment);
+                return Ok(await _commentBLL.UpdateComment(comment));
             }
             catch (Exception)
             {
@@ -110,13 +109,13 @@ namespace API.Controllers
         {
             try
             {
-                var deleteComment = await _repository.GetComment(id);
-                if (deleteComment == null)
+                var checkComment = await _commentBLL.GetComment(id);
+                if (checkComment == null)
                 {
                     return NotFound($"Kommentar med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.DeleteComment(id);
+                return Ok(await _commentBLL.DeleteComment(id));
             }
             catch (Exception)
             {

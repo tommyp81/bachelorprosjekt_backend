@@ -16,11 +16,11 @@ namespace API.Controllers
     {
         // Controller for Videos API Backend
 
-        private readonly IVideoBLL _repository;
+        private readonly IVideoBLL _videoBLL;
 
-        public VideosController(IVideoBLL _repository)
+        public VideosController(IVideoBLL videoBLL)
         {
-            this._repository = _repository;
+            _videoBLL = videoBLL;
         }
 
         // GET: Videos
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _repository.GetVideos());
+                return Ok(await _videoBLL.GetVideos());
             }
             catch (Exception)
             {
@@ -43,7 +43,7 @@ namespace API.Controllers
         {
             try
             {
-                var video = await _repository.GetVideo(id);
+                var video = await _videoBLL.GetVideo(id);
                 if (video == null)
                 {
                     return NotFound($"Video med ID {id} ble ikke funnet");
@@ -68,7 +68,7 @@ namespace API.Controllers
                     return BadRequest();
                 }
 
-                var newVideo = await _repository.AddVideo(video);
+                var newVideo = await _videoBLL.AddVideo(video);
                 return CreatedAtAction(nameof(GetVideo), new { id = newVideo.Id }, newVideo);
             }
             catch (Exception)
@@ -88,13 +88,13 @@ namespace API.Controllers
                     return BadRequest("Video ID stemmer ikke");
                 }
 
-                var updateVideo = await _repository.GetVideo(id);
-                if (updateVideo == null)
+                var checkVideo = await _videoBLL.GetVideo(id);
+                if (checkVideo == null)
                 {
                     return NotFound($"Video med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.UpdateVideo(video);
+                return Ok(await _videoBLL.UpdateVideo(video));
             }
             catch (Exception)
             {
@@ -108,13 +108,13 @@ namespace API.Controllers
         {
             try
             {
-                var deleteVideo = await _repository.GetVideo(id);
-                if (deleteVideo == null)
+                var checkVideo = await _videoBLL.GetVideo(id);
+                if (checkVideo == null)
                 {
                     return NotFound($"Video med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.DeleteVideo(id);
+                return Ok(await _videoBLL.DeleteVideo(id));
             }
             catch (Exception)
             {

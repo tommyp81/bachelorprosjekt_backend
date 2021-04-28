@@ -13,8 +13,8 @@ namespace BLL.Interfaces
         UserDTO AddDTO(User user);
         Task<ICollection<UserDTO>> GetUsers();
         Task<UserDTO> GetUser(int id);
-        Task<UserDTO> AddUser(authUser user);
-        Task<UserDTO> UpdateUser(authUser user);
+        Task<UserDTO> AddUser(AuthUser user);
+        Task<UserDTO> UpdateUser(AuthUser user);
         Task<UserDTO> DeleteUser(int id);
     }
 }

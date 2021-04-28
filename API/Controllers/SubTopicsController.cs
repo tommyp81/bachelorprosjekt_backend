@@ -16,11 +16,11 @@ namespace API.Controllers
     {
         // Controller for SubTopics API Backend
 
-        private readonly ISubTopicBLL _repository;
+        private readonly ISubTopicBLL _subTopicBLL;
 
-        public SubTopicsController(ISubTopicBLL _repository)
+        public SubTopicsController(ISubTopicBLL subTopicBLL)
         {
-            this._repository = _repository;
+            _subTopicBLL = subTopicBLL;
         }
 
         // GET: SubTopics
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _repository.GetSubTopics());
+                return Ok(await _subTopicBLL.GetSubTopics());
             }
             catch (Exception)
             {
@@ -43,7 +43,7 @@ namespace API.Controllers
         {
             try
             {
-                var subtopic = await _repository.GetSubTopic(id);
+                var subtopic = await _subTopicBLL.GetSubTopic(id);
                 if (subtopic == null)
                 {
                     return NotFound($"Underemne med ID {id} ble ikke funnet");
@@ -68,7 +68,7 @@ namespace API.Controllers
                     return BadRequest();
                 }
 
-                var newSubTopic = await _repository.AddSubTopic(subtopic);
+                var newSubTopic = await _subTopicBLL.AddSubTopic(subtopic);
                 return CreatedAtAction(nameof(GetSubTopic), new { id = newSubTopic.Id }, newSubTopic);
             }
             catch (Exception)
@@ -88,13 +88,13 @@ namespace API.Controllers
                     return BadRequest("Underemne ID stemmer ikke");
                 }
 
-                var updateSubTopic = await _repository.GetSubTopic(id);
-                if (updateSubTopic == null)
+                var checkSubTopic = await _subTopicBLL.GetSubTopic(id);
+                if (checkSubTopic == null)
                 {
                     return NotFound($"Underemne med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.UpdateSubTopic(subtopic);
+                return Ok(await _subTopicBLL.UpdateSubTopic(subtopic));
             }
             catch (Exception)
             {
@@ -108,13 +108,13 @@ namespace API.Controllers
         {
             try
             {
-                var deleteSubTopic = await _repository.GetSubTopic(id);
-                if (deleteSubTopic == null)
+                var checkSubTopic = await _subTopicBLL.GetSubTopic(id);
+                if (checkSubTopic == null)
                 {
                     return NotFound($"Underemne med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.DeleteSubTopic(id);
+                return Ok(await _subTopicBLL.DeleteSubTopic(id));
             }
             catch (Exception)
             {

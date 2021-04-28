@@ -10,19 +10,19 @@ using System.Threading.Tasks;
 
 namespace BLL.Repositories
 {
-    public class VideoBLL: IVideoBLL
+    public class VideoBLL : IVideoBLL
     {
         private readonly IVideoRepository _repository;
 
-        public VideoBLL(IVideoRepository _repository)
+        public VideoBLL(IVideoRepository repository)
         {
-            this._repository = _repository;
+            _repository = repository;
         }
 
         // For å lage DTOs for Users
         public VideoDTO AddDTO(Video video)
         {
-            VideoDTO DTO = new VideoDTO
+            var DTO = new VideoDTO
             {
                 Id = video.Id,
                 YouTubeId = video.YouTubeId,
@@ -31,15 +31,15 @@ namespace BLL.Repositories
                 UserId = video.UserId,
                 PostId = video.PostId,
                 InfoTopicId = video.InfoTopicId
-        };
+            };
             return DTO;
         }
 
         public async Task<ICollection<VideoDTO>> GetVideos()
         {
-            ICollection<Video> videos = await _repository.GetVideos();
+            var videos = await _repository.GetVideos();
             if (videos == null) { return null; }
-            ICollection<VideoDTO> videoDTOs = new List<VideoDTO>();
+            var videoDTOs = new List<VideoDTO>();
             foreach (Video video in videos)
             {
                 videoDTOs.Add(AddDTO(video));
@@ -49,33 +49,33 @@ namespace BLL.Repositories
 
         public async Task<VideoDTO> GetVideo(int id)
         {
-            Video getVideo = await _repository.GetVideo(id);
+            var getVideo = await _repository.GetVideo(id);
             if (getVideo == null) { return null; }
-            VideoDTO videoDTO = AddDTO(getVideo);
+            var videoDTO = AddDTO(getVideo);
             return videoDTO;
         }
 
         public async Task<VideoDTO> AddVideo(Video video)
         {
-            Video addVideo = await _repository.AddVideo(video);
+            var addVideo = await _repository.AddVideo(video);
             if (addVideo == null) { return null; }
-            VideoDTO videoDTO = AddDTO(addVideo);
+            var videoDTO = AddDTO(addVideo);
             return videoDTO;
         }
 
         public async Task<VideoDTO> UpdateVideo(Video video)
         {
-            Video updateVideo = await _repository.UpdateVideo(video);
+            var updateVideo = await _repository.UpdateVideo(video);
             if (updateVideo == null) { return null; }
-            VideoDTO videoDTO = AddDTO(updateVideo);
+            var videoDTO = AddDTO(updateVideo);
             return videoDTO;
         }
 
         public async Task<VideoDTO> DeleteVideo(int id)
         {
-            Video deleteVideo = await _repository.DeleteVideo(id);
+            var deleteVideo = await _repository.DeleteVideo(id);
             if (deleteVideo == null) { return null; }
-            VideoDTO videoDTO = AddDTO(deleteVideo);
+            var videoDTO = AddDTO(deleteVideo);
             return videoDTO;
         }
     }

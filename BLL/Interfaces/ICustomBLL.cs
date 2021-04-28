@@ -23,5 +23,6 @@ namespace BLL.Interfaces
         Task<DocumentDTO> GetDocumentInfo(int id);
         Task<DocumentDTO> DeleteDocument(int id);
         Task<UserDTO> Login(string username, string email, string password);
+        Task<UserDTO> SetAdmin(int id, bool admin);
     }
 }

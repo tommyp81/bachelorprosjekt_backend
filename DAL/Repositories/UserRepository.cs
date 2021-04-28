@@ -34,7 +34,7 @@ namespace DAL.Repositories
         }
 
         // POST: Users
-        public async Task<User> AddUser(authUser user)
+        public async Task<User> AddUser(AuthUser user)
         {
             // Sjekke om brukernavn eller epost eksisterer først
             var users = await _context.Users.ToArrayAsync();
@@ -55,7 +55,7 @@ namespace DAL.Repositories
             byte[] passwordHash = AddHash(user.Password, passwordSalt);
 
             // Lage en ny bruker
-            User newUser = new User
+            var newUser = new User
             {
                 Username = user.Username,
                 FirstName = user.FirstName,
@@ -73,7 +73,7 @@ namespace DAL.Repositories
         }
 
         // PUT: Users/1
-        public async Task<User> UpdateUser(authUser user)
+        public async Task<User> UpdateUser(AuthUser user)
         {
             var result = await _context.Users.FindAsync(user.Id);
             if (result != null)
@@ -117,6 +117,20 @@ namespace DAL.Repositories
             var result = await _context.Users.FindAsync(id);
             if (result != null)
             {
+                // Har denne brukeren har likes, må userId settes til null
+                var likes = await _context.Likes.ToListAsync();
+                if (likes != null)
+                {
+                    foreach (var like in likes)
+                    {
+                        if (like.UserId == result.Id)
+                        {
+                            like.UserId = null;
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+
                 _context.Users.Remove(result);
                 await _context.SaveChangesAsync();
                 return result;
@@ -124,14 +138,14 @@ namespace DAL.Repositories
             return null;
         }
 
-        public byte[] AddHash(string password, byte[] salt)
+        public static byte[] AddHash(string password, byte[] salt)
         {
             const int keyLength = 24;
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 1000);
             return pbkdf2.GetBytes(keyLength);
         }
 
-        public byte[] AddSalt()
+        public static byte[] AddSalt()
         {
             var csprng = new RNGCryptoServiceProvider();
             var salt = new byte[24];

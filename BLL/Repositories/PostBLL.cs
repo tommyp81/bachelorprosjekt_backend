@@ -14,29 +14,29 @@ namespace BLL.Repositories
     public class PostBLL : IPostBLL
     {
         private readonly IPostRepository _repository;
-        private readonly ICustomBLL _customRepository;
-        private readonly ISubTopicRepository _subTopicRepository;
+        private readonly ICustomBLL _customBLL;
+        private readonly ISubTopicBLL _subTopicBLL;
 
-        public PostBLL(IPostRepository _repository, ICustomBLL _customRepository, ISubTopicRepository _subTopicRepository)
+        public PostBLL(IPostRepository repository, ICustomBLL customBLL, ISubTopicBLL subTopicBLL)
         {
-            this._repository = _repository;
-            this._customRepository = _customRepository;
-            this._subTopicRepository = _subTopicRepository;
+            _repository = repository;
+            _customBLL = customBLL;
+            _subTopicBLL = subTopicBLL;
         }
 
         // For å lage DTOs for Posts
         public async Task<PostDTO> AddDTO(Post post)
         {
             // Hente SubTopic
-            var subtopic = await _subTopicRepository.GetSubTopic(post.SubTopicId);
+            var subtopic = await _subTopicBLL.GetSubTopic(post.SubTopicId);
 
             // Telle hvor mange kommentarer hver enkelt post har
-            int commentcount = await _customRepository.GetCommentCount(post.Id);
+            int commentcount = await _customBLL.GetCommentCount(post.Id);
 
             // Telle antall likes til hver enkelt post
-            int likecount = await _customRepository.GetLikeCount(post.Id, null);
+            int likecount = await _customBLL.GetLikeCount(post.Id, null);
 
-            PostDTO DTO = new PostDTO
+            var DTO = new PostDTO
             {
                 Id = post.Id,
                 Title = post.Title,
@@ -54,9 +54,9 @@ namespace BLL.Repositories
 
         public async Task<ICollection<PostDTO>> GetPosts()
         {
-            ICollection<Post> posts = await _repository.GetPosts();
+            var posts = await _repository.GetPosts();
             if (posts == null) { return null; }
-            ICollection<PostDTO> postDTOs = new List<PostDTO>();
+            var postDTOs = new List<PostDTO>();
             foreach (Post post in posts)
             {
                 postDTOs.Add(await AddDTO(post));
@@ -66,33 +66,33 @@ namespace BLL.Repositories
 
         public async Task<PostDTO> GetPost(int id)
         {
-            Post getPost = await _repository.GetPost(id);
+            var getPost = await _repository.GetPost(id);
             if (getPost == null) { return null; }
-            PostDTO postDTO = await AddDTO(getPost);
+            var postDTO = await AddDTO(getPost);
             return postDTO;
         }
 
         public async Task<PostDTO> AddPost(IFormFile file, Post post)
         {
-            Post addPost = await _repository.AddPost(file, post);
+            var addPost = await _repository.AddPost(file, post);
             if (addPost == null) { return null; }
-            PostDTO postDTO = await AddDTO(addPost);
+            var postDTO = await AddDTO(addPost);
             return postDTO;
         }
 
         public async Task<PostDTO> UpdatePost(Post post)
         {
-            Post updatePost = await _repository.UpdatePost(post);
+            var updatePost = await _repository.UpdatePost(post);
             if (updatePost == null) { return null; }
-            PostDTO postDTO = await AddDTO (updatePost);
+            var postDTO = await AddDTO(updatePost);
             return postDTO;
         }
 
         public async Task<PostDTO> DeletePost(int id)
         {
-            Post deletePost = await _repository.DeletePost(id);
+            var deletePost = await _repository.DeletePost(id);
             if (deletePost == null) { return null; }
-            PostDTO postDTO = await AddDTO(deletePost);
+            var postDTO = await AddDTO(deletePost);
             return postDTO;
         }
     }

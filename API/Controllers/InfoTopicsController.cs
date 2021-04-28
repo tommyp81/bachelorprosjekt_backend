@@ -16,11 +16,11 @@ namespace API.Controllers
     {
         // Controller for InfoTopics API Backend
 
-        private readonly IInfoTopicBLL _repository;
+        private readonly IInfoTopicBLL _infoTopicBLL;
 
-        public InfoTopicsController(IInfoTopicBLL _repository)
+        public InfoTopicsController(IInfoTopicBLL infoTopicBLL)
         {
-            this._repository = _repository;
+            _infoTopicBLL = infoTopicBLL;
         }
 
         // GET: InfoTopics
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _repository.GetInfoTopics());
+                return Ok(await _infoTopicBLL.GetInfoTopics());
             }
             catch (Exception)
             {
@@ -43,7 +43,7 @@ namespace API.Controllers
         {
             try
             {
-                var infotopic = await _repository.GetInfoTopic(id);
+                var infotopic = await _infoTopicBLL.GetInfoTopic(id);
                 if (infotopic == null)
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
@@ -68,7 +68,7 @@ namespace API.Controllers
                     return BadRequest();
                 }
 
-                var newInfoTopic = await _repository.AddInfoTopic(infotopic);
+                var newInfoTopic = await _infoTopicBLL.AddInfoTopic(infotopic);
                 return CreatedAtAction(nameof(GetInfoTopic), new { id = newInfoTopic.Id }, newInfoTopic);
             }
             catch (Exception)
@@ -88,13 +88,13 @@ namespace API.Controllers
                     return BadRequest("Emne ID stemmer ikke");
                 }
 
-                var updateInfoTopic = await _repository.GetInfoTopic(id);
-                if (updateInfoTopic == null)
+                var checkInfoTopic = await _infoTopicBLL.GetInfoTopic(id);
+                if (checkInfoTopic == null)
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.UpdateInfoTopic(infotopic);
+                return Ok(await _infoTopicBLL.UpdateInfoTopic(infotopic));
             }
             catch (Exception)
             {
@@ -108,13 +108,13 @@ namespace API.Controllers
         {
             try
             {
-                var deleteInfoTopic = await _repository.GetInfoTopic(id);
-                if (deleteInfoTopic == null)
+                var checkInfoTopic = await _infoTopicBLL.GetInfoTopic(id);
+                if (checkInfoTopic == null)
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.DeleteInfoTopic(id);
+                return Ok(await _infoTopicBLL.DeleteInfoTopic(id));
             }
             catch (Exception)
             {

@@ -20,12 +20,12 @@ namespace DAL.Repositories
         private readonly ICommentRepository _commentRepository;
         private readonly ILikeRepository _likeRepository;
 
-        public PostRepository(DBContext context, ICustomRepository _customRepository, ICommentRepository _commentRepository, ILikeRepository _likeRepository)
+        public PostRepository(DBContext context, ICustomRepository customRepository, ICommentRepository commentRepository, ILikeRepository likeRepository)
         {
             _context = context;
-            this._customRepository = _customRepository;
-            this._commentRepository = _commentRepository;
-            this._likeRepository = _likeRepository;
+            _customRepository = customRepository;
+            _commentRepository = commentRepository;
+            _likeRepository = likeRepository;
         }
 
         // GET: Posts
@@ -96,7 +96,7 @@ namespace DAL.Repositories
             if (result != null)
             {
                 // Hvis denne posten hører til en video, må denne slettes!
-                var videos = await _context.Videos.ToListAsync(); ;
+                var videos = await _context.Videos.ToListAsync();
                 if (videos != null)
                 {
                     foreach (var video in videos)

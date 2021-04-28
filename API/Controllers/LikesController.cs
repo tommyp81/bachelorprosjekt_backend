@@ -16,11 +16,11 @@ namespace API.Controllers
     {
         // Controller for Likes API Backend
 
-        private readonly ILikeBLL _repository;
+        private readonly ILikeBLL _likeBLL;
 
-        public LikesController(ILikeBLL _repository)
+        public LikesController(ILikeBLL likeBLL)
         {
-            this._repository = _repository;
+            _likeBLL = likeBLL;
         }
 
         // POST: GetLike
@@ -44,8 +44,11 @@ namespace API.Controllers
                 }
 
                 // Hent status på likes fra databasen
-                var getLike = await _repository.GetLike(like);
-                if (getLike == null) { return null; }
+                var getLike = await _likeBLL.GetLike(like);
+                if (getLike == null) 
+                {
+                    return null;
+                }
 
                 return Ok(getLike);
             }
@@ -76,9 +79,7 @@ namespace API.Controllers
                 }
 
                 // Oppdater like i databasen
-                var addLike = await _repository.AddLike(like);
-
-                return Ok(addLike);
+                return Ok(await _likeBLL.AddLike(like));
             }
             catch (Exception)
             {
@@ -107,9 +108,7 @@ namespace API.Controllers
                 }
 
                 // Oppdater like i databasen
-                var deleteLike = await _repository.DeleteLike(like);
-
-                return Ok(deleteLike);
+                return Ok(await _likeBLL.DeleteLike(like));
             }
             catch (Exception)
             {

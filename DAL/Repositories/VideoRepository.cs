@@ -15,10 +15,10 @@ namespace DAL.Repositories
         private readonly DBContext _context;
         private readonly IPostRepository _postRepository;
 
-        public VideoRepository(DBContext context, IPostRepository _postRepository)
+        public VideoRepository(DBContext context, IPostRepository postRepository)
         {
             _context = context;
-            this._postRepository = _postRepository;
+            _postRepository = postRepository;
         }
 
         // GET: Videos

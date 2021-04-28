@@ -16,11 +16,11 @@ namespace API.Controllers
     {
         // Controller for Users API Backend
 
-        private readonly IUserBLL _repository;
+        private readonly IUserBLL _userBLL;
 
-        public UsersController(IUserBLL _repository)
+        public UsersController(IUserBLL userBLL)
         {
-            this._repository = _repository;
+            _userBLL = userBLL;
         }
 
         // GET: Users
@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _repository.GetUsers());
+                return Ok(await _userBLL.GetUsers());
             }
             catch (Exception)
             {
@@ -43,7 +43,7 @@ namespace API.Controllers
         {
             try
             {
-                var user = await _repository.GetUser(id);
+                var user = await _userBLL.GetUser(id);
                 if (user == null)
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
@@ -59,7 +59,7 @@ namespace API.Controllers
 
         // POST: Users
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> AddUser(authUser user)
+        public async Task<ActionResult<UserDTO>> AddUser(AuthUser user)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace API.Controllers
                     return BadRequest();
                 }
 
-                var newUser = await _repository.AddUser(user);
+                var newUser = await _userBLL.AddUser(user);
                 if (newUser == null)
                 {
                     return BadRequest("Brukernavn eller epost eksisterer allerede");
@@ -84,7 +84,7 @@ namespace API.Controllers
 
         // PUT: Users/1
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<UserDTO>> UpdateUser(int id, authUser user)
+        public async Task<ActionResult<UserDTO>> UpdateUser(int id, AuthUser user)
         {
             try
             {
@@ -93,18 +93,19 @@ namespace API.Controllers
                     return BadRequest("Bruker ID stemmer ikke");
                 }
 
-                var checkUser = await _repository.GetUser(id);
+                var checkUser = await _userBLL.GetUser(id);
                 if (checkUser == null)
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
                 }
 
-                var updateUser = await _repository.UpdateUser(user);
+                var updateUser = await _userBLL.UpdateUser(user);
                 if (updateUser == null)
                 {
                     return BadRequest("Brukernavn eller epost eksisterer allerede");
                 }
-                return updateUser;
+
+                return Ok(updateUser);
             }
             catch (Exception)
             {
@@ -118,13 +119,13 @@ namespace API.Controllers
         {
             try
             {
-                var deleteUser = await _repository.GetUser(id);
-                if (deleteUser == null)
+                var checkUser = await _userBLL.GetUser(id);
+                if (checkUser == null)
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.DeleteUser(id);
+                return Ok(await _userBLL.DeleteUser(id));
             }
             catch (Exception)
             {

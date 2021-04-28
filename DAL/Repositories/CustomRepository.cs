@@ -56,7 +56,7 @@ namespace DAL.Repositories
             string container = user.Username;
 
             // Azure Storage connection
-            BlobContainerClient containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), container);
+            var containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), container);
 
             // Lag ny container om den ikke eksisterer
             //await containerClient.CreateIfNotExistsAsync();
@@ -79,7 +79,7 @@ namespace DAL.Repositories
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
 
             // Legge til informasjon om filen
-            Document document = new Document
+            var document = new Document
             {
                 FileName = fileName,
                 FileType = fileType,
@@ -159,7 +159,7 @@ namespace DAL.Repositories
             if (result != null)
             {
                 // Azure Storage connection
-                BlobContainerClient containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), result.Container);
+                var containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), result.Container);
                 BlobClient blobClient = containerClient.GetBlobClient(result.UniqueName);
 
                 // Slette filen fra Azure Storage
@@ -232,6 +232,19 @@ namespace DAL.Repositories
                 }
             }
             // Sende tilbake null hvis bruker eller passord er feil
+            return null;
+        }
+
+        // POST: SetAdmin
+        public async Task<User> SetAdmin(int id, bool admin)
+        {
+            var result = await _context.Users.FindAsync(id);
+            if (result != null)
+            {
+                result.Admin = admin;
+                await _context.SaveChangesAsync();
+                return result;
+            }
             return null;
         }
     }

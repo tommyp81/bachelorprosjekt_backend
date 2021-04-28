@@ -12,8 +12,8 @@ namespace DAL.Interfaces
     {
         Task<ICollection<User>> GetUsers();
         Task<User> GetUser(int id);
-        Task<User> AddUser(authUser user);
-        Task<User> UpdateUser(authUser user);
+        Task<User> AddUser(AuthUser user);
+        Task<User> UpdateUser(AuthUser user);
         Task<User> DeleteUser(int id);
     }
 }

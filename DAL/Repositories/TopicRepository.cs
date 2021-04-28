@@ -15,10 +15,10 @@ namespace DAL.Repositories
         private readonly DBContext _context;
         private readonly ISubTopicRepository _subTopicRepository;
 
-        public TopicRepository(DBContext context, ISubTopicRepository _subTopicRepository)
+        public TopicRepository(DBContext context, ISubTopicRepository subTopicRepository)
         {
             _context = context;
-            this._subTopicRepository = _subTopicRepository;
+            _subTopicRepository = subTopicRepository;
         }
 
         // GET: Topics
@@ -89,9 +89,9 @@ namespace DAL.Repositories
             {
                 // Hvis dette emnet har noen underemner, skal disse slettes!
                 var subtopics = await _subTopicRepository.GetSubTopics();
-                foreach(var subtopic in subtopics)
+                foreach (var subtopic in subtopics)
                 {
-                    if(subtopic.TopicId == result.Id)
+                    if (subtopic.TopicId == result.Id)
                     {
                         await _subTopicRepository.DeleteSubTopic(subtopic.Id);
                     }

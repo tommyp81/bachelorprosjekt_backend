@@ -19,13 +19,15 @@ namespace API.Controllers
     {
         // Controller for Custom API Backend
 
-        private readonly ICustomBLL _repository;
+        private readonly ICustomBLL _customBLL;
         private readonly IConfiguration _config;
+        private readonly IUserBLL _userBLL;
 
-        public CustomController(ICustomBLL _repository, IConfiguration configuration)
+        public CustomController(ICustomBLL customBLL, IConfiguration configuration, IUserBLL userBLL)
         {
-            this._repository = _repository;
+            _customBLL = customBLL;
             _config = configuration;
+            _userBLL = userBLL;
         }
 
         // GET: GetDocuments
@@ -35,7 +37,7 @@ namespace API.Controllers
             try
             {
                 // Viser kun dokumenter som har en InfoTopicId
-                return Ok(await _repository.GetDocuments());
+                return Ok(await _customBLL.GetDocuments());
             }
             catch (Exception)
             {
@@ -73,8 +75,7 @@ namespace API.Controllers
                 }
 
                 // Legg til fil på Azure Storage og i databasen
-                var newDocument = await _repository.UploadDocument(file, userId, postId, commentId, infoTopicId);
-
+                var newDocument = await _customBLL.UploadDocument(file, userId, postId, commentId, infoTopicId);
                 return CreatedAtAction(nameof(GetDocumentInfo), new { id = newDocument.Id }, newDocument);
             }
             catch (Exception)
@@ -89,7 +90,13 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _repository.GetDocumentInfo(id));
+                var document = await _customBLL.GetDocumentInfo(id);
+                if (document == null)
+                {
+                    return NotFound($"Dokument med ID {id} ble ikke funnet");
+                }
+
+                return Ok(document);
             }
             catch (Exception)
             {
@@ -105,18 +112,14 @@ namespace API.Controllers
             // Opplasting skjer i DAL og i metodene for å legge til Posts og Comments.
             try
             {
-                var document = await _repository.GetDocumentInfo(id);
-
+                var document = await _customBLL.GetDocumentInfo(id);
                 if (document == null)
                 {
                     return NotFound($"Dokumentet med ID {id} finnes ikke i databasen");
                 }
 
                 // Azure Storage connection, hent unikt navn fra databasen med ID
-                BlobClient blobClient = new BlobContainerClient(
-                    _config.GetConnectionString("AzureStorageKey"),
-                    document.Container).GetBlobClient(document.UniqueName);
-
+                var blobClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), document.Container).GetBlobClient(document.UniqueName);
                 if (await blobClient.ExistsAsync())
                 {
                     // Finn filen i Azure Storage og last ned
@@ -140,14 +143,13 @@ namespace API.Controllers
         {
             try
             {
-                var document = await _repository.GetDocumentInfo(id);
-
+                var document = await _customBLL.GetDocumentInfo(id);
                 if (document == null)
                 {
                     return NotFound($"Dokument med ID {id} ble ikke funnet");
                 }
 
-                return await _repository.DeleteDocument(id);
+                return Ok(await _customBLL.DeleteDocument(id));
             }
             catch (Exception)
             {
@@ -161,19 +163,38 @@ namespace API.Controllers
         {
             try
             {
-                var user = await _repository.Login(username, email, password);
-
+                var user = await _customBLL.Login(username, email, password);
                 if (user != null)
                 {
                     // Ok hvis brukernavn/epost og passord stemmer
                     return Ok(user);
                 }
 
-                return StatusCode(StatusCodes.Status401Unauthorized, "Feil ved brukernavn, epost eller passord");
+                return Unauthorized("Feil ved brukernavn, epost eller passord");
             }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved login");
+            }
+        }
+
+        // POST: SetAdmin
+        [HttpPost("{id:int}")]
+        public async Task<ActionResult<UserDTO>> SetAdmin(int id, bool admin)
+        {
+            try
+            {
+                var user = await _userBLL.GetUser(id);
+                if (user == null)
+                {
+                    return NotFound($"Bruker med ID {id} ble ikke funnet");
+                }
+
+                return Ok(await _customBLL.SetAdmin(id, admin));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved endring av admin");
             }
         }
     }

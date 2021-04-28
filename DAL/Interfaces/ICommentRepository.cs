@@ -12,8 +12,8 @@ namespace DAL.Interfaces
     {
         Task<ICollection<Comment>> GetComments();
         Task<Comment> GetComment(int id);
-        Task<Comment> AddComment(IFormFile file, Comment answer);
-        Task<Comment> UpdateComment(Comment answer);
+        Task<Comment> AddComment(IFormFile file, Comment comment);
+        Task<Comment> UpdateComment(Comment comment);
         Task<Comment> DeleteComment(int id);
     }
 }

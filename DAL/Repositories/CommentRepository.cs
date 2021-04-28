@@ -17,11 +17,11 @@ namespace DAL.Repositories
         private readonly ICustomRepository _customRepository;
         private readonly ILikeRepository _likeRepository;
 
-        public CommentRepository(DBContext context, ICustomRepository _customRepository, ILikeRepository _likeRepository)
+        public CommentRepository(DBContext context, ICustomRepository customRepository, ILikeRepository likeRepository)
         {
             _context = context;
-            this._customRepository = _customRepository;
-            this._likeRepository = _likeRepository;
+            _customRepository = customRepository;
+            _likeRepository = likeRepository;
         }
 
         // GET: Comment
