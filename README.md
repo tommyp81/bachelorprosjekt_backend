@@ -32,6 +32,9 @@
 <p>Legg ved username eller email og password i et form til: https://webforum.azurewebsites.net/Login</p>
 <p>Denne metoden returnerer user du logger inn med som et objekt hvis ok.</p>
 <br />
+<p><b>SetAdmin</b> - For å legge til admin på bruker uten passord</p>
+<p>Legg ved id og admin (bool) i et form til: https://webforum.azurewebsites.net/SetAdmin</p>
+<br />
 <p>Har også lagt til likes som action metoder</p>
 <p>POST: GetLike for status: https://webforum.azurewebsites.net/GetLike</p>
 <p>POST: AddLike for å legge til ny: https://webforum.azurewebsites.net/AddLike</p>
