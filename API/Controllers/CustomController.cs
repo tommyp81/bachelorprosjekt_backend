@@ -179,8 +179,8 @@ namespace API.Controllers
         }
 
         // POST: SetAdmin
-        [HttpPost("{id:int}")]
-        public async Task<ActionResult<UserDTO>> SetAdmin(int id, bool admin)
+        [HttpPost]
+        public async Task<ActionResult<UserDTO>> SetAdmin([FromForm] int id, [FromForm] bool admin)
         {
             try
             {
