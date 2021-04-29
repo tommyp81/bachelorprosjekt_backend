@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -106,10 +107,8 @@ namespace API.Controllers
 
         // GET: GetDocument/1
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<DocumentDTO>> GetDocument(int id)
+        public async Task<ActionResult<BlobDownloadInfo>> GetDocument(int id)
         {
-            // Denne metoden finnes kun i controller, og brukes bare til å laste ned dokumenter
-            // Opplasting skjer i DAL og i metodene for å legge til Posts og Comments.
             try
             {
                 var document = await _customBLL.GetDocumentInfo(id);
@@ -118,22 +117,18 @@ namespace API.Controllers
                     return NotFound($"Dokumentet med ID {id} finnes ikke i databasen");
                 }
 
-                // Azure Storage connection, hent unikt navn fra databasen med ID
-                var blobClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), document.Container).GetBlobClient(document.UniqueName);
-                if (await blobClient.ExistsAsync())
+                var file = await _customBLL.GetDocument(id);
+                if (file == null)
                 {
-                    // Finn filen i Azure Storage og last ned
-                    var file = await blobClient.DownloadAsync();
-
-                    // Returner filen med filnavn fra databasen (så bruker ikke laster ned fil med unikt navn)
-                    return File(file.Value.Content, file.Value.ContentType, document.FileName);
+                    return NotFound($"Dokumentet med ID {id} finnes ikke i Azure Storage");
                 }
 
-                return NotFound($"Dokumentet med ID {id} finnes ikke i Azure Storage");
+                // Returner filen med filnavn fra databasen (så bruker ikke laster ned fil med unikt navn)
+                return File(file.Content, file.ContentType, document.FileName);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av dokument");
+                return StatusCode(StatusCodes.Status500InternalServerError, e);//"Feil ved henting av dokument"
             }
         }
 

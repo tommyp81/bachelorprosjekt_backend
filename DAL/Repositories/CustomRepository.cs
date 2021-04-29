@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using DAL.Database_configuration;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -152,6 +153,24 @@ namespace DAL.Repositories
             return await _context.Documents.FindAsync(id);
         }
 
+        // GET: GetDocument/1
+        public async Task<BlobDownloadInfo> GetDocument(int id)
+        {
+            var document = await _context.Documents.FindAsync(id);
+            if (document != null)
+            {
+                // Azure Storage connection, hent unikt navn fra databasen med ID
+                var blobClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), document.Container).GetBlobClient(document.UniqueName);
+                if (await blobClient.ExistsAsync())
+                {
+                    // Finn filen i Azure Storage som skal lastes ned
+                    var file = await blobClient.DownloadAsync();
+                    return file;
+                }
+            }
+            return null;
+        }
+
         // DELETE: DeleteDocument/1
         public async Task<Document> DeleteDocument(int id)
         {
@@ -160,7 +179,7 @@ namespace DAL.Repositories
             {
                 // Azure Storage connection
                 var containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), result.Container);
-                BlobClient blobClient = containerClient.GetBlobClient(result.UniqueName);
+                var blobClient = containerClient.GetBlobClient(result.UniqueName);
 
                 // Slette filen fra Azure Storage
                 //await blobClient.DeleteIfExistsAsync();

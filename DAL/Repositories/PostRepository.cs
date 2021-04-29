@@ -46,6 +46,7 @@ namespace DAL.Repositories
             // Lagre ny posten i databasen først
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             post.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+            post.Edited = false;
             var result = await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
 
@@ -80,6 +81,7 @@ namespace DAL.Repositories
                 result.Title = post.Title;
                 result.Content = post.Content;
                 result.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+                result.Edited = true;
                 result.UserId = post.UserId;
                 result.SubTopicId = post.SubTopicId;
                 result.DocumentId = post.DocumentId;

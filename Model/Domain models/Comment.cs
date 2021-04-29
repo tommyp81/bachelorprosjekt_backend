@@ -15,6 +15,7 @@ namespace Model.Domain_models
         public int Id { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }
+        public bool Edited { get; set; }
 
         // Relasjoner
         [ForeignKey("User")]

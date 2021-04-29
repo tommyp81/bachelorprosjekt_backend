@@ -1,4 +1,5 @@
 ﻿using API.Controllers;
+using Azure.Storage.Blobs.Models;
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace Test
     public class CustomControllerTest
     {
         [Fact]
-        public async Task GetDocuments_Ok()
+        public async void GetDocuments_Ok()
         {
             // Arrange
             var documentDTOs = TestDocumentListDTO();
@@ -39,10 +40,11 @@ namespace Test
         }
 
         [Fact]
-        public async Task GetDocuments_IsNull()
+        public async void GetDocuments_IsNull()
         {
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.GetDocuments()).ReturnsAsync((ICollection<DocumentDTO>)null);
             var controller = new CustomController(mockRepo.Object, null, null);
 
             // Act
@@ -52,6 +54,22 @@ namespace Test
             var objectResult = result.Result as ObjectResult;
             var okResult = Assert.IsType<OkObjectResult>(objectResult);
             Assert.Null(okResult.Value);
+        }
+
+        [Fact]
+        public async void GetDocuments_InternalServerError()
+        {
+            // Arrange
+            var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.GetDocuments()).ThrowsAsync(new InvalidOperationException());
+            var controller = new CustomController(mockRepo.Object, null, null);
+
+            // Act
+            var result = await controller.GetDocuments();
+
+            // Assert
+            var objectResult = result.Result as ObjectResult;
+            Assert.Equal(500, objectResult.StatusCode);
         }
 
         [Fact]
@@ -93,6 +111,25 @@ namespace Test
         }
 
         [Fact]
+        public async void UploadDocument_InternalServerError()
+        {
+            // Arrange
+            IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Dette er også kun en test.")), 0, 0, "Data", "Testfil1.txt");
+            int userId = 1;
+            int postId = 1;
+            var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.UploadDocument(file, userId, postId, null, null)).ThrowsAsync(new InvalidOperationException());
+            var controller = new CustomController(mockRepo.Object, null, null);
+
+            // Act
+            var result = await controller.UploadDocument(file, userId, postId, null, null);
+
+            // Assert
+            var objectResult = result.Result as ObjectResult;
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Fact]
         public async void GetDocumentInfo_Ok()
         {
             // Arrange
@@ -119,6 +156,7 @@ namespace Test
             // Arrange
             int id = 1;
             var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync((DocumentDTO)null);
             var controller = new CustomController(mockRepo.Object, null, null);
 
             // Act
@@ -130,24 +168,48 @@ namespace Test
         }
 
         [Fact]
-        public async void GetDocument_Ok()
+        public async void GetDocumentInfo_InternalServerError()
         {
             // Arrange
-            IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Dette er også kun en test.")), 0, 0, "Data", "Testfil1.txt");
             int id = 1;
-            var documentDTO = TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
-            mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
+            mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ThrowsAsync(new InvalidOperationException());
             var controller = new CustomController(mockRepo.Object, null, null);
 
             // Act
-            var result = await controller.GetDocument(id);
+            var result = await controller.GetDocumentInfo(id);
 
             // Assert
-            //var actionResult = Assert.IsType<ActionResult<DocumentDTO>>(result);
             var objectResult = result.Result as ObjectResult;
-            Assert.IsAssignableFrom<IFormFile>(objectResult.Value = file);
+            Assert.Equal(500, objectResult.StatusCode);
         }
+
+        //[Fact]
+        //public async void GetDocument_Ok()
+        //{
+        //    // Arrange
+        //    IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Dette er også kun en test.")), 0, 0, "Data", "Testfil1.txt");
+        //    //var mockBlob = new Mock<BlobDownloadInfo>(0);
+        //    //mockBlob.Setup(m => m.BlobType.Equals(file));
+        //    int id = 1;
+        //    var documentDTO = TestDocumentDTO();
+        //    var mockRepo = new Mock<ICustomBLL>();
+        //    mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
+        //    mockRepo.Setup(repo => repo.GetDocument(id)).ReturnsAsync(file);
+        //    var controller = new CustomController(mockRepo.Object, null, null);
+
+        //    // Act
+        //    var result = await controller.GetDocument(id);
+
+        //    // Assert
+        //    //var objectResult = result.Result as ObjectResult;
+        //    //Assert.IsAssignableFrom<IFormFile>(objectResult.Value = file);
+        //    var actionResult = Assert.IsType<ActionResult<BlobDownloadInfo>>(result);
+        //    var objectResult = result.Result as ObjectResult;
+        //    var okResult = Assert.IsType<OkObjectResult>(objectResult);
+        //    var returnValue = Assert.IsType<BlobDownloadInfo>(okResult.Value);
+        //    Assert.Equal(mockBlob.Object, returnValue);
+        //}
 
         [Fact]
         public async void GetDocument_NotFound()
@@ -189,7 +251,7 @@ namespace Test
         }
 
         [Fact]
-        public async void DeleteComment_NotFound()
+        public async void DeleteDocument_NotFound()
         {
             // Arrange
             int id = 1;
@@ -203,6 +265,25 @@ namespace Test
             // Assert
             var actionResult = Assert.IsType<ActionResult<DocumentDTO>>(result);
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+        }
+
+        [Fact]
+        public async void DeleteDocument_InternalServerError()
+        {
+            // Arrange
+            int id = 1;
+            var documentDTO = TestDocumentDTO();
+            var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
+            mockRepo.Setup(repo => repo.DeleteDocument(id)).ThrowsAsync(new InvalidOperationException());
+            var controller = new CustomController(mockRepo.Object, null, null);
+
+            // Act
+            var result = await controller.DeleteDocument(id);
+
+            // Assert
+            var objectResult = result.Result as ObjectResult;
+            Assert.Equal(500, objectResult.StatusCode);
         }
 
         [Fact]
@@ -241,13 +322,12 @@ namespace Test
             var result = await controller.Login(username, null, password);
 
             // Assert
-            //var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
             var objectResult = result.Result as ObjectResult;
             Assert.IsType<UnauthorizedObjectResult>(objectResult);
         }
 
         [Fact]
-        public async Task Login_InternalServerError()
+        public async void Login_InternalServerError()
         {
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();

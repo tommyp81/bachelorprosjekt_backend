@@ -33,6 +33,7 @@ namespace BLL.Repositories
                 Id = comment.Id,
                 Content = comment.Content,
                 Date = comment.Date,
+                Edited = comment.Edited,
                 UserId = comment.UserId,
                 PostId = comment.PostId,
                 DocumentId = comment.DocumentId,

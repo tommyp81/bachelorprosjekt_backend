@@ -42,6 +42,7 @@ namespace DAL.Repositories
             // Lagre ny kommentar i databasen først
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             comment.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+            comment.Edited = false;
             var result = await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
 
@@ -75,6 +76,7 @@ namespace DAL.Repositories
                 result.Id = comment.Id;
                 result.Content = comment.Content;
                 result.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+                result.Edited = true;
                 result.UserId = comment.UserId;
                 result.PostId = comment.PostId;
                 result.DocumentId = comment.DocumentId;

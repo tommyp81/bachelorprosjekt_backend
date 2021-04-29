@@ -1,4 +1,5 @@
-﻿using BLL.Interfaces;
+﻿using Azure.Storage.Blobs.Models;
+using BLL.Interfaces;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
@@ -126,6 +127,14 @@ namespace BLL.Repositories
             if (getDocument == null) { return null; }
             var documentDTO = AddDTO(getDocument);
             return documentDTO;
+        }
+
+        // GET: GetDocument/1
+        public async Task<BlobDownloadInfo> GetDocument(int id)
+        {
+            var file = await _repository.GetDocument(id);
+            if (file == null) { return null; }
+            return file;
         }
 
         // DELETE: DeleteDocument/1
