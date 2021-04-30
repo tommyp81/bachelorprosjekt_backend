@@ -49,7 +49,7 @@ namespace DAL.Repositories
             var result = await _context.InfoTopics.FindAsync(infotopic.Id);
             if (result != null)
             {
-                result.Id = infotopic.Id;
+                result.Id = result.Id;
                 result.Title = infotopic.Title;
                 result.Description = infotopic.Description;
                 await _context.SaveChangesAsync();

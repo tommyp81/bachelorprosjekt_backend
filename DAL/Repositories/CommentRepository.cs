@@ -73,13 +73,14 @@ namespace DAL.Repositories
             var result = await _context.Comments.FindAsync(comment.Id);
             if (result != null)
             {
-                result.Id = comment.Id;
+                result.Id = result.Id;
                 result.Content = comment.Content;
-                result.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+                result.Date = result.Date; //TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+                result.EditDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
                 result.Edited = true;
-                result.UserId = comment.UserId;
-                result.PostId = comment.PostId;
-                result.DocumentId = comment.DocumentId;
+                result.UserId = result.UserId;
+                result.PostId = result.PostId;
+                result.DocumentId = result.DocumentId;
                 await _context.SaveChangesAsync();
                 return result;
             }

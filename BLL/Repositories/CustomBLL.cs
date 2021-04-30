@@ -1,7 +1,7 @@
-﻿using Azure.Storage.Blobs.Models;
-using BLL.Interfaces;
+﻿using BLL.Interfaces;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
 using System;
@@ -130,7 +130,7 @@ namespace BLL.Repositories
         }
 
         // GET: GetDocument/1
-        public async Task<BlobDownloadInfo> GetDocument(int id)
+        public async Task<FileStreamResult> GetDocument(int id)
         {
             var file = await _repository.GetDocument(id);
             if (file == null) { return null; }

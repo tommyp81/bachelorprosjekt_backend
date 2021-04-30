@@ -47,13 +47,13 @@ namespace DAL.Repositories
             var result = await _context.Videos.FindAsync(video.Id);
             if (result != null)
             {
-                result.Id = video.Id;
+                result.Id = result.Id;
                 result.YouTubeId = video.YouTubeId;
                 result.Title = video.Title;
                 result.Description = video.Description;
-                result.UserId = video.UserId;
-                result.PostId = video.PostId;
-                result.InfoTopic = video.InfoTopic;
+                result.UserId = result.UserId;
+                result.PostId = result.PostId;
+                result.InfoTopic = result.InfoTopic;
                 await _context.SaveChangesAsync();
                 return result;
             }

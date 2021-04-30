@@ -1,5 +1,5 @@
-﻿using Azure.Storage.Blobs.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace DAL.Interfaces
 
         Task<ICollection<Document>> GetDocuments();
         Task<Document> GetDocumentInfo(int id);
-        Task<BlobDownloadInfo> GetDocument(int id);
+        Task<FileStreamResult> GetDocument(int id);
         Task<Document> DeleteDocument(int id);
         Task<User> Login(string username, string email, string password);
         Task<User> SetAdmin(int id, bool admin);

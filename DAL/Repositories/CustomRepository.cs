@@ -1,8 +1,8 @@
 ﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using DAL.Database_configuration;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Model.Domain_models;
@@ -154,7 +154,7 @@ namespace DAL.Repositories
         }
 
         // GET: GetDocument/1
-        public async Task<BlobDownloadInfo> GetDocument(int id)
+        public async Task<FileStreamResult> GetDocument(int id)
         {
             var document = await _context.Documents.FindAsync(id);
             if (document != null)
@@ -165,7 +165,11 @@ namespace DAL.Repositories
                 {
                     // Finn filen i Azure Storage som skal lastes ned
                     var file = await blobClient.DownloadAsync();
-                    return file;
+                    return new FileStreamResult(file.Value.Content, file.Value.ContentType)
+                    {
+                        // Returner filen med filnavn fra databasen (så bruker ikke laster ned fil med unikt navn)
+                        FileDownloadName = document.FileName
+                    };
                 }
             }
             return null;

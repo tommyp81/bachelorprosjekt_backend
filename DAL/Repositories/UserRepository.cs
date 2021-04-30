@@ -97,7 +97,7 @@ namespace DAL.Repositories
                 byte[] passwordSalt = AddSalt();
                 byte[] passwordHash = AddHash(user.Password, passwordSalt);
 
-                result.Id = user.Id;
+                result.Id = result.Id;
                 result.Username = user.Username;
                 result.FirstName = user.FirstName;
                 result.LastName = user.LastName;

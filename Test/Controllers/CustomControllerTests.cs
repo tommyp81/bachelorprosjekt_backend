@@ -1,27 +1,32 @@
-﻿using API.Controllers;
-using Azure.Storage.Blobs.Models;
-using BLL.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Model.DTO;
-using Moq;
+﻿using Xunit;
+using API.Controllers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
+using Test.Objects;
+using Moq;
+using BLL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Model.DTO;
+using Microsoft.AspNetCore.Http;
 
-namespace Test
+namespace API.Controllers.Tests
 {
-    public class CustomControllerTest
+    public class CustomControllerTests
     {
+        //[Fact]
+        //public async void CustomControllerTest()
+        //{
+        //    Assert.True(false, "This test needs an implementation");
+        //}
+
         [Fact]
-        public async void GetDocuments_Ok()
+        public async void GetDocumentsTest_Ok()
         {
             // Arrange
-            var documentDTOs = TestDocumentListDTO();
+            var documentDTOs = DocumentObject.TestDocumentListDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocuments()).ReturnsAsync(documentDTOs);
             var controller = new CustomController(mockRepo.Object, null, null);
@@ -40,7 +45,7 @@ namespace Test
         }
 
         [Fact]
-        public async void GetDocuments_IsNull()
+        public async void GetDocumentsTest_IsNull()
         {
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
@@ -57,7 +62,7 @@ namespace Test
         }
 
         [Fact]
-        public async void GetDocuments_InternalServerError()
+        public async void GetDocumentsTest_InternalServerError()
         {
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
@@ -73,30 +78,31 @@ namespace Test
         }
 
         [Fact]
-        public async void UploadDocument_Ok()
+        public async void UploadDocumentTest_Ok()
         {
             // Arrange
-            IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Dette er også kun en test.")), 0, 0, "Data", "Testfil1.txt");
+            var file = DocumentObject.TestDocument();
+            var iFormFile = new FormFile(file.FileStream, file.FileStream.Position, file.FileStream.Length, file.ContentType, file.FileDownloadName);
             int userId = 1;
             int postId = 1;
-            var documentDTO = TestDocumentDTO();
+            var documentDTO = DocumentObject.TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
-            mockRepo.Setup(repo => repo.UploadDocument(file, userId, postId, null, null)).ReturnsAsync(documentDTO).Verifiable();
+            mockRepo.Setup(repo => repo.UploadDocument(iFormFile, userId, postId, null, null)).ReturnsAsync(documentDTO).Verifiable();
             var controller = new CustomController(mockRepo.Object, null, null);
 
             // Act
-            var result = await controller.UploadDocument(file, userId, postId, null, null);
+            var result = await controller.UploadDocument(iFormFile, userId, postId, null, null);
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<DocumentDTO>>(result);
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(actionResult.Result);
             var returnValue = Assert.IsType<DocumentDTO>(createdAtActionResult.Value);
             mockRepo.Verify();
-            Assert.Equal(1, returnValue.Id);
+            Assert.Equal(documentDTO.FileName, returnValue.FileName);
         }
 
         [Fact]
-        public async void UploadDocument_BadRequest()
+        public async void UploadDocumentTest_BadRequest()
         {
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
@@ -111,18 +117,18 @@ namespace Test
         }
 
         [Fact]
-        public async void UploadDocument_InternalServerError()
+        public async void UploadDocumentTest_InternalServerError()
         {
-            // Arrange
-            IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Dette er også kun en test.")), 0, 0, "Data", "Testfil1.txt");
+            var file = DocumentObject.TestDocument();
+            var iFormFile = new FormFile(file.FileStream, file.FileStream.Position, file.FileStream.Length, file.ContentType, file.FileDownloadName);
             int userId = 1;
             int postId = 1;
             var mockRepo = new Mock<ICustomBLL>();
-            mockRepo.Setup(repo => repo.UploadDocument(file, userId, postId, null, null)).ThrowsAsync(new InvalidOperationException());
+            mockRepo.Setup(repo => repo.UploadDocument(iFormFile, userId, postId, null, null)).ThrowsAsync(new InvalidOperationException());
             var controller = new CustomController(mockRepo.Object, null, null);
 
             // Act
-            var result = await controller.UploadDocument(file, userId, postId, null, null);
+            var result = await controller.UploadDocument(iFormFile, userId, postId, null, null);
 
             // Assert
             var objectResult = result.Result as ObjectResult;
@@ -130,11 +136,11 @@ namespace Test
         }
 
         [Fact]
-        public async void GetDocumentInfo_Ok()
+        public async void GetDocumentInfoTest_Ok()
         {
             // Arrange
             int id = 1;
-            var documentDTO = TestDocumentDTO();
+            var documentDTO = DocumentObject.TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
             var controller = new CustomController(mockRepo.Object, null, null);
@@ -151,7 +157,7 @@ namespace Test
         }
 
         [Fact]
-        public async void GetDocumentInfo_NotFound()
+        public async void GetDocumentInfoTest_NotFound()
         {
             // Arrange
             int id = 1;
@@ -168,7 +174,7 @@ namespace Test
         }
 
         [Fact]
-        public async void GetDocumentInfo_InternalServerError()
+        public async void GetDocumentInfoTest_InternalServerError()
         {
             // Arrange
             int id = 1;
@@ -184,55 +190,86 @@ namespace Test
             Assert.Equal(500, objectResult.StatusCode);
         }
 
-        //[Fact]
-        //public async void GetDocument_Ok()
-        //{
-        //    // Arrange
-        //    IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Dette er også kun en test.")), 0, 0, "Data", "Testfil1.txt");
-        //    //var mockBlob = new Mock<BlobDownloadInfo>(0);
-        //    //mockBlob.Setup(m => m.BlobType.Equals(file));
-        //    int id = 1;
-        //    var documentDTO = TestDocumentDTO();
-        //    var mockRepo = new Mock<ICustomBLL>();
-        //    mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
-        //    mockRepo.Setup(repo => repo.GetDocument(id)).ReturnsAsync(file);
-        //    var controller = new CustomController(mockRepo.Object, null, null);
-
-        //    // Act
-        //    var result = await controller.GetDocument(id);
-
-        //    // Assert
-        //    //var objectResult = result.Result as ObjectResult;
-        //    //Assert.IsAssignableFrom<IFormFile>(objectResult.Value = file);
-        //    var actionResult = Assert.IsType<ActionResult<BlobDownloadInfo>>(result);
-        //    var objectResult = result.Result as ObjectResult;
-        //    var okResult = Assert.IsType<OkObjectResult>(objectResult);
-        //    var returnValue = Assert.IsType<BlobDownloadInfo>(okResult.Value);
-        //    Assert.Equal(mockBlob.Object, returnValue);
-        //}
-
         [Fact]
-        public async void GetDocument_NotFound()
+        public async void GetDocumentTest_Ok()
         {
             // Arrange
             int id = 1;
+            var documentDTO = DocumentObject.TestDocumentDTO();
+            var file = DocumentObject.TestDocument();
             var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
+            mockRepo.Setup(repo => repo.GetDocument(id)).ReturnsAsync(file);
             var controller = new CustomController(mockRepo.Object, null, null);
 
             // Act
             var result = await controller.GetDocument(id);
 
             // Assert
-            var actionResult = Assert.IsType<ActionResult<DocumentDTO>>(result);
-            Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+            //var actionResult = Assert.IsType<FileStreamResult>(result);
+            var actionResult = Assert.IsAssignableFrom<IActionResult>(result);
+            Assert.NotNull(result);
+            //var objectResult = actionResult as OkObjectResult;
+            //var objectResult = result as ObjectResult;
+            //Assert.Equal(500, objectResult.StatusCode);
+            //var okResult = Assert.IsType<OkObjectResult>(actionResult.);
+            //var returnValue = Assert.IsType<DocumentDTO>(okResult.Value);
+            //Assert.Equal(documentDTO.FileName, returnValue.FileName);
+
+            Assert.True(false, "This test needs an implementation");
         }
 
         [Fact]
-        public async void DeleteDocument_Ok()
+        public async void GetDocumentTest_NotFoundDatabase()
         {
             // Arrange
             int id = 1;
-            var documentDTO = TestDocumentDTO();
+            var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync((DocumentDTO)null);
+            mockRepo.Setup(repo => repo.GetDocument(id)).ReturnsAsync((FileStreamResult)null);
+            var controller = new CustomController(mockRepo.Object, null, null);
+
+            // Act
+            var result = await controller.GetDocument(id);
+
+            // Assert
+            var actionResult = Assert.IsAssignableFrom<IActionResult>(result);
+            var objectResult = Assert.IsType<NotFoundObjectResult>(actionResult);
+            Assert.Equal("Dokumentet med ID 1 finnes ikke i databasen", objectResult.Value);
+        }
+
+        [Fact]
+        public async void GetDocumentTest_NotFoundAzure()
+        {
+            // Arrange
+            int id = 1;
+            var documentDTO = DocumentObject.TestDocumentDTO();
+            var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
+            mockRepo.Setup(repo => repo.GetDocument(id)).ReturnsAsync((FileStreamResult)null);
+            var controller = new CustomController(mockRepo.Object, null, null);
+
+            // Act
+            var result = await controller.GetDocument(id);
+
+            // Assert
+            var actionResult = Assert.IsAssignableFrom<IActionResult>(result);
+            var objectResult = Assert.IsType<NotFoundObjectResult>(actionResult);
+            Assert.Equal("Dokumentet med ID 1 finnes ikke i Azure Storage", objectResult.Value);
+        }
+
+        [Fact]
+        public async void GetDocumentTest_InternalServerError()
+        {
+            Assert.True(false, "This test needs an implementation");
+        }
+
+        [Fact]
+        public async void DeleteDocumentTest_Ok()
+        {
+            // Arrange
+            int id = 1;
+            var documentDTO = DocumentObject.TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
             mockRepo.Setup(repo => repo.DeleteDocument(id)).ReturnsAsync(documentDTO).Verifiable();
@@ -251,7 +288,7 @@ namespace Test
         }
 
         [Fact]
-        public async void DeleteDocument_NotFound()
+        public async void DeleteDocumentTest_NotFound()
         {
             // Arrange
             int id = 1;
@@ -268,11 +305,11 @@ namespace Test
         }
 
         [Fact]
-        public async void DeleteDocument_InternalServerError()
+        public async void DeleteDocumentTest_InternalServerError()
         {
             // Arrange
             int id = 1;
-            var documentDTO = TestDocumentDTO();
+            var documentDTO = DocumentObject.TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
             mockRepo.Setup(repo => repo.DeleteDocument(id)).ThrowsAsync(new InvalidOperationException());
@@ -287,12 +324,12 @@ namespace Test
         }
 
         [Fact]
-        public async void Login_Ok()
+        public async void LoginTest_Ok()
         {
             // Arrange
             string username = "sysadmin";
             string password = "password";
-            var userDTO = TestUserDTO();
+            var userDTO = UserObject.TestUserDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.Login(username, null, password)).ReturnsAsync(userDTO);
             var controller = new CustomController(mockRepo.Object, null, null);
@@ -309,7 +346,7 @@ namespace Test
         }
 
         [Fact]
-        public async void Login_Unauthorized()
+        public async void LoginTest_Unauthorized()
         {
             // Arrange
             string username = "feil";
@@ -327,7 +364,7 @@ namespace Test
         }
 
         [Fact]
-        public async void Login_InternalServerError()
+        public async void LoginTest_InternalServerError()
         {
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
@@ -342,87 +379,30 @@ namespace Test
             Assert.Equal(500, objectResult.StatusCode);
         }
 
-        private static ICollection<DocumentDTO> TestDocumentListDTO()
-        {
-            var documents = new List<DocumentDTO>
-            {
-                new DocumentDTO()
-                {
-                    Id = 1,
-                    FileName = "Testfil1.txt",
-                    FileType = ".txt",
-                    FileSize = "29 byte",
-                    Uploaded = DateTime.UtcNow,
-                    UniqueName = "Testfil1.txt (test)",
-                    Container = "sysadmin",
-                    UserId = 1,
-                    PostId = 1,
-                    CommentId = null,
-                    InfoTopicId = null
-                },
-                new DocumentDTO()
-                {
-                    Id = 2,
-                    FileName = "Testfil2.txt",
-                    FileType = ".txt",
-                    FileSize = "29 byte",
-                    Uploaded = DateTime.UtcNow,
-                    UniqueName = "Testfil2.txt (test)",
-                    Container = "sysadmin",
-                    UserId = 1,
-                    PostId = null,
-                    CommentId = 1,
-                    InfoTopicId = null
-                },
-                new DocumentDTO()
-                {
-                    Id = 3,
-                    FileName = "Testfil3.txt",
-                    FileType = ".txt",
-                    FileSize = "29 byte",
-                    Uploaded = DateTime.UtcNow,
-                    UniqueName = "Testfil3.txt (test)",
-                    Container = "sysadmin",
-                    UserId = 1,
-                    PostId = null,
-                    CommentId = null,
-                    InfoTopicId = 1
-                },
-            };
-            return documents;
-        }
+        //[Fact]
+        //public async void SetAdminTest()
+        //{
+        //    Assert.True(false, "This test needs an implementation");
+        //}
 
-        private static DocumentDTO TestDocumentDTO()
-        {
-            var document = new DocumentDTO()
-            {
-                Id = 1,
-                FileName = "Testfil1.txt",
-                FileType = ".txt",
-                FileSize = "29 byte",
-                Uploaded = DateTime.UtcNow,
-                UniqueName = "Testfil1.txt (test)",
-                Container = "sysadmin",
-                UserId = 1,
-                PostId = 1,
-                CommentId = null,
-                InfoTopicId = null
-            };
-            return document;
-        }
+        //// Tester for metoder i BLL
 
-        private static UserDTO TestUserDTO()
-        {
-            var user = new UserDTO()
-            {
-                Id = 1,
-                Username = "sysadmin",
-                FirstName = "Superbruker",
-                LastName = "NFB",
-                Email = "admin@badminton.no",
-                Admin = true
-            };
-            return user;
-        }
+        //[Fact]
+        //public async void GetCommentCountTest()
+        //{
+        //    Assert.True(false, "This test needs an implementation");
+        //}
+
+        //[Fact]
+        //public async void GetLikeCountTest()
+        //{
+        //    Assert.True(false, "This test needs an implementation");
+        //}
+
+        //[Fact]
+        //public async void AddDTOTest()
+        //{
+        //    Assert.True(false, "This test needs an implementation");
+        //}
     }
 }

@@ -107,7 +107,7 @@ namespace API.Controllers
 
         // GET: GetDocument/1
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<BlobDownloadInfo>> GetDocument(int id)
+        public async Task<IActionResult> GetDocument(int id)
         {
             try
             {
@@ -123,8 +123,7 @@ namespace API.Controllers
                     return NotFound($"Dokumentet med ID {id} finnes ikke i Azure Storage");
                 }
 
-                // Returner filen med filnavn fra databasen (så bruker ikke laster ned fil med unikt navn)
-                return File(file.Content, file.ContentType, document.FileName);
+                return File(file.FileStream, file.ContentType, file.FileDownloadName);
             }
             catch (Exception e)
             {

@@ -1,25 +1,31 @@
-﻿using API.Controllers;
-using BLL.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Model.Domain_models;
-using Model.DTO;
-using Moq;
+﻿using Xunit;
+using API.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
+using Test.Objects;
+using BLL.Interfaces;
+using Moq;
+using Microsoft.AspNetCore.Mvc;
+using Model.DTO;
 
-namespace Test
+namespace API.Controllers.Tests
 {
-    public class CommentsControllerTest
+    public class CommentsControllerTests
     {
+        //[Fact]
+        //public async void CommentsControllerTest()
+        //{
+        //    Assert.True(false, "This test needs an implementation");
+        //}
+
         [Fact]
-        public async void GetComments_Ok()
+        public async void GetCommentsTest_Ok()
         {
             // Arrange
-            var commentDTOs = TestCommentListDTO();
+            var commentDTOs = CommentObject.TestCommentListDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.GetComments()).ReturnsAsync(commentDTOs);
             var controller = new CommentsController(mockRepo.Object);
@@ -38,7 +44,7 @@ namespace Test
         }
 
         [Fact]
-        public async void GetComments_IsNull()
+        public async void GetCommentsTest_IsNull()
         {
             // Arrange
             var mockRepo = new Mock<ICommentBLL>();
@@ -49,13 +55,14 @@ namespace Test
             var result = await controller.GetComments();
 
             // Assert
+            var actionResult = Assert.IsType<ActionResult<ICollection<CommentDTO>>>(result);
             var objectResult = result.Result as ObjectResult;
             var okResult = Assert.IsType<OkObjectResult>(objectResult);
             Assert.Null(okResult.Value);
         }
 
         [Fact]
-        public async void GetComments_InternalServerError()
+        public async void GetCommentsTest_InternalServerError()
         {
             // Arrange
             var mockRepo = new Mock<ICommentBLL>();
@@ -68,14 +75,15 @@ namespace Test
             // Assert
             var objectResult = result.Result as ObjectResult;
             Assert.Equal(500, objectResult.StatusCode);
+            Assert.Equal("Feil ved henting av kommentarer", objectResult.Value);
         }
 
         [Fact]
-        public async void GetComment_Ok()
+        public async void GetCommentTest_Ok()
         {
             // Arrange
             int id = 1;
-            var commentDTO = TestCommentDTO();
+            var commentDTO = CommentObject.TestCommentDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.GetComment(id)).ReturnsAsync(commentDTO);
             var controller = new CommentsController(mockRepo.Object);
@@ -92,7 +100,7 @@ namespace Test
         }
 
         [Fact]
-        public async void GetComment_NotFound()
+        public async void GetCommentTest_NotFound()
         {
             // Arrange
             int id = 1;
@@ -105,11 +113,12 @@ namespace Test
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<CommentDTO>>(result);
-            Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+            var objectResult = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+            Assert.Equal("Kommentar med ID 1 ble ikke funnet", objectResult.Value);
         }
 
         [Fact]
-        public async void GetComment_InternalServerError()
+        public async void GetCommentTest_InternalServerError()
         {
             // Arrange
             int id = 1;
@@ -123,14 +132,15 @@ namespace Test
             // Assert
             var objectResult = result.Result as ObjectResult;
             Assert.Equal(500, objectResult.StatusCode);
+            Assert.Equal("Feil ved henting av kommentarer", objectResult.Value);
         }
 
         [Fact]
-        public async void AddComment_Ok()
+        public async void AddCommentTest_Ok()
         {
             // Arrange
-            var comment = TestComment();
-            var commentDTO = TestCommentDTO();
+            var comment = CommentObject.TestComment();
+            var commentDTO = CommentObject.TestCommentDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.AddComment(null, comment)).ReturnsAsync(commentDTO).Verifiable();
             var controller = new CommentsController(mockRepo.Object);
@@ -147,7 +157,7 @@ namespace Test
         }
 
         [Fact]
-        public async void AddComment_BadRequest()
+        public async void AddCommentTest_BadRequest()
         {
             // Arrange
             var mockRepo = new Mock<ICommentBLL>();
@@ -162,10 +172,10 @@ namespace Test
         }
 
         [Fact]
-        public async void AddComment_InternalServerError()
+        public async void AddCommentTest_InternalServerError()
         {
             // Arrange
-            var comment = TestComment();
+            var comment = CommentObject.TestComment();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.AddComment(null, comment)).ThrowsAsync(new InvalidOperationException());
             var controller = new CommentsController(mockRepo.Object);
@@ -176,15 +186,16 @@ namespace Test
             // Assert
             var objectResult = result.Result as ObjectResult;
             Assert.Equal(500, objectResult.StatusCode);
+            Assert.Equal("Feil ved oppretting av ny kommentar", objectResult.Value);
         }
 
         [Fact]
-        public async void UpdateComment_Ok()
+        public async void UpdateCommentTest_Ok()
         {
             // Arrange
             int id = 1;
-            var comment = TestComment();
-            var commentDTO = TestCommentDTO();
+            var comment = CommentObject.TestComment();
+            var commentDTO = CommentObject.TestCommentDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.GetComment(id)).ReturnsAsync(commentDTO);
             mockRepo.Setup(repo => repo.UpdateComment(comment)).ReturnsAsync(commentDTO).Verifiable();
@@ -203,11 +214,11 @@ namespace Test
         }
 
         [Fact]
-        public async void UpdateComment_NotFound()
+        public async void UpdateCommentTest_NotFound()
         {
             // Arrange
             int id = 1;
-            var comment = TestComment();
+            var comment = CommentObject.TestComment();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.UpdateComment(comment)).ReturnsAsync((CommentDTO)null);
             var controller = new CommentsController(mockRepo.Object);
@@ -217,16 +228,17 @@ namespace Test
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<CommentDTO>>(result);
-            Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+            var objectResult = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+            Assert.Equal("Kommentar med ID 1 ble ikke funnet", objectResult.Value);
         }
 
         [Fact]
-        public async void UpdateComment_BadRequest()
+        public async void UpdateCommentTest_BadRequest()
         {
             // Arrange
             int id = 0;
-            var comment = TestComment();
-            var commentDTO = TestCommentDTO();
+            var comment = CommentObject.TestComment();
+            var commentDTO = CommentObject.TestCommentDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.UpdateComment(comment)).ReturnsAsync(commentDTO);
             var controller = new CommentsController(mockRepo.Object);
@@ -236,16 +248,17 @@ namespace Test
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<CommentDTO>>(result);
-            Assert.IsType<BadRequestObjectResult>(actionResult.Result);
+            var objectResult = Assert.IsType<BadRequestObjectResult>(actionResult.Result);
+            Assert.Equal("Kommentar ID stemmer ikke", objectResult.Value);
         }
 
         [Fact]
-        public async void UpdateComment_InternalServerError()
+        public async void UpdateCommentTest_InternalServerError()
         {
             // Arrange
             int id = 1;
-            var comment = TestComment();
-            var commentDTO = TestCommentDTO();
+            var comment = CommentObject.TestComment();
+            var commentDTO = CommentObject.TestCommentDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.GetComment(id)).ReturnsAsync(commentDTO);
             mockRepo.Setup(repo => repo.UpdateComment(comment)).ThrowsAsync(new InvalidOperationException());
@@ -257,14 +270,15 @@ namespace Test
             // Assert
             var objectResult = result.Result as ObjectResult;
             Assert.Equal(500, objectResult.StatusCode);
+            Assert.Equal("Feil ved oppdatering av kommentar", objectResult.Value);
         }
 
         [Fact]
-        public async void DeleteComment_Ok()
+        public async void DeleteCommentTest_Ok()
         {
             // Arrange
             int id = 1;
-            var commentDTO = TestCommentDTO();
+            var commentDTO = CommentObject.TestCommentDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.GetComment(id)).ReturnsAsync(commentDTO);
             mockRepo.Setup(repo => repo.DeleteComment(id)).ReturnsAsync(commentDTO).Verifiable();
@@ -283,7 +297,7 @@ namespace Test
         }
 
         [Fact]
-        public async void DeleteComment_NotFound()
+        public async void DeleteCommentTest_NotFound()
         {
             // Arrange
             int id = 1;
@@ -300,11 +314,11 @@ namespace Test
         }
 
         [Fact]
-        public async void DeleteComment_InternalServerError()
+        public async void DeleteCommentTest_InternalServerError()
         {
             // Arrange
             int id = 1;
-            var commentDTO = TestCommentDTO();
+            var commentDTO = CommentObject.TestCommentDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.GetComment(id)).ReturnsAsync(commentDTO);
             mockRepo.Setup(repo => repo.DeleteComment(id)).ThrowsAsync(new InvalidOperationException());
@@ -318,13 +332,15 @@ namespace Test
             Assert.Equal(500, objectResult.StatusCode);
         }
 
+        // Tester for metoder i BLL
+
         [Fact]
         public async void AddDTO_Ok()
         {
             // Arrange
             int id = 1;
-            var comment = TestComment();
-            var commentDTO = TestCommentDTO();
+            var comment = CommentObject.TestComment();
+            var commentDTO = CommentObject.TestCommentDTO();
             var mockRepo = new Mock<ICommentBLL>();
             mockRepo.Setup(repo => repo.AddDTO(comment)).ReturnsAsync(commentDTO);
 
@@ -348,69 +364,6 @@ namespace Test
 
             // Assert
             Assert.Null(result);
-        }
-
-        private static ICollection<CommentDTO> TestCommentListDTO()
-        {
-            var comments = new List<CommentDTO>
-            {
-                new CommentDTO()
-                {
-                    Id = 1,
-                    Content = "testkommentar1",
-                    Date = DateTime.UtcNow,
-                    UserId = 1,
-                    PostId = 1,
-                    DocumentId = 1
-                },
-                new CommentDTO()
-                {
-                    Id = 2,
-                    Content = "testkommentar2",
-                    Date = DateTime.UtcNow,
-                    UserId = 2,
-                    PostId = 2,
-                    DocumentId = 2
-                },
-                new CommentDTO()
-                {
-                    Id = 3,
-                    Content = "testkommentar3",
-                    Date = DateTime.UtcNow,
-                    UserId = 3,
-                    PostId = 3,
-                    DocumentId = 3
-                },
-            };
-            return comments;
-        }
-
-        private static CommentDTO TestCommentDTO()
-        {
-            var comment = new CommentDTO()
-            {
-                Id = 1,
-                Content = "testkommentar1",
-                Date = DateTime.UtcNow,
-                UserId = 1,
-                PostId = 1,
-                DocumentId = 1
-            };
-            return comment;
-        }
-
-        private static Comment TestComment()
-        {
-            var comment = new Comment()
-            {
-                Id = 1,
-                Content = "testkommentar1",
-                Date = DateTime.UtcNow,
-                UserId = 1,
-                PostId = 1,
-                DocumentId = 1
-            };
-            return comment;
         }
     }
 }

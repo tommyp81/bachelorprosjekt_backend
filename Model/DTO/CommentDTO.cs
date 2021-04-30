@@ -11,6 +11,7 @@ namespace Model.DTO
         public int Id { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }
+        public DateTime? EditDate { get; set; }
         public bool Edited { get; set; }
         public int? UserId { get; set; }
         public int PostId { get; set; }

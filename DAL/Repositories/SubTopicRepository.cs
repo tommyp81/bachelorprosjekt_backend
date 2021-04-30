@@ -47,10 +47,10 @@ namespace DAL.Repositories
             var result = await _context.SubTopics.FindAsync(subtopic.Id);
             if (result != null)
             {
-                result.Id = subtopic.Id;
+                result.Id = result.Id;
                 result.Title = subtopic.Title;
                 result.Description = subtopic.Description;
-                result.TopicId = subtopic.TopicId;
+                result.TopicId = result.TopicId;
                 await _context.SaveChangesAsync();
                 return result;
             }

@@ -42,6 +42,7 @@ namespace BLL.Repositories
                 Title = post.Title,
                 Content = post.Content,
                 Date = post.Date,
+                EditDate = post.EditDate,
                 Edited = post.Edited,
                 UserId = post.UserId,
                 TopicId = subtopic.TopicId, // Hentes fra SubTopic og vises kun med DTO

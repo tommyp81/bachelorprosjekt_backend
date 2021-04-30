@@ -71,7 +71,7 @@ namespace DAL.Repositories
             var result = await _context.Topics.FindAsync(topic.Id);
             if (result != null)
             {
-                result.Id = topic.Id;
+                result.Id = result.Id;
                 result.Title = topic.Title;
                 result.Description = topic.Description;
                 result.ImageUrl = topic.ImageUrl;

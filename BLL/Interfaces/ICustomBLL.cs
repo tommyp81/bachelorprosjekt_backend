@@ -1,5 +1,5 @@
-﻿using Azure.Storage.Blobs.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
 using System;
@@ -22,7 +22,7 @@ namespace BLL.Interfaces
         Task<ICollection<DocumentDTO>> GetDocuments();
         Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId);
         Task<DocumentDTO> GetDocumentInfo(int id);
-        Task<BlobDownloadInfo> GetDocument(int id);
+        Task<FileStreamResult> GetDocument(int id);
         Task<DocumentDTO> DeleteDocument(int id);
         Task<UserDTO> Login(string username, string email, string password);
         Task<UserDTO> SetAdmin(int id, bool admin);

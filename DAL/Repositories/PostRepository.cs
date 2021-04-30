@@ -77,14 +77,15 @@ namespace DAL.Repositories
             var result = await _context.Posts.FindAsync(post.Id);
             if (result != null)
             {
-                result.Id = post.Id;
+                result.Id = result.Id;
                 result.Title = post.Title;
                 result.Content = post.Content;
-                result.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+                result.Date = result.Date; //TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+                result.EditDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
                 result.Edited = true;
-                result.UserId = post.UserId;
-                result.SubTopicId = post.SubTopicId;
-                result.DocumentId = post.DocumentId;
+                result.UserId = result.UserId;
+                result.SubTopicId = result.SubTopicId;
+                result.DocumentId = result.DocumentId;
                 await _context.SaveChangesAsync();
                 return result;
             }
@@ -105,6 +106,7 @@ namespace DAL.Repositories
                     {
                         if (video.PostId == result.Id)
                         {
+                            // Slettes direkte fra databasen siden video også bruker denne metoden
                             _context.Videos.Remove(video);
                             await _context.SaveChangesAsync();
                         }
