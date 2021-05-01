@@ -16,11 +16,13 @@ namespace BLL.Repositories
     {
         private readonly IPostRepository _repository;
         private readonly ISubTopicBLL _subTopicBLL;
+        private readonly ICustomBLL _customBLL;
 
-        public PostBLL(IPostRepository repository, ISubTopicBLL subTopicBLL)
+        public PostBLL(IPostRepository repository, ISubTopicBLL subTopicBLL, ICustomBLL customBLL)
         {
             _repository = repository;
             _subTopicBLL = subTopicBLL;
+            _customBLL = customBLL;
         }
 
         // For å lage DTOs for Posts
@@ -28,6 +30,12 @@ namespace BLL.Repositories
         {
             // Hente SubTopic
             var subtopic = await _subTopicBLL.GetSubTopic(post.SubTopicId);
+
+            // Telle antall kommentarer på postId
+            var commentCount = await _customBLL.Comment_Count(post.Id);
+
+            // Antall likes til kommentarer
+            var likeCount = await _customBLL.Like_Count(post.Id, null);
 
             var DTO = new PostDTO
             {
@@ -37,8 +45,8 @@ namespace BLL.Repositories
                 Date = post.Date,
                 EditDate = post.EditDate,
                 Edited = post.Edited,
-                Comment_Count = post.Comment_Count,
-                Like_Count = post.Like_Count,
+                Comment_Count = commentCount, // Kun her som DTO
+                Like_Count = likeCount, // Kun her som DTO
                 UserId = post.UserId,
                 TopicId = subtopic.TopicId, // Hentes fra SubTopic og vises kun med DTO
                 SubTopicId = post.SubTopicId,

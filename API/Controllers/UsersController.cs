@@ -29,7 +29,15 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _userBLL.GetUsers());
+                var users = await _userBLL.GetUsers();
+                if (users != null)
+                {
+                    return Ok(users);
+                }
+                else
+                {
+                    return NotFound($"Ingen brukere ble funnet");
+                }
             }
             catch (Exception)
             {
@@ -44,12 +52,14 @@ namespace API.Controllers
             try
             {
                 var user = await _userBLL.GetUser(id);
-                if (user == null)
+                if (user != null)
+                {
+                    return Ok(user);
+                }
+                else
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
                 }
-
-                return Ok(user);
             }
             catch (Exception)
             {
@@ -63,18 +73,22 @@ namespace API.Controllers
         {
             try
             {
-                if (user == null)
+                if (user != null)
                 {
-                    return BadRequest();
+                    var newUser = await _userBLL.AddUser(user);
+                    if (newUser != null)
+                    {
+                        return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
+                    }
+                    else
+                    {
+                        return BadRequest("Brukernavn eller epost eksisterer allerede");
+                    }
                 }
-
-                var newUser = await _userBLL.AddUser(user);
-                if (newUser == null)
+                else
                 {
-                    return BadRequest("Brukernavn eller epost eksisterer allerede");
+                    return BadRequest("Bruker objekt mangler");
                 }
-
-                return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
             }
             catch (Exception)
             {
@@ -88,24 +102,22 @@ namespace API.Controllers
         {
             try
             {
-                if (id != user.Id)
+                if (id == user.Id)
+                {
+                    var updateUser = await _userBLL.UpdateUser(user);
+                    if (updateUser != null)
+                    {
+                        return Ok(updateUser);
+                    }
+                    else
+                    {
+                        return BadRequest("Brukernavn eller epost eksisterer allerede");
+                    }
+                }
+                else
                 {
                     return BadRequest("Bruker ID stemmer ikke");
                 }
-
-                var checkUser = await _userBLL.GetUser(id);
-                if (checkUser == null)
-                {
-                    return NotFound($"Bruker med ID {id} ble ikke funnet");
-                }
-
-                var updateUser = await _userBLL.UpdateUser(user);
-                if (updateUser == null)
-                {
-                    return BadRequest("Brukernavn eller epost eksisterer allerede");
-                }
-
-                return Ok(updateUser);
             }
             catch (Exception)
             {
@@ -119,13 +131,16 @@ namespace API.Controllers
         {
             try
             {
-                var checkUser = await _userBLL.GetUser(id);
-                if (checkUser == null)
+                var deleteUser = await _userBLL.DeleteUser(id);
+                if (deleteUser != null)
+                {
+                    return Ok(deleteUser);
+
+                }
+                else
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _userBLL.DeleteUser(id));
             }
             catch (Exception)
             {

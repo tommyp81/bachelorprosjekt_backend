@@ -55,7 +55,7 @@ namespace DAL.Repositories
 
             // Unikt navn for Azure Storage Blob. Eks: sysadmin/testfil.txt (xmwqo80924ng9430n)
             var user = await _context.Users.FindAsync(userId);
-            string uniqueName =  user.Username + "/" + fileName + " (" + Guid.NewGuid().ToString() + ")";
+            string uniqueName = user.Username + "/" + fileName + " (" + Guid.NewGuid().ToString() + ")";
 
             // Navn på container. Eks: mai-2021
             string container = "default";

@@ -29,7 +29,15 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _topicBLL.GetTopics());
+                var topics = await _topicBLL.GetTopics();
+                if (topics != null)
+                {
+                    return Ok(topics);
+                }
+                else
+                {
+                    return NotFound($"Ingen emner ble funnet");
+                }
             }
             catch (Exception)
             {
@@ -44,12 +52,14 @@ namespace API.Controllers
             try
             {
                 var topic = await _topicBLL.GetTopic(id);
-                if (topic == null)
+                if (topic != null)
+                {
+                    return Ok(topic);
+                }
+                else
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
-
-                return Ok(topic);
             }
             catch (Exception)
             {
@@ -63,13 +73,15 @@ namespace API.Controllers
         {
             try
             {
-                if (topic == null)
+                if (topic != null)
                 {
-                    return BadRequest();
+                    var newTopic = await _topicBLL.AddTopic(topic);
+                    return CreatedAtAction(nameof(GetTopic), new { id = newTopic.Id }, newTopic);
                 }
-
-                var newTopic = await _topicBLL.AddTopic(topic);
-                return CreatedAtAction(nameof(GetTopic), new { id = newTopic.Id }, newTopic);
+                else
+                {
+                    return BadRequest("Emne objekt mangler");
+                }
             }
             catch (Exception)
             {
@@ -83,18 +95,22 @@ namespace API.Controllers
         {
             try
             {
-                if (id != topic.Id)
+                if (id == topic.Id)
+                {
+                    var updateTopic = await _topicBLL.UpdateTopic(topic);
+                    if (updateTopic != null)
+                    {
+                        return Ok(updateTopic);
+                    }
+                    else
+                    {
+                        return NotFound($"Emne med ID {id} ble ikke funnet");
+                    }
+                }
+                else
                 {
                     return BadRequest("Emne ID stemmer ikke");
                 }
-
-                var checkTopic = await _topicBLL.GetTopic(id);
-                if (checkTopic == null)
-                {
-                    return NotFound($"Emne med ID {id} ble ikke funnet");
-                }
-
-                return Ok(await _topicBLL.UpdateTopic(topic));
             }
             catch (Exception)
             {
@@ -108,13 +124,16 @@ namespace API.Controllers
         {
             try
             {
-                var checkTopic = await _topicBLL.GetTopic(id);
-                if (checkTopic == null)
+                var deleteTopic = await _topicBLL.DeleteTopic(id);
+                if (deleteTopic != null)
+                {
+                    return Ok(deleteTopic);
+
+                }
+                else
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _topicBLL.DeleteTopic(id));
             }
             catch (Exception)
             {

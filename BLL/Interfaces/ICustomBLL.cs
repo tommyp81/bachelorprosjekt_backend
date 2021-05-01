@@ -12,6 +12,8 @@ namespace BLL.Interfaces
 {
     public interface ICustomBLL
     {
+        Task<int> Comment_Count(int postId);
+        Task<int> Like_Count(int? postId, int? commentId);
         DocumentDTO AddDTO(Document document);
         Task<IEnumerable<DocumentDTO>> GetDocuments();
         Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId);

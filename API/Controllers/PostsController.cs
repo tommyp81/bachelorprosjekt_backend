@@ -24,12 +24,19 @@ namespace API.Controllers
         }
 
         // GET: Posts
+        // GET: Posts?page=1?count=10?order=Asc?type=Date
         [HttpGet]
         //[Route("{page?}?{count?}?{order?}?{type?}")]
-        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts() //int? page, int? count, string order, string type
+        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts(int? page, int? count, string order, string type)
         {
             try
             {
+                if (page != null)
+                {
+                    // Liste med paging
+                    return Ok(await _postBLL.PostPaging(page, count, order, type));
+                }
+
                 var posts = await _postBLL.GetPosts();
                 if (posts != null)
                 {
@@ -44,16 +51,6 @@ namespace API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av poster");
             }
-
-            //try
-            //{
-            //    //return Ok(await _postBLL.PostPaging(page, count, order, type));
-            //    return Ok(await _postBLL.GetPosts());
-            //}
-            //catch (Exception e)
-            //{
-            //    return StatusCode(StatusCodes.Status500InternalServerError, e);//"Feil ved henting av poster"
-            //}
         }
 
         // GET: Posts/1
@@ -88,18 +85,11 @@ namespace API.Controllers
                 {
                     // Legg til posten i databasen og fil på Azure Storage og databasen hvis fil er sendt med
                     var newPost = await _postBLL.AddPost(file, post);
-                    if (newPost != null)
-                    {
-                        return CreatedAtAction(nameof(GetPost), new { id = newPost.Id }, newPost);
-                    }
-                    else
-                    {
-                        return BadRequest("Post ble ikke opprettet");
-                    }
+                    return CreatedAtAction(nameof(GetPost), new { id = newPost.Id }, newPost);
                 }
                 else
                 {
-                    return BadRequest("Post mangler");
+                    return BadRequest("Post objekt mangler");
                 }
             }
             catch (Exception)

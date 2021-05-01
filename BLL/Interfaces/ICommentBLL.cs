@@ -11,7 +11,7 @@ namespace BLL.Interfaces
 {
     public interface ICommentBLL
     {
-        CommentDTO AddDTO(Comment comment);
+        Task<CommentDTO> AddDTO(Comment comment);
         Task<IEnumerable<CommentDTO>> GetComments(int? postId);
         Task<CommentDTO> GetComment(int id);
         Task<CommentDTO> AddComment(IFormFile file, Comment comment);

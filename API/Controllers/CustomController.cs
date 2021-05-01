@@ -38,7 +38,15 @@ namespace API.Controllers
             try
             {
                 // Viser kun dokumenter som har en InfoTopicId
-                return Ok(await _customBLL.GetDocuments());
+                var documents = await _customBLL.GetDocuments();
+                if (documents != null)
+                {
+                    return Ok(documents);
+                }
+                else
+                {
+                    return NotFound($"Ingen dokumenter ble funnet");
+                }
             }
             catch (Exception)
             {
@@ -92,12 +100,14 @@ namespace API.Controllers
             try
             {
                 var document = await _customBLL.GetDocumentInfo(id);
-                if (document == null)
+                if (document != null)
+                {
+                    return Ok(document);
+                }
+                else
                 {
                     return NotFound($"Dokument med ID {id} ble ikke funnet");
                 }
-
-                return Ok(document);
             }
             catch (Exception)
             {
@@ -111,19 +121,15 @@ namespace API.Controllers
         {
             try
             {
-                var document = await _customBLL.GetDocumentInfo(id);
-                if (document == null)
-                {
-                    return NotFound($"Dokumentet med ID {id} finnes ikke i databasen");
-                }
-
                 var file = await _customBLL.GetDocument(id);
-                if (file == null)
+                if (file != null)
                 {
-                    return NotFound($"Dokumentet med ID {id} finnes ikke i Azure Storage");
+                    return File(file.FileStream, file.ContentType, file.FileDownloadName);
                 }
-
-                return File(file.FileStream, file.ContentType, file.FileDownloadName);
+                else
+                {
+                    return NotFound($"Dokumentet med ID {id} ble ikke funnet");
+                }
             }
             catch (Exception e)
             {
@@ -137,13 +143,15 @@ namespace API.Controllers
         {
             try
             {
-                var document = await _customBLL.GetDocumentInfo(id);
-                if (document == null)
+                var document = await _customBLL.DeleteDocument(id);
+                if (document != null)
+                {
+                    return Ok(document);
+                }
+                else
                 {
                     return NotFound($"Dokument med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _customBLL.DeleteDocument(id));
             }
             catch (Exception)
             {
@@ -163,8 +171,10 @@ namespace API.Controllers
                     // Ok hvis brukernavn/epost og passord stemmer
                     return Ok(user);
                 }
-
-                return Unauthorized("Feil ved brukernavn, epost eller passord");
+                else
+                {
+                    return Unauthorized("Feil ved brukernavn, epost eller passord");
+                }
             }
             catch (Exception)
             {
@@ -178,13 +188,15 @@ namespace API.Controllers
         {
             try
             {
-                var user = await _userBLL.GetUser(id);
-                if (user == null)
+                var user = await _customBLL.SetAdmin(id, admin);
+                if (user != null)
+                {
+                    return Ok(user);
+                }
+                else
                 {
                     return NotFound($"Bruker med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _customBLL.SetAdmin(id, admin));
             }
             catch (Exception)
             {

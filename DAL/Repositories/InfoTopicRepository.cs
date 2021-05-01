@@ -55,15 +55,8 @@ namespace DAL.Repositories
         public async Task<InfoTopic> AddInfoTopic(InfoTopic infotopic)
         {
             var result = await _context.InfoTopics.AddAsync(infotopic);
-            if (result != null)
-            {
-                await _context.SaveChangesAsync();
-                return result.Entity;
-            }
-            else
-            {
-                return null;
-            }
+            await _context.SaveChangesAsync();
+            return result.Entity;
         }
 
         // PUT: InfoTopics/1

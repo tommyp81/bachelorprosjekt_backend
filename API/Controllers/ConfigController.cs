@@ -1,6 +1,7 @@
 ﻿using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
+using Model.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,27 +17,70 @@ namespace API.Controllers
 
         private readonly ICommentBLL _commentBLL;
         private readonly IPostBLL _postBLL;
+        private readonly IUserBLL _userBLL;
         private readonly ILikeBLL _likeBLL;
 
-        public ConfigController(ICommentBLL commentBLL, IPostBLL postBLL, ILikeBLL likeBLL)
+        public ConfigController(ICommentBLL commentBLL, IPostBLL postBLL, IUserBLL userBLL, ILikeBLL likeBLL)
         {
             _commentBLL = commentBLL;
             _postBLL = postBLL;
+            _userBLL = userBLL;
             _likeBLL = likeBLL;
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> Post()
+        public async Task<ActionResult> Alle()
+        {
+            // Sett instillinger her
+            int userCount = 100;
+            int postCount = 100;
+            int commentCount = 1000;
+            int likeCount = 1000;
+
+            await Bruker(userCount);
+            await Post(userCount, postCount);
+            await Comment(userCount, postCount, commentCount);
+            await Like(userCount, postCount, commentCount, likeCount);
+
+            return Ok("Ferdig!");
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<ActionResult> Bruker(int userCount)
+        {
+            var users = new List<AuthUser>();
+
+            for (int i = 1; i <= userCount; i++)
+            {
+                var user = new AuthUser
+                {
+                    Username = "testbruker" + i,
+                    FirstName = "Test",
+                    LastName = "Bruker",
+                    Email = "testbruker" + i + "@test.no",
+                    Password = "0000"
+                };
+
+                users.Add(user);
+            }
+
+            foreach (var user in users)
+            {
+                await _userBLL.AddUser(user);
+            }
+
+            return Ok(users.Count + " brukere ble opprettet!");
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<ActionResult> Post(int userCount, int postCount)
         {
             // Opprette poster med random innhold
             var posts = new List<Post>();
-            //var comments = new List<Comment>();
             var random = new Random();
-
-            // Sett instillinger her
-            int postCount = 100;
-            int userCount = 10;
 
             string[] postTitle = new string[5]
             {
@@ -90,17 +134,11 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> Comment()
+        public async Task<ActionResult> Comment(int userCount, int postCount, int commentCount)
         {
-            // Opprette poster med random innhold
-            //var posts = new List<Post>();
+            // Opprette kommentarer med random innhold
             var comments = new List<Comment>();
             var random = new Random();
-
-            // Sett instillinger her
-            int postCount = 100;
-            int commentCount = 100;
-            int userCount = 10;
 
             string[] commentContent = new string[5]
             {
@@ -143,18 +181,11 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> Like()
+        public async Task<ActionResult> Like(int userCount, int postCount, int commentCount, int likeCount)
         {
-            // Opprette poster med random innhold
+            // Opprette random likes
             var likes = new List<Like>();
             var random = new Random();
-
-            // Sett instillinger her
-            int likeCount = 100;
-            int postCount = 100;
-            int commentCount = 100;
-            int userCount = 10;
-
 
             // Random likes
             for (int i = 1; i <= likeCount; i++)

@@ -53,15 +53,8 @@ namespace DAL.Repositories
         public async Task<SubTopic> AddSubTopic(SubTopic subtopic)
         {
             var result = await _context.SubTopics.AddAsync(subtopic);
-            if (result != null)
-            {
-                await _context.SaveChangesAsync();
-                return result.Entity;
-            }
-            else
-            {
-                return null;
-            }
+            await _context.SaveChangesAsync();
+            return result.Entity;
         }
 
         // PUT: SubTopics/1

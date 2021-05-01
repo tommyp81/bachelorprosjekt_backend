@@ -30,10 +30,10 @@ namespace API.Controllers
         {
             try
             {
-                var posts = await _commentBLL.GetComments(postId);
-                if (posts != null)
+                var comments = await _commentBLL.GetComments(postId);
+                if (comments != null)
                 {
-                    return Ok(posts);
+                    return Ok(comments);
                 }
                 else
                 {
@@ -78,19 +78,12 @@ namespace API.Controllers
                 {
                     // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
                     var newComment = await _commentBLL.AddComment(file, comment);
-                    if (newComment != null)
-                    {
-                        return CreatedAtAction(nameof(GetComment), new { id = newComment.Id }, newComment);
-                    }
-                    else
-                    {
-                        return BadRequest("Kommentar ble ikke opprettet");
-                    }
+                    return CreatedAtAction(nameof(GetComment), new { id = newComment.Id }, newComment);
                 }
 
                 else
                 {
-                    return BadRequest("Kommentar mangler");
+                    return BadRequest("Kommentar objekt mangler");
                 }
             }
             catch (Exception)

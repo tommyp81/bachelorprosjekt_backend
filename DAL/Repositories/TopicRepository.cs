@@ -77,15 +77,8 @@ namespace DAL.Repositories
             //}
 
             var result = await _context.Topics.AddAsync(topic);
-            if (result != null)
-            {
-                await _context.SaveChangesAsync();
-                return result.Entity;
-            }
-            else
-            {
-                return null;
-            }
+            await _context.SaveChangesAsync();
+            return result.Entity;
         }
 
         // PUT: Topics/1

@@ -79,39 +79,32 @@ namespace DAL.Repositories
             var result = await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
 
-            if (result != null)
+            // Legge til en comment_count på posten
+            var post = await _context.Posts.FindAsync(result.Entity.PostId);
+            if (post != null)
             {
-                // Legge til en comment_count på posten
-                var post = await _context.Posts.FindAsync(result.Entity.PostId);
-                if (post != null)
-                {
-                    post.Comment_Count++;
-                }
+                post.Comment_Count++;
+            }
 
-                // Se etter fil og last opp hvis den er sendt med
-                if (file != null)
+            // Se etter fil og last opp hvis den er sendt med
+            if (file != null)
+            {
+                if (file.Length > 0)
                 {
-                    if (file.Length > 0)
+                    // Kaller på AddDocument metoden fra CustomRepository, så vi får en ny oppføring i databasen til Documents
+                    var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, null, result.Entity.Id, null);
+
+                    // Oppdater denne kommentaren med DocumentId
+                    var update = await _context.Comments.FindAsync(result.Entity.Id);
+                    if (update != null)
                     {
-                        // Kaller på AddDocument metoden fra CustomRepository, så vi får en ny oppføring i databasen til Documents
-                        var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, null, result.Entity.Id, null);
-
-                        // Oppdater denne kommentaren med DocumentId
-                        var update = await _context.Comments.FindAsync(result.Entity.Id);
-                        if (update != null)
-                        {
-                            update.DocumentId = newDocument.Id;
-                        }
+                        update.DocumentId = newDocument.Id;
                     }
                 }
+            }
 
-                await _context.SaveChangesAsync();
-                return result.Entity;
-            }
-            else
-            {
-                return null;
-            }
+            await _context.SaveChangesAsync();
+            return result.Entity;
         }
 
         // PUT: Comments/1

@@ -115,7 +115,15 @@ namespace API.Controllers
                 else
                 {
                     // Slett like fra databasen
-                    return Ok(await _likeBLL.DeleteLike(like));
+                    var deleteLike = await _likeBLL.DeleteLike(like);
+                    if (deleteLike != null)
+                    {
+                        return Ok(deleteLike);
+                    }
+                    else
+                    {
+                        return NotFound($"Like ble ikke funnet");
+                    }
                 }
             }
             catch (Exception)

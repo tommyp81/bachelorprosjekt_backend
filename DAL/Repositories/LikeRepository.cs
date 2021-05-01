@@ -19,6 +19,19 @@ namespace DAL.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<Like>> GetLikes()
+        {
+            var likes = await _context.Likes.ToListAsync();
+            if (likes != null)
+            {
+                return likes;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         // POST: GetLike
         public async Task<Like> GetLike(Like like)
         {

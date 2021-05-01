@@ -29,7 +29,15 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _videoBLL.GetVideos());
+                var videos = await _videoBLL.GetVideos();
+                if (videos != null)
+                {
+                    return Ok(videos);
+                }
+                else
+                {
+                    return NotFound($"Ingen videoer ble funnet");
+                }
             }
             catch (Exception)
             {
@@ -44,12 +52,14 @@ namespace API.Controllers
             try
             {
                 var video = await _videoBLL.GetVideo(id);
-                if (video == null)
+                if (video != null)
+                {
+                    return Ok(video);
+                }
+                else
                 {
                     return NotFound($"Video med ID {id} ble ikke funnet");
                 }
-
-                return Ok(video);
             }
             catch (Exception)
             {
@@ -63,13 +73,15 @@ namespace API.Controllers
         {
             try
             {
-                if (video == null)
+                if (video != null)
                 {
-                    return BadRequest();
+                    var newVideo = await _videoBLL.AddVideo(video);
+                    return CreatedAtAction(nameof(GetVideo), new { id = newVideo.Id }, newVideo);
                 }
-
-                var newVideo = await _videoBLL.AddVideo(video);
-                return CreatedAtAction(nameof(GetVideo), new { id = newVideo.Id }, newVideo);
+                else
+                {
+                    return BadRequest("Video objekt mangler");
+                }
             }
             catch (Exception)
             {
@@ -83,18 +95,22 @@ namespace API.Controllers
         {
             try
             {
-                if (id != video.Id)
+                if (id == video.Id)
+                {
+                    var updateVideo = await _videoBLL.UpdateVideo(video);
+                    if (updateVideo != null)
+                    {
+                        return Ok(updateVideo);
+                    }
+                    else
+                    {
+                        return NotFound($"Video med ID {id} ble ikke funnet");
+                    }
+                }
+                else
                 {
                     return BadRequest("Video ID stemmer ikke");
                 }
-
-                var checkVideo = await _videoBLL.GetVideo(id);
-                if (checkVideo == null)
-                {
-                    return NotFound($"Video med ID {id} ble ikke funnet");
-                }
-
-                return Ok(await _videoBLL.UpdateVideo(video));
             }
             catch (Exception)
             {
@@ -108,13 +124,16 @@ namespace API.Controllers
         {
             try
             {
-                var checkVideo = await _videoBLL.GetVideo(id);
-                if (checkVideo == null)
+                var deleteVideo = await _videoBLL.DeleteVideo(id);
+                if (deleteVideo != null)
+                {
+                    return Ok(deleteVideo);
+
+                }
+                else
                 {
                     return NotFound($"Video med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _videoBLL.DeleteVideo(id));
             }
             catch (Exception)
             {

@@ -53,15 +53,8 @@ namespace DAL.Repositories
         public async Task<Video> AddVideo(Video video)
         {
             var result = await _context.Videos.AddAsync(video);
-            if (result != null)
-            {
-                await _context.SaveChangesAsync();
-                return result.Entity;
-            }
-            else
-            {
-                return null;
-            }
+            await _context.SaveChangesAsync();
+            return result.Entity;
         }
 
         // PUT: Videos/1

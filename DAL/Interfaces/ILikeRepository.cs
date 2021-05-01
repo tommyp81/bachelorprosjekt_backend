@@ -9,6 +9,7 @@ namespace DAL.Interfaces
 {
     public interface ILikeRepository
     {
+        Task<IEnumerable<Like>> GetLikes();
         Task<Like> GetLike(Like like);
         Task<Like> AddLike(Like like);
         Task<Like> DeleteLike(Like like);

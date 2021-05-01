@@ -65,32 +65,25 @@ namespace DAL.Repositories
             var result = await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
 
-            if (result != null)
+            // Se etter fil og last opp hvis den er sendt med
+            if (file != null)
             {
-                // Se etter fil og last opp hvis den er sendt med
-                if (file != null)
+                if (file.Length > 0)
                 {
-                    if (file.Length > 0)
-                    {
-                        // Kaller på AddDocument metoden fra CustomRepository, så vi får en ny oppføring i databasen til Documents
-                        var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, result.Entity.Id, null, null);
+                    // Kaller på AddDocument metoden fra CustomRepository, så vi får en ny oppføring i databasen til Documents
+                    var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, result.Entity.Id, null, null);
 
-                        // Oppdater denne posten med DocumentId
-                        var updatePost = await _context.Posts.FindAsync(result.Entity.Id);
-                        if (updatePost != null)
-                        {
-                            updatePost.DocumentId = newDocument.Id;
-                            await _context.SaveChangesAsync();
-                        }
+                    // Oppdater denne posten med DocumentId
+                    var updatePost = await _context.Posts.FindAsync(result.Entity.Id);
+                    if (updatePost != null)
+                    {
+                        updatePost.DocumentId = newDocument.Id;
+                        await _context.SaveChangesAsync();
                     }
                 }
+            }
 
-                return result.Entity;
-            }
-            else
-            {
-                return null;
-            }
+            return result.Entity;
         }
 
         // PUT: Posts/1

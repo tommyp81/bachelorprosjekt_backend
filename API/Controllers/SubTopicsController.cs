@@ -29,7 +29,15 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _subTopicBLL.GetSubTopics());
+                var subTopics = await _subTopicBLL.GetSubTopics();
+                if (subTopics != null)
+                {
+                    return Ok(subTopics);
+                }
+                else
+                {
+                    return NotFound($"Ingen underemner ble funnet");
+                }
             }
             catch (Exception)
             {
@@ -43,13 +51,15 @@ namespace API.Controllers
         {
             try
             {
-                var subtopic = await _subTopicBLL.GetSubTopic(id);
-                if (subtopic == null)
+                var subTopic = await _subTopicBLL.GetSubTopic(id);
+                if (subTopic != null)
+                {
+                    return Ok(subTopic);
+                }
+                else
                 {
                     return NotFound($"Underemne med ID {id} ble ikke funnet");
                 }
-
-                return Ok(subtopic);
             }
             catch (Exception)
             {
@@ -63,13 +73,16 @@ namespace API.Controllers
         {
             try
             {
-                if (subtopic == null)
+                if (subtopic != null)
                 {
-                    return BadRequest();
-                }
+                    var newSubTopic = await _subTopicBLL.AddSubTopic(subtopic);
+                    return CreatedAtAction(nameof(GetSubTopic), new { id = newSubTopic.Id }, newSubTopic);
 
-                var newSubTopic = await _subTopicBLL.AddSubTopic(subtopic);
-                return CreatedAtAction(nameof(GetSubTopic), new { id = newSubTopic.Id }, newSubTopic);
+                }
+                else
+                {
+                    return BadRequest("Underemne objekt mangler");
+                }
             }
             catch (Exception)
             {
@@ -83,18 +96,22 @@ namespace API.Controllers
         {
             try
             {
-                if (id != subtopic.Id)
+                if (id == subtopic.Id)
+                {
+                    var updateSubTopic = await _subTopicBLL.UpdateSubTopic(subtopic);
+                    if (updateSubTopic != null)
+                    {
+                        return Ok(updateSubTopic);
+                    }
+                    else
+                    {
+                        return NotFound($"Underemne med ID {id} ble ikke funnet");
+                    }
+                }
+                else
                 {
                     return BadRequest("Underemne ID stemmer ikke");
                 }
-
-                var checkSubTopic = await _subTopicBLL.GetSubTopic(id);
-                if (checkSubTopic == null)
-                {
-                    return NotFound($"Underemne med ID {id} ble ikke funnet");
-                }
-
-                return Ok(await _subTopicBLL.UpdateSubTopic(subtopic));
             }
             catch (Exception)
             {
@@ -108,13 +125,16 @@ namespace API.Controllers
         {
             try
             {
-                var checkSubTopic = await _subTopicBLL.GetSubTopic(id);
-                if (checkSubTopic == null)
+                var deleteSubTopic = await _subTopicBLL.DeleteSubTopic(id);
+                if (deleteSubTopic != null)
+                {
+                    return Ok(deleteSubTopic);
+
+                }
+                else
                 {
                     return NotFound($"Underemne med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _subTopicBLL.DeleteSubTopic(id));
             }
             catch (Exception)
             {

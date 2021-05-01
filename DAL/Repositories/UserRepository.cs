@@ -83,15 +83,8 @@ namespace DAL.Repositories
             };
 
             var result = await _context.Users.AddAsync(newUser);
-            if (result != null)
-            {
-                await _context.SaveChangesAsync();
-                return result.Entity;
-            }
-            else
-            {
-                return null;
-            }
+            await _context.SaveChangesAsync();
+            return result.Entity;
         }
 
         // PUT: Users/1

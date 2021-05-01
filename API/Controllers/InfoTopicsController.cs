@@ -29,7 +29,15 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _infoTopicBLL.GetInfoTopics());
+                var infoTopics = await _infoTopicBLL.GetInfoTopics();
+                if (infoTopics != null)
+                {
+                    return Ok(infoTopics);
+                }
+                else
+                {
+                    return NotFound($"Ingen emner ble funnet");
+                }
             }
             catch (Exception)
             {
@@ -43,13 +51,15 @@ namespace API.Controllers
         {
             try
             {
-                var infotopic = await _infoTopicBLL.GetInfoTopic(id);
-                if (infotopic == null)
+                var infoTopic = await _infoTopicBLL.GetInfoTopic(id);
+                if (infoTopic != null)
+                {
+                    return Ok(infoTopic);
+                }
+                else
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
-
-                return Ok(infotopic);
             }
             catch (Exception)
             {
@@ -63,13 +73,16 @@ namespace API.Controllers
         {
             try
             {
-                if (infotopic == null)
+                if (infotopic != null)
                 {
-                    return BadRequest();
+                    // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
+                    var newInfoTopic = await _infoTopicBLL.AddInfoTopic(infotopic);
+                    return CreatedAtAction(nameof(GetInfoTopic), new { id = newInfoTopic.Id }, newInfoTopic);
                 }
-
-                var newInfoTopic = await _infoTopicBLL.AddInfoTopic(infotopic);
-                return CreatedAtAction(nameof(GetInfoTopic), new { id = newInfoTopic.Id }, newInfoTopic);
+                else
+                {
+                    return BadRequest("Kommentar objekt mangler");
+                }
             }
             catch (Exception)
             {
@@ -83,18 +96,22 @@ namespace API.Controllers
         {
             try
             {
-                if (id != infotopic.Id)
+                if (id == infotopic.Id)
+                {
+                    var updateInfoTopic = await _infoTopicBLL.UpdateInfoTopic(infotopic);
+                    if (updateInfoTopic != null)
+                    {
+                        return Ok(updateInfoTopic);
+                    }
+                    else
+                    {
+                        return NotFound($"Emne med ID {id} ble ikke funnet");
+                    }
+                }
+                else
                 {
                     return BadRequest("Emne ID stemmer ikke");
                 }
-
-                var checkInfoTopic = await _infoTopicBLL.GetInfoTopic(id);
-                if (checkInfoTopic == null)
-                {
-                    return NotFound($"Emne med ID {id} ble ikke funnet");
-                }
-
-                return Ok(await _infoTopicBLL.UpdateInfoTopic(infotopic));
             }
             catch (Exception)
             {
@@ -108,13 +125,15 @@ namespace API.Controllers
         {
             try
             {
-                var checkInfoTopic = await _infoTopicBLL.GetInfoTopic(id);
-                if (checkInfoTopic == null)
+                var deleteInfoTopic = await _infoTopicBLL.DeleteInfoTopic(id);
+                if (deleteInfoTopic != null)
+                {
+                    return Ok(deleteInfoTopic);
+                }
+                else
                 {
                     return NotFound($"Emne med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _infoTopicBLL.DeleteInfoTopic(id));
             }
             catch (Exception)
             {

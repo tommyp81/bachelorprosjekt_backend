@@ -16,55 +16,62 @@ namespace BLL.Repositories
     {
         private readonly ICustomRepository _repository;
         private readonly IUserBLL _userBLL;
+        private readonly ICommentRepository _commentRepository;
+        private readonly ILikeRepository _likeRepository;
 
-        public CustomBLL(ICustomRepository repository, IUserBLL userBLL)
+        public CustomBLL(ICustomRepository repository, IUserBLL userBLL, ICommentRepository commentRepository, ILikeRepository likeRepository)
         {
             _repository = repository;
             _userBLL = userBLL;
+            _commentRepository = commentRepository;
+            _likeRepository = likeRepository;
         }
 
         // GET: GetCommentCount
-        //public async Task<int> GetCommentCount(int id)
-        //{
-        //    // Telle antall kommentarer til en post på PostId
-        //    var comments = await _commentRepository.GetComments(null);
-        //    if (comments == null) { return 0; }
-        //    var commentcount = from comment in comments.AsEnumerable()
-        //                       where comment.PostId == id
-        //                       select comment;
-
-        //    return commentcount.Count();
-        //}
+        public async Task<int> Comment_Count(int postId)
+        {
+            // Telle antall kommentarer til en post på PostId
+            var comments = await _commentRepository.GetComments(postId);
+            if (comments != null)
+            {
+                return comments.Count();
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
         // GET: GetLikeCount
-        //public async Task<int> GetLikeCount(int? postId, int? commentId)
-        //{
-        //    // Telle antall likes til poster eller kommentarer
-        //    var likes = await _likeRepository.GetLikes();
-        //    if (likes == null) { return 0; }
+        public async Task<int> Like_Count(int? postId, int? commentId)
+        {
+            // Telle antall likes til poster eller kommentarer
+            var likes = await _likeRepository.GetLikes();
+            if (likes != null)
+            {
+                // Telle for poster hvis vi får postId
+                if (postId != null)
+                {
+                    var likeCount = likes.Where(l => l.PostId == postId).AsEnumerable();
+                    if (likeCount != null)
+                    {
+                        return likeCount.Count();
+                    }
+                }
 
-        //    // Telle for poster hvis vi får postId
-        //    if (postId != null)
-        //    {
-        //        var likecount = from like in likes.AsEnumerable()
-        //                        where like.PostId == postId
-        //                        select like;
+                // Telle for kommentarer hvis vi får commentId
+                if (commentId != null)
+                {
+                    var likeCount = likes.Where(l => l.CommentId == commentId).AsEnumerable();
+                    if (likeCount != null)
+                    {
+                        return likeCount.Count();
+                    }
+                }
+            }
 
-        //        return likecount.Count();
-        //    }
-
-        //    // Telle for kommentarer hvis vi får commentId
-        //    if (commentId != null)
-        //    {
-        //        var likecount = from like in likes.AsEnumerable()
-        //                        where like.CommentId == commentId
-        //                        select like;
-
-        //        return likecount.Count();
-        //    }
-
-        //    return 0;
-        //}
+            return 0;
+        }
 
         // For å lage DTOs for Documents
         public DocumentDTO AddDTO(Document document)
