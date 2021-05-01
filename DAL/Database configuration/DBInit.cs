@@ -85,17 +85,17 @@ namespace DAL.Database_configuration
             byte[] passwordHash = AddHash("password", passwordSalt);
             var users = new User[]
             {
-                new User{Username="sysadmin",FirstName="Superbruker",LastName="NFB",Email="admin@badminton.no",Admin=true,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="testbruker",FirstName="Test",LastName="Bruker",Email="bruker@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="Per",FirstName="Per",LastName="Testbruker",Email="per@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="Pål",FirstName="Pål",LastName="Testbruker",Email="pal@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="Eva",FirstName="Eva",LastName="Testbruker",Email="eva@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="Kari",FirstName="Kari",LastName="Testbruker",Email="kari@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="Naruto",FirstName="Naruto",LastName="Uzumaki",Email="naruto@uzumaki.jp",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="Luffy",FirstName="Monkey",LastName="D. Luffy",Email="one@piece.jp",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="OsloMet",FirstName="Gruppe 29",LastName="Bacheloroppgave",Email="skole@oslomet.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="Joan",FirstName="Joan",LastName="As police woman",Email="joan@apw.com",Admin=false,Password=passwordHash,Salt=passwordSalt},
-                new User{Username="daftpunk",FirstName="Daft",LastName="Punk",Email="daft@punk.com",Admin=false,Password=passwordHash,Salt=passwordSalt}
+                new User{Username="sysadmin",FirstName="Superbruker",LastName="NFB",Email="admin@badminton.no",Admin=true,Password=passwordHash,Salt=passwordSalt}
+                //new User{Username="testbruker",FirstName="Test",LastName="Bruker",Email="bruker@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="Per",FirstName="Per",LastName="Testbruker",Email="per@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="Pål",FirstName="Pål",LastName="Testbruker",Email="pal@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="Eva",FirstName="Eva",LastName="Testbruker",Email="eva@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="Kari",FirstName="Kari",LastName="Testbruker",Email="kari@test.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="Naruto",FirstName="Naruto",LastName="Uzumaki",Email="naruto@uzumaki.jp",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="Luffy",FirstName="Monkey",LastName="D. Luffy",Email="one@piece.jp",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="OsloMet",FirstName="Gruppe 29",LastName="Bacheloroppgave",Email="skole@oslomet.no",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="Joan",FirstName="Joan",LastName="As police woman",Email="joan@apw.com",Admin=false,Password=passwordHash,Salt=passwordSalt},
+                //new User{Username="daftpunk",FirstName="Daft",LastName="Punk",Email="daft@punk.com",Admin=false,Password=passwordHash,Salt=passwordSalt}
             };
             foreach (User user in users)
             {
@@ -104,8 +104,8 @@ namespace DAL.Database_configuration
             }
 
             //// Instillinger for tidsone
-            //var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            //var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
 
             //// Opprette tusenvis av poster med random innhold
             //var posts = new List<Post>();
@@ -188,51 +188,51 @@ namespace DAL.Database_configuration
             //context.SaveChanges();
 
             // Opprette nye poster (POSTS)
-            //var posts = new Post[]
+            var posts = new Post[]
+            {
+                new Post{Title="Test for tema: Konkurranse",Content="Dette er en test! Den skal ligge under Dommer / oppmann",Date=now,UserId=1,SubTopicId=1},
+                new Post{Title="Test for tema: Konkurranse",Content="Denne skal ligge under Seriespill",Date=now,UserId=1,SubTopicId=2},
+                new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening bredde",Date=now,UserId=1,SubTopicId=6},
+                new Post{Title="Test for tema: Utvikling",Content="Dette er enda en test. Den skal ligge under Klubbutvikling",Date=now,UserId=1,SubTopicId=9},
+                new Post{Title="Test for tema: Toppidrett",Content="Dette er en test!!! Denne skal ligge under Junior",Date=now,UserId=1,SubTopicId=13},
+                new Post{Title="Test for tema: Toppidrett",Content="Denne testen skal man kunne se under Trening",Date=now,UserId=1,SubTopicId=16}
+            };
+            foreach (Post post in posts)
+            {
+                context.Posts.Add(post);
+                context.SaveChanges();
+            }
+
+            // Opprette nye kommentarer (COMMENTS)
+            var comments = new Comment[]
+            {
+                new Comment{Content="Dette er et testsvar til en post :)",Date=now,UserId=1,PostId=1},
+                new Comment{Content="Dette svaret er kun en test!!!",Date=now,UserId=1,PostId=2},
+                new Comment{Content="Hei, det ser ut som posten ligger under riktig tema :)",Date=now,UserId=1,PostId=3},
+                new Comment{Content="Dette testsvaret er ikke så viktig.",Date=now,UserId=1,PostId=3},
+                new Comment{Content="Dette skal være det nyeste svaret på denne posten.",Date=now,UserId=1,PostId=3},
+                new Comment{Content="Dette skal være det første svaret til posten under Toppidrett - > Trening",Date=now,UserId=1,PostId=6},
+                new Comment{Content="I posten under Toppidrett og Trening, blir dette det neste svar",Date=now,UserId=1,PostId=6}
+            };
+            foreach (Comment comment in comments)
+            {
+                context.Comments.Add(comment);
+                context.SaveChanges();
+            }
+
+            // Opprette nye videoer (VIDEOS)
+            //var videos = new Video[]
             //{
-            //    new Post{Title="Test for tema: Konkurranse",Content="Dette er en test! Den skal ligge under Dommer / oppmann",Date=now,UserId=1,SubTopicId=1},
-            //    new Post{Title="Test for tema: Konkurranse",Content="Denne skal ligge under Seriespill",Date=now,UserId=1,SubTopicId=2},
-            //    new Post{Title="Test for tema: Kompetanse",Content="Denne testen skal ligge under Trening bredde",Date=now,UserId=1,SubTopicId=6},
-            //    new Post{Title="Test for tema: Utvikling",Content="Dette er enda en test. Den skal ligge under Klubbutvikling",Date=now,UserId=1,SubTopicId=9},
-            //    new Post{Title="Test for tema: Toppidrett",Content="Dette er en test!!! Denne skal ligge under Junior",Date=now,UserId=1,SubTopicId=13},
-            //    new Post{Title="Test for tema: Toppidrett",Content="Denne testen skal man kunne se under Trening",Date=now,UserId=1,SubTopicId=16}
+            //    new Video{Title="Video nummer 1",Description="Denne skal ligge i Klubbutvikling",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=1},
+            //    new Video{Title="Video nummer 2",Description="Denne skal ligge i Trener",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=2},
+            //    new Video{Title="Video nummer 3",Description="Denne skal ligge i Spiller",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=3},
+            //    new Video{Title="Video nummer 4",Description="Denne skal ligge i Dommer",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=4}
             //};
-            //foreach (Post post in posts)
+            //foreach (Video video in videos)
             //{
-            //    context.Posts.Add(post);
+            //    context.Videos.Add(video);
             //    context.SaveChanges();
             //}
-
-                // Opprette nye kommentarer (COMMENTS)
-                //var comments = new Comment[]
-                //{
-                //    new Comment{Content="Dette er et testsvar til en post :)",Date=now,UserId=1,PostId=1},
-                //    new Comment{Content="Dette svaret er kun en test!!!",Date=now,UserId=1,PostId=2},
-                //    new Comment{Content="Hei, det ser ut som posten ligger under riktig tema :)",Date=now,UserId=1,PostId=3},
-                //    new Comment{Content="Dette testsvaret er ikke så viktig.",Date=now,UserId=1,PostId=3},
-                //    new Comment{Content="Dette skal være det nyeste svaret på denne posten.",Date=now,UserId=1,PostId=3},
-                //    new Comment{Content="Dette skal være det første svaret til posten under Toppidrett - > Trening",Date=now,UserId=1,PostId=6},
-                //    new Comment{Content="I posten under Toppidrett og Trening, blir dette det neste svar",Date=now,UserId=1,PostId=6}
-                //};
-                //foreach (Comment comment in comments)
-                //{
-                //    context.Comments.Add(comment);
-                //    context.SaveChanges();
-                //}
-
-                // Opprette nye videoer (VIDEOS)
-                //var videos = new Video[]
-                //{
-                //    new Video{Title="Video nummer 1",Description="Denne skal ligge i Klubbutvikling",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=1},
-                //    new Video{Title="Video nummer 2",Description="Denne skal ligge i Trener",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=2},
-                //    new Video{Title="Video nummer 3",Description="Denne skal ligge i Spiller",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=3},
-                //    new Video{Title="Video nummer 4",Description="Denne skal ligge i Dommer",YouTubeId="3NBPQ9RLOu0",UserId=6,InfoTopicId=4}
-                //};
-                //foreach (Video video in videos)
-                //{
-                //    context.Videos.Add(video);
-                //    context.SaveChanges();
-                //}
         }
 
         public static byte[] AddHash(string password, byte[] salt)
