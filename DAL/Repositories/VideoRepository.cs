@@ -22,23 +22,46 @@ namespace DAL.Repositories
         }
 
         // GET: Videos
-        public async Task<ICollection<Video>> GetVideos()
+        public async Task<IEnumerable<Video>> GetVideos()
         {
-            return await _context.Videos.ToListAsync();
+            var videos = await _context.Videos.ToListAsync();
+            if (videos != null)
+            {
+                return videos;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: Videos/1
         public async Task<Video> GetVideo(int id)
         {
-            return await _context.Videos.FindAsync(id);
+            var video = await _context.Videos.FindAsync(id);
+            if (video != null)
+            {
+                return video;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // POST: Videos
         public async Task<Video> AddVideo(Video video)
         {
             var result = await _context.Videos.AddAsync(video);
-            await _context.SaveChangesAsync();
-            return result.Entity;
+            if (result != null)
+            {
+                await _context.SaveChangesAsync();
+                return result.Entity;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // PUT: Videos/1
@@ -57,7 +80,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         // DELETE: Videos/1
@@ -80,7 +106,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
     }
 }

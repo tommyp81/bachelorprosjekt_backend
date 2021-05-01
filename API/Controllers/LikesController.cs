@@ -34,27 +34,31 @@ namespace API.Controllers
                 {
                     return BadRequest("Det må legges ved en bruker ID");
                 }
-                if (like.PostId == null && like.CommentId == null)
+                else if (like.PostId == null && like.CommentId == null)
                 {
                     return BadRequest("Det må legges ved enten post ID eller kommentar ID");
                 }
-                if (like.PostId != null && like.CommentId != null)
+                else if (like.PostId != null && like.CommentId != null)
                 {
                     return BadRequest("Det kan ikke legges ved både post ID og kommentar ID");
                 }
-
-                // Hent status på likes fra databasen
-                var getLike = await _likeBLL.GetLike(like);
-                if (getLike == null) 
+                else
                 {
-                    return null;
+                    // Hent status på likes fra databasen
+                    var getLike = await _likeBLL.GetLike(like);
+                    if (getLike != null)
+                    {
+                        return Ok(getLike);
+                    }
+                    else
+                    {
+                        return NotFound("Like ble ikke funnet");
+                    }
                 }
-
-                return Ok(getLike);
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av likes");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av like");
             }
         }
 
@@ -69,21 +73,23 @@ namespace API.Controllers
                 {
                     return BadRequest("Det må legges ved en bruker ID");
                 }
-                if (like.PostId == null && like.CommentId == null)
+                else if (like.PostId == null && like.CommentId == null)
                 {
                     return BadRequest("Det må legges ved enten post ID eller kommentar ID");
                 }
-                if (like.PostId != null && like.CommentId != null)
+                else if (like.PostId != null && like.CommentId != null)
                 {
                     return BadRequest("Det kan ikke legges ved både post ID og kommentar ID");
                 }
-
-                // Oppdater like i databasen
-                return Ok(await _likeBLL.AddLike(like));
+                else
+                {
+                    // Oppdater like i databasen
+                    return Ok(await _likeBLL.AddLike(like));
+                }
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av ny like");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av like");
             }
         }
 
@@ -98,17 +104,19 @@ namespace API.Controllers
                 {
                     return BadRequest("Det må legges ved en bruker ID");
                 }
-                if (like.PostId == null && like.CommentId == null)
+                else if (like.PostId == null && like.CommentId == null)
                 {
                     return BadRequest("Det må legges ved enten post ID eller kommentar ID");
                 }
-                if (like.PostId != null && like.CommentId != null)
+                else if (like.PostId != null && like.CommentId != null)
                 {
                     return BadRequest("Det kan ikke legges ved både post ID og kommentar ID");
                 }
-
-                // Oppdater like i databasen
-                return Ok(await _likeBLL.DeleteLike(like));
+                else
+                {
+                    // Slett like fra databasen
+                    return Ok(await _likeBLL.DeleteLike(like));
+                }
             }
             catch (Exception)
             {

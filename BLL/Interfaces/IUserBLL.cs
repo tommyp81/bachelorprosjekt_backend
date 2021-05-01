@@ -11,7 +11,7 @@ namespace BLL.Interfaces
     public interface IUserBLL
     {
         UserDTO AddDTO(User user);
-        Task<ICollection<UserDTO>> GetUsers();
+        Task<IEnumerable<UserDTO>> GetUsers();
         Task<UserDTO> GetUser(int id);
         Task<UserDTO> AddUser(AuthUser user);
         Task<UserDTO> UpdateUser(AuthUser user);

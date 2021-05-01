@@ -14,20 +14,15 @@ namespace BLL.Repositories
     public class CommentBLL : ICommentBLL
     {
         private readonly ICommentRepository _repository;
-        private readonly ICustomBLL _customBLL;
 
-        public CommentBLL(ICommentRepository repository, ICustomBLL customBLL)
+        public CommentBLL(ICommentRepository repository)
         {
             _repository = repository;
-            _customBLL = customBLL;
         }
 
         // For å lage DTOs for Comments
-        public async Task<CommentDTO> AddDTO(Comment comment)
+        public CommentDTO AddDTO(Comment comment)
         {
-            // Telle antall likes til hver enkelt kommentar
-            int likecount = await _customBLL.GetLikeCount(null, comment.Id);
-
             var DTO = new CommentDTO
             {
                 Id = comment.Id,
@@ -35,56 +30,83 @@ namespace BLL.Repositories
                 Date = comment.Date,
                 EditDate = comment.EditDate,
                 Edited = comment.Edited,
+                Like_Count = comment.Like_Count,
                 UserId = comment.UserId,
                 PostId = comment.PostId,
-                DocumentId = comment.DocumentId,
-                Like_Count = likecount // Like_Count vises kun med DTO
+                DocumentId = comment.DocumentId
             };
+
             return DTO;
         }
 
-        public async Task<ICollection<CommentDTO>> GetComments()
+        public async Task<IEnumerable<CommentDTO>> GetComments(int? postId)
         {
-            var comments = await _repository.GetComments();
-            if (comments == null) { return null; }
-            var commentDTOs = new List<CommentDTO>();
-            foreach (var comment in comments)
+            var getComments = await _repository.GetComments(postId);
+            if (getComments != null)
             {
-                commentDTOs.Add(await AddDTO(comment));
+                var commentDTOs = new List<CommentDTO>();
+                foreach (var comment in getComments)
+                {
+                    commentDTOs.Add(AddDTO(comment));
+                }
+                return commentDTOs;
             }
-            return commentDTOs;
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<CommentDTO> GetComment(int id)
         {
             var getComment = await _repository.GetComment(id);
-            if (getComment == null) { return null; }
-            var commentDTO = await AddDTO(getComment);
-            return commentDTO;
+            if (getComment != null)
+            {
+                return AddDTO(getComment);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<CommentDTO> AddComment(IFormFile file, Comment comment)
         {
             var addComment = await _repository.AddComment(file, comment);
-            if (addComment == null) { return null; }
-            var commentDTO = await AddDTO(addComment);
-            return commentDTO;
+            if (addComment != null)
+            {
+                return AddDTO(addComment);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<CommentDTO> UpdateComment(Comment comment)
         {
             var updateComment = await _repository.UpdateComment(comment);
-            if (updateComment == null) { return null; }
-            var commentDTO = await AddDTO(updateComment);
-            return commentDTO;
+            if (updateComment != null)
+            {
+                return AddDTO(updateComment);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<CommentDTO> DeleteComment(int id)
         {
             var deleteComment = await _repository.DeleteComment(id);
-            if (deleteComment == null) { return null; }
-            var commentDTO = await AddDTO(deleteComment);
-            return commentDTO;
+            if (deleteComment != null)
+            {
+                return AddDTO(deleteComment);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

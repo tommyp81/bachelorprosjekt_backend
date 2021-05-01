@@ -22,15 +22,31 @@ namespace DAL.Repositories
         }
 
         // GET: Users
-        public async Task<ICollection<User>> GetUsers()
+        public async Task<IEnumerable<User>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _context.Users.ToListAsync();
+            if (users != null)
+            {
+                return users;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: Users/1
         public async Task<User> GetUser(int id)
         {
-            return await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                return user;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // POST: Users
@@ -64,12 +80,18 @@ namespace DAL.Repositories
                 Admin = false,
                 Password = passwordHash,
                 Salt = passwordSalt
-
             };
 
             var result = await _context.Users.AddAsync(newUser);
-            await _context.SaveChangesAsync();
-            return result.Entity;
+            if (result != null)
+            {
+                await _context.SaveChangesAsync();
+                return result.Entity;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // PUT: Users/1
@@ -108,7 +130,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         // DELETE: Users/1
@@ -135,7 +160,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         public static byte[] AddHash(string password, byte[] salt)

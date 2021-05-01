@@ -11,7 +11,7 @@ namespace BLL.Interfaces
     public interface IInfoTopicBLL
     {
         InfoTopicDTO AddDTO(InfoTopic infotopic);
-        Task<ICollection<InfoTopicDTO>> GetInfoTopics();
+        Task<IEnumerable<InfoTopicDTO>> GetInfoTopics();
         Task<InfoTopicDTO> GetInfoTopic(int id);
         Task<InfoTopicDTO> AddInfoTopic(InfoTopic infotopic);
         Task<InfoTopicDTO> UpdateInfoTopic(InfoTopic infotopic);

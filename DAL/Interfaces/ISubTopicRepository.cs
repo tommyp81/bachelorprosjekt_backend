@@ -9,7 +9,7 @@ namespace DAL.Interfaces
 {
     public interface ISubTopicRepository
     {
-        Task<ICollection<SubTopic>> GetSubTopics();
+        Task<IEnumerable<SubTopic>> GetSubTopics();
         Task<SubTopic> GetSubTopic(int id);
         Task<SubTopic> AddSubTopic(SubTopic subtopic);
         Task<SubTopic> UpdateSubTopic(SubTopic subtopic);

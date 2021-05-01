@@ -25,7 +25,7 @@ namespace API.Controllers
 
         // GET: SubTopics
         [HttpGet]
-        public async Task<ActionResult<ICollection<SubTopicDTO>>> GetSubTopics()
+        public async Task<ActionResult<IEnumerable<SubTopicDTO>>> GetSubTopics()
         {
             try
             {

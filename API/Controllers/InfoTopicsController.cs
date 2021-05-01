@@ -25,7 +25,7 @@ namespace API.Controllers
 
         // GET: InfoTopics
         [HttpGet]
-        public async Task<ActionResult<ICollection<InfoTopicDTO>>> GetInfoTopics()
+        public async Task<ActionResult<IEnumerable<InfoTopicDTO>>> GetInfoTopics()
         {
             try
             {

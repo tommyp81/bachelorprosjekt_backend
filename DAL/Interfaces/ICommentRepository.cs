@@ -10,7 +10,7 @@ namespace DAL.Interfaces
 {
     public interface ICommentRepository
     {
-        Task<ICollection<Comment>> GetComments();
+        Task<IEnumerable<Comment>> GetComments(int? postId);
         Task<Comment> GetComment(int id);
         Task<Comment> AddComment(IFormFile file, Comment comment);
         Task<Comment> UpdateComment(Comment comment);

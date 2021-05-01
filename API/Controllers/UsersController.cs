@@ -25,7 +25,7 @@ namespace API.Controllers
 
         // GET: Users
         [HttpGet]
-        public async Task<ActionResult<ICollection<UserDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
             try
             {

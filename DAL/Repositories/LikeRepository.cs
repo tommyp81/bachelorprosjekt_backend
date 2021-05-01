@@ -19,93 +19,149 @@ namespace DAL.Repositories
             _context = context;
         }
 
-        // GET: GetLikes
-        public async Task<ICollection<Like>> GetLikes()
-        {
-            return await _context.Likes.ToListAsync();
-        }
-
         // POST: GetLike
         public async Task<Like> GetLike(Like like)
         {
             // GetLike skal finne likes med UserId og PostId eller CommentId
-            ICollection<Like> allLikes = await _context.Likes.ToListAsync();
-            ICollection<Like> likesByUser = new List<Like>();
+            var allLikes = await _context.Likes.ToListAsync();
+            var likesByUser = allLikes.Where(l => l.UserId == like.UserId);
 
-            // Legg til alle likes fra gitt UserId i en liste (likesByUser)
-            foreach (var item in allLikes)
-            {
-                if (item.UserId == like.UserId)
-                {
-                    likesByUser.Add(item);
-                }
-            }
-
-            // Finn riktig like med PostId fra likesByUser hvis denne er lagt ved
             if (like.PostId != null)
             {
-                foreach (var item in likesByUser)
+                // Finn riktig like med PostId hvis denne er lagt ved
+                var postLike = likesByUser.FirstOrDefault(l => l.PostId == like.PostId);
+                if (postLike != null)
                 {
-                    if (item.PostId == like.PostId)
-                    {
-                        // Send tilbake like med riktig UserId og PostId
-                        return item;
-                    }
+                    return postLike;
+                }
+                else
+                {
+                    return null;
                 }
             }
-
-            // Finn riktig like med CommentId fra likesByUser hvis denne er lagt ved
-            if (like.CommentId != null)
+            else if (like.CommentId != null)
             {
-                foreach (var item in likesByUser)
+                // Finn riktig like med CommentId hvis denne er lagt ved
+                var commentLike = likesByUser.FirstOrDefault(l => l.CommentId == like.CommentId);
+                if (commentLike != null)
                 {
-                    if (item.CommentId == like.CommentId)
-                    {
-                        // Send tilbake like med riktig UserId og CommentId
-                        return item;
-                    }
+                    return commentLike;
+                }
+                else
+                {
+                    return null;
                 }
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         // POST: AddLike
         public async Task<Like> AddLike(Like like)
         {
             // Sjekk om denne eksisterer
-            var getLike = await GetLike(like);
+            var updateLike = await GetLike(like);
 
             // Oppdater om den finnes
-            if (getLike != null)
+            if (updateLike != null)
             {
-                var updateLike = await _context.Likes.FindAsync(getLike.Id);
-                updateLike.Id = getLike.Id;
-                updateLike.PostId = like.PostId;
-                updateLike.CommentId = like.CommentId;
+                //var updateLike = await _context.Likes.FindAsync(getLike.Id);
+                //updateLike.Id = updateLike.Id;
+                //updateLike.UserId = updateLike.UserId;
+
+                if (updateLike.PostId != null)
+                {
+                    // Oppdater post om det er en postId
+                    var post = await _context.Posts.FindAsync(updateLike.PostId);
+                    if (post != null)
+                    {
+                        post.Like_Count++;
+                        updateLike.PostId = like.PostId;
+                    }
+                }
+                else if (updateLike.CommentId != null)
+                {
+                    // Oppdater kommentar om det er en commentId
+                    var comment = await _context.Comments.FindAsync(updateLike.CommentId);
+                    if (comment != null)
+                    {
+                        comment.Like_Count++;
+                        updateLike.CommentId = like.CommentId;
+                    }
+                }
+
+                // Lagre endringer
                 await _context.SaveChangesAsync();
                 return updateLike;
             }
+            else
+            {
+                // Legg til ny like i databasen om den ikke eksisterer
+                var result = await _context.Likes.AddAsync(like);
 
-            // Legg til ny like i databasen om den ikke eksisterer
-            var result = await _context.Likes.AddAsync(like);
-            await _context.SaveChangesAsync();
-            return result.Entity;
+                if (result.Entity.PostId != null)
+                {
+                    // Oppdater post om det er en PostId
+                    var post = await _context.Posts.FindAsync(result.Entity.PostId);
+                    if (post != null)
+                    {
+                        post.Like_Count++;
+                    }
+                }
+                else if (result.Entity.CommentId != null)
+                {
+                    // Oppdater kommentar om det er en CommentId
+                    var comment = await _context.Comments.FindAsync(result.Entity.CommentId);
+                    if (comment != null)
+                    {
+                        comment.Like_Count++;
+                    }
+                }
+
+                // Lagre endringer
+                await _context.SaveChangesAsync();
+                return result.Entity;
+            }
         }
 
         // DELETE: DeleteLike
         public async Task<Like> DeleteLike(Like like)
         {
             // Finn riktig like
-            Like deleteLike = await GetLike(like);
+            var deleteLike = await GetLike(like);
 
             if (deleteLike != null)
             {
+                if (deleteLike.PostId != null)
+                {
+                    // Oppdater post om det er en PostId
+                    var post = await _context.Posts.FindAsync(deleteLike.PostId);
+                    if (post != null)
+                    {
+                        post.Like_Count--;
+                    }
+                }
+                else if (deleteLike.CommentId != null)
+                {
+                    // Oppdater kommentar om det er en CommentId
+                    var comment = await _context.Comments.FindAsync(deleteLike.CommentId);
+                    if (comment != null)
+                    {
+                        comment.Like_Count--;
+                    }
+                }
+
                 // Slett denne fra databasen og lagre endringer
                 _context.Likes.Remove(deleteLike);
                 await _context.SaveChangesAsync();
                 return deleteLike;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
     }
 }

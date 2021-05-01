@@ -32,48 +32,74 @@ namespace BLL.Repositories
             return DTO;
         }
 
-        public async Task<ICollection<TopicDTO>> GetTopics()
+        public async Task<IEnumerable<TopicDTO>> GetTopics()
         {
             var topics = await _repository.GetTopics();
-            if (topics == null) { return null; }
-            var topicDTOs = new List<TopicDTO>();
-            foreach (Topic topic in topics)
+            if (topics != null)
             {
-                topicDTOs.Add(AddDTO(topic));
+                var topicDTOs = new List<TopicDTO>();
+                foreach (Topic topic in topics)
+                {
+                    topicDTOs.Add(AddDTO(topic));
+                }
+                return topicDTOs;
             }
-            return topicDTOs;
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<TopicDTO> GetTopic(int id)
         {
             var getTopic = await _repository.GetTopic(id);
-            if (getTopic == null) { return null; }
-            var topicDTO = AddDTO(getTopic);
-            return topicDTO;
+            if (getTopic != null)
+            {
+                return AddDTO(getTopic);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<TopicDTO> AddTopic(Topic topic)
         {
             var addTopic = await _repository.AddTopic(topic);
-            if (addTopic == null) { return null; }
-            var topicDTO = AddDTO(addTopic);
-            return topicDTO;
+            if (addTopic != null)
+            {
+                return AddDTO(addTopic);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<TopicDTO> UpdateTopic(Topic topic)
         {
             var updateTopic = await _repository.UpdateTopic(topic);
-            if (updateTopic == null) { return null; }
-            var topicDTO = AddDTO(updateTopic);
-            return topicDTO;
+            if (updateTopic != null)
+            {
+                return AddDTO(updateTopic);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<TopicDTO> DeleteTopic(int id)
         {
             var deleteTopic = await _repository.DeleteTopic(id);
-            if (deleteTopic == null) { return null; }
-            var topicDTO = AddDTO(deleteTopic);
-            return topicDTO;
+            if (deleteTopic != null)
+            {
+                return AddDTO(deleteTopic);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

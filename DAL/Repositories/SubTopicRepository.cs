@@ -22,23 +22,46 @@ namespace DAL.Repositories
         }
 
         // GET: SubTopics
-        public async Task<ICollection<SubTopic>> GetSubTopics()
+        public async Task<IEnumerable<SubTopic>> GetSubTopics()
         {
-            return await _context.SubTopics.ToListAsync();
+            var subTopics = await _context.SubTopics.ToListAsync();
+            if (subTopics != null)
+            {
+                return subTopics;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: SubTopics/1
         public async Task<SubTopic> GetSubTopic(int id)
         {
-            return await _context.SubTopics.FindAsync(id);
+            var subTopic = await _context.SubTopics.FindAsync(id);
+            if (subTopic != null)
+            {
+                return subTopic;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // POST: SubTopics
         public async Task<SubTopic> AddSubTopic(SubTopic subtopic)
         {
             var result = await _context.SubTopics.AddAsync(subtopic);
-            await _context.SaveChangesAsync();
-            return result.Entity;
+            if (result != null)
+            {
+                await _context.SaveChangesAsync();
+                return result.Entity;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // PUT: SubTopics/1
@@ -54,7 +77,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         // DELETE: SubTopics/1
@@ -77,7 +103,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
     }
 }

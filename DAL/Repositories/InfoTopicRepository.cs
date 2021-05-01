@@ -24,23 +24,46 @@ namespace DAL.Repositories
         }
 
         // GET: InfoTopics
-        public async Task<ICollection<InfoTopic>> GetInfoTopics()
+        public async Task<IEnumerable<InfoTopic>> GetInfoTopics()
         {
-            return await _context.InfoTopics.ToListAsync();
+            var infoTopics = await _context.InfoTopics.ToListAsync();
+            if (infoTopics != null)
+            {
+                return infoTopics;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: InfoTopics/1
         public async Task<InfoTopic> GetInfoTopic(int id)
         {
-            return await _context.InfoTopics.FindAsync(id);
+            var infoTopic = await _context.InfoTopics.FindAsync(id);
+            if (infoTopic != null)
+            {
+                return infoTopic;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // POST: InfoTopics
         public async Task<InfoTopic> AddInfoTopic(InfoTopic infotopic)
         {
             var result = await _context.InfoTopics.AddAsync(infotopic);
-            await _context.SaveChangesAsync();
-            return result.Entity;
+            if (result != null)
+            {
+                await _context.SaveChangesAsync();
+                return result.Entity;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // PUT: InfoTopics/1
@@ -55,7 +78,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         // DELETE: InfoTopics/1
@@ -88,7 +114,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ namespace API.Controllers
 
         // GET: GetDocuments
         [HttpGet]
-        public async Task<ActionResult<ICollection<DocumentDTO>>> GetDocuments()
+        public async Task<ActionResult<IEnumerable<DocumentDTO>>> GetDocuments()
         {
             try
             {

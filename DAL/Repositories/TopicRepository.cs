@@ -22,15 +22,31 @@ namespace DAL.Repositories
         }
 
         // GET: Topics
-        public async Task<ICollection<Topic>> GetTopics()
+        public async Task<IEnumerable<Topic>> GetTopics()
         {
-            return await _context.Topics.ToListAsync();
+            var topics = await _context.Topics.ToListAsync();
+            if (topics != null)
+            {
+                return topics;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: Topics/1
         public async Task<Topic> GetTopic(int id)
         {
-            return await _context.Topics.FindAsync(id);
+            var topic = await _context.Topics.FindAsync(id);
+            if (topic != null)
+            {
+                return topic;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // POST: Topics
@@ -61,8 +77,15 @@ namespace DAL.Repositories
             //}
 
             var result = await _context.Topics.AddAsync(topic);
-            await _context.SaveChangesAsync();
-            return result.Entity;
+            if (result != null)
+            {
+                await _context.SaveChangesAsync();
+                return result.Entity;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // PUT: Topics/1
@@ -78,7 +101,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         // DELETE: Topics/1
@@ -101,7 +127,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
     }
 }

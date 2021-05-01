@@ -30,6 +30,10 @@ namespace DAL.Repositories
         // POST: AddDocument
         public async Task<Document> AddDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId)
         {
+            // Tidssone
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+
             // Informasjon om filnavn og type
             var fileName = Path.GetFileName(file.FileName);
             var fileType = Path.GetExtension(fileName);
@@ -49,19 +53,57 @@ namespace DAL.Repositories
                 fileSize = file.Length.ToString() + " byte";
             }
 
-            // Unikt navn for Azure Storage Blob
-            string uniqueName = fileName + " (" + Guid.NewGuid().ToString() + ")";
-
-            // Navn på container (her brukes username nå)
+            // Unikt navn for Azure Storage Blob. Eks: sysadmin/testfil.txt (xmwqo80924ng9430n)
             var user = await _context.Users.FindAsync(userId);
-            string container = user.Username;
+            string uniqueName =  user.Username + "/" + fileName + " (" + Guid.NewGuid().ToString() + ")";
+
+            // Navn på container. Eks: mai-2021
+            string container = "default";
+            int caseSwitch = now.Month;
+            switch (caseSwitch)
+            {
+                case 1:
+                    container = "januar-" + now.Year;
+                    break;
+                case 2:
+                    container = "februar-" + now.Year;
+                    break;
+                case 3:
+                    container = "mars-" + now.Year;
+                    break;
+                case 4:
+                    container = "april-" + now.Year;
+                    break;
+                case 5:
+                    container = "mai-" + now.Year;
+                    break;
+                case 6:
+                    container = "juni-" + now.Year;
+                    break;
+                case 7:
+                    container = "juli-" + now.Year;
+                    break;
+                case 8:
+                    container = "august-" + now.Year;
+                    break;
+                case 9:
+                    container = "september-" + now.Year;
+                    break;
+                case 10:
+                    container = "oktober-" + now.Year;
+                    break;
+                case 11:
+                    container = "november-" + now.Year;
+                    break;
+                case 12:
+                    container = "desember-" + now.Year;
+                    break;
+            }
 
             // Azure Storage connection
             var containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), container);
 
             // Lag ny container om den ikke eksisterer
-            //await containerClient.CreateIfNotExistsAsync();
-            // Lag ny container om den ikke eksisterer -> Dette burde gi mindre errors i Azure Portal
             if (!await containerClient.ExistsAsync())
             {
                 await containerClient.CreateAsync();
@@ -77,15 +119,13 @@ namespace DAL.Repositories
                 uploadFileStream.Close();
             }
 
-            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-
             // Legge til informasjon om filen
             var document = new Document
             {
                 FileName = fileName,
                 FileType = fileType,
                 FileSize = fileSize,
-                Uploaded = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone),
+                Uploaded = now,
                 UniqueName = uniqueName,
                 Container = container,
                 UserId = userId,
@@ -142,15 +182,31 @@ namespace DAL.Repositories
         }
 
         // GET: GetDocuments
-        public async Task<ICollection<Document>> GetDocuments()
+        public async Task<IEnumerable<Document>> GetDocuments()
         {
-            return await _context.Documents.ToListAsync();
+            var documents = await _context.Documents.ToListAsync();
+            if (documents != null)
+            {
+                return documents;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: GetDocumentInfo/1
         public async Task<Document> GetDocumentInfo(int id)
         {
-            return await _context.Documents.FindAsync(id);
+            var document = await _context.Documents.FindAsync(id);
+            if (document != null)
+            {
+                return document;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: GetDocument/1
@@ -172,6 +228,7 @@ namespace DAL.Repositories
                     };
                 }
             }
+
             return null;
         }
 
@@ -186,8 +243,6 @@ namespace DAL.Repositories
                 var blobClient = containerClient.GetBlobClient(result.UniqueName);
 
                 // Slette filen fra Azure Storage
-                //await blobClient.DeleteIfExistsAsync();
-                // Sjekk om den finnes først, og slett hvis. Burde gi mindre feilmeldinger i Azure Portal
                 if (await blobClient.ExistsAsync())
                 {
                     await blobClient.DeleteAsync();
@@ -196,8 +251,7 @@ namespace DAL.Repositories
                 // Slette container fra Azure Storage om den er tom
                 if (!containerClient.GetBlobs().Any())
                 {
-                    //await containerClient.DeleteIfExistsAsync();
-                    // Slett med en gang siden denne er tom! Burde gi mindre feilmeldinger i Azure Portal
+                    // Slett med en gang siden denne er tom!
                     await containerClient.DeleteAsync();
                 }
 
@@ -226,7 +280,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         // POST: Login
@@ -254,6 +311,7 @@ namespace DAL.Repositories
                     }
                 }
             }
+
             // Sende tilbake null hvis bruker eller passord er feil
             return null;
         }
@@ -268,7 +326,10 @@ namespace DAL.Repositories
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
     }
 }

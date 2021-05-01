@@ -10,10 +10,11 @@ namespace DAL.Interfaces
 {
     public interface IPostRepository
     {
-        Task<ICollection<Post>> GetPosts();
+        Task<IEnumerable<Post>> GetPosts();
         Task<Post> GetPost(int id);
         Task<Post> AddPost(IFormFile file, Post post);
         Task<Post> UpdatePost(Post post);
         Task<Post> DeletePost(int id);
+        Task<IEnumerable<Post>> PostPaging(int? page, int? count, string order, string type);
     }
 }

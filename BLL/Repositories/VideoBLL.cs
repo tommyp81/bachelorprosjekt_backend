@@ -35,48 +35,74 @@ namespace BLL.Repositories
             return DTO;
         }
 
-        public async Task<ICollection<VideoDTO>> GetVideos()
+        public async Task<IEnumerable<VideoDTO>> GetVideos()
         {
             var videos = await _repository.GetVideos();
-            if (videos == null) { return null; }
-            var videoDTOs = new List<VideoDTO>();
-            foreach (Video video in videos)
+            if (videos != null)
             {
-                videoDTOs.Add(AddDTO(video));
+                var videoDTOs = new List<VideoDTO>();
+                foreach (Video video in videos)
+                {
+                    videoDTOs.Add(AddDTO(video));
+                }
+                return videoDTOs;
             }
-            return videoDTOs;
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<VideoDTO> GetVideo(int id)
         {
             var getVideo = await _repository.GetVideo(id);
-            if (getVideo == null) { return null; }
-            var videoDTO = AddDTO(getVideo);
-            return videoDTO;
+            if (getVideo != null)
+            {
+                return AddDTO(getVideo);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<VideoDTO> AddVideo(Video video)
         {
             var addVideo = await _repository.AddVideo(video);
-            if (addVideo == null) { return null; }
-            var videoDTO = AddDTO(addVideo);
-            return videoDTO;
+            if (addVideo != null)
+            {
+                return AddDTO(addVideo);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<VideoDTO> UpdateVideo(Video video)
         {
             var updateVideo = await _repository.UpdateVideo(video);
-            if (updateVideo == null) { return null; }
-            var videoDTO = AddDTO(updateVideo);
-            return videoDTO;
+            if (updateVideo != null)
+            {
+                return AddDTO(updateVideo);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<VideoDTO> DeleteVideo(int id)
         {
             var deleteVideo = await _repository.DeleteVideo(id);
-            if (deleteVideo == null) { return null; }
-            var videoDTO = AddDTO(deleteVideo);
-            return videoDTO;
+            if (deleteVideo != null)
+            {
+                return AddDTO(deleteVideo);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace DAL.Interfaces
 {
     public interface IUserRepository
     {
-        Task<ICollection<User>> GetUsers();
+        Task<IEnumerable<User>> GetUsers();
         Task<User> GetUser(int id);
         Task<User> AddUser(AuthUser user);
         Task<User> UpdateUser(AuthUser user);

@@ -12,10 +12,11 @@ namespace BLL.Interfaces
     public interface IPostBLL
     {
         Task<PostDTO> AddDTO(Post post);
-        Task<ICollection<PostDTO>> GetPosts();
+        Task<IEnumerable<PostDTO>> GetPosts();
         Task<PostDTO> GetPost(int id);
         Task<PostDTO> AddPost(IFormFile file, Post post);
         Task<PostDTO> UpdatePost(Post post);
         Task<PostDTO> DeletePost(int id);
+        Task<IEnumerable<PostDTO>> PostPaging(int? page, int? count, string order, string type);
     }
 }

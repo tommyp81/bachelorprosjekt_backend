@@ -34,48 +34,74 @@ namespace BLL.Repositories
             return DTO;
         }
 
-        public async Task<ICollection<UserDTO>> GetUsers()
+        public async Task<IEnumerable<UserDTO>> GetUsers()
         {
             var users = await _repository.GetUsers();
-            if (users == null) { return null; }
-            var userDTOs = new List<UserDTO>();
-            foreach (User user in users)
+            if (users != null)
             {
-                userDTOs.Add(AddDTO(user));
+                var userDTOs = new List<UserDTO>();
+                foreach (User user in users)
+                {
+                    userDTOs.Add(AddDTO(user));
+                }
+                return userDTOs;
             }
-            return userDTOs;
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<UserDTO> GetUser(int id)
         {
             var getUser = await _repository.GetUser(id);
-            if (getUser == null) { return null; }
-            var userDTO = AddDTO(getUser);
-            return userDTO;
+            if (getUser != null)
+            {
+                return AddDTO(getUser);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<UserDTO> AddUser(AuthUser user)
         {
             var addUser = await _repository.AddUser(user);
-            if (addUser == null) { return null; }
-            var userDTO = AddDTO(addUser);
-            return userDTO;
+            if (addUser != null)
+            {
+                return AddDTO(addUser);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<UserDTO> UpdateUser(AuthUser user)
         {
             var updateUser = await _repository.UpdateUser(user);
-            if (updateUser == null) { return null; }
-            var userDTO = AddDTO(updateUser);
-            return userDTO;
+            if (updateUser != null)
+            {
+                return AddDTO(updateUser);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<UserDTO> DeleteUser(int id)
         {
             var deleteUser = await _repository.DeleteUser(id);
-            if (deleteUser == null) { return null; }
-            var userDTO = AddDTO(deleteUser);
-            return userDTO;
+            if (deleteUser != null)
+            {
+                return AddDTO(deleteUser);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

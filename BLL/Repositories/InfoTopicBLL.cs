@@ -31,48 +31,74 @@ namespace BLL.Repositories
             return DTO;
         }
 
-        public async Task<ICollection<InfoTopicDTO>> GetInfoTopics()
+        public async Task<IEnumerable<InfoTopicDTO>> GetInfoTopics()
         {
             var infotopics = await _repository.GetInfoTopics();
-            if (infotopics == null) { return null; }
-            var infotopicDTOs = new List<InfoTopicDTO>();
-            foreach (InfoTopic infotopic in infotopics)
+            if (infotopics != null)
             {
-                infotopicDTOs.Add(AddDTO(infotopic));
+                var infotopicDTOs = new List<InfoTopicDTO>();
+                foreach (InfoTopic infotopic in infotopics)
+                {
+                    infotopicDTOs.Add(AddDTO(infotopic));
+                }
+                return infotopicDTOs;
             }
-            return infotopicDTOs;
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<InfoTopicDTO> GetInfoTopic(int id)
         {
             var getInfoTopic = await _repository.GetInfoTopic(id);
-            if (getInfoTopic == null) { return null; }
-            var infotopicDTO = AddDTO(getInfoTopic);
-            return infotopicDTO;
+            if (getInfoTopic != null)
+            {
+                return AddDTO(getInfoTopic);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<InfoTopicDTO> AddInfoTopic(InfoTopic infotopic)
         {
             var addInfoTopic = await _repository.AddInfoTopic(infotopic);
-            if (addInfoTopic == null) { return null; }
-            var infotopicDTO = AddDTO(addInfoTopic);
-            return infotopicDTO;
+            if (addInfoTopic != null)
+            {
+                return AddDTO(addInfoTopic);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<InfoTopicDTO> UpdateInfoTopic(InfoTopic infotopic)
         {
             var updateInfoTopic = await _repository.UpdateInfoTopic(infotopic);
-            if (updateInfoTopic == null) { return null; }
-            var infotopicDTO = AddDTO(updateInfoTopic);
-            return infotopicDTO;
+            if (updateInfoTopic != null)
+            {
+                return AddDTO(updateInfoTopic);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<InfoTopicDTO> DeleteInfoTopic(int id)
         {
             var deleteInfoTopic = await _repository.DeleteInfoTopic(id);
-            if (deleteInfoTopic == null) { return null; }
-            var infotopicDTO = AddDTO(deleteInfoTopic);
-            return infotopicDTO;
+            if (deleteInfoTopic != null)
+            {
+                return AddDTO(deleteInfoTopic);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

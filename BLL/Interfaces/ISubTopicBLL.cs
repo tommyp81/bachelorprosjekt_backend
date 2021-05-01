@@ -11,7 +11,7 @@ namespace BLL.Interfaces
     public interface ISubTopicBLL
     {
         SubTopicDTO AddDTO(SubTopic subtopic);
-        Task<ICollection<SubTopicDTO>> GetSubTopics();
+        Task<IEnumerable<SubTopicDTO>> GetSubTopics();
         Task<SubTopicDTO> GetSubTopic(int id);
         Task<SubTopicDTO> AddSubTopic(SubTopic subtopic);
         Task<SubTopicDTO> UpdateSubTopic(SubTopic subtopic);

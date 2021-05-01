@@ -25,16 +25,35 @@ namespace API.Controllers
 
         // GET: Posts
         [HttpGet]
-        public async Task<ActionResult<ICollection<PostDTO>>> GetPosts()
+        //[Route("{page?}?{count?}?{order?}?{type?}")]
+        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts() //int? page, int? count, string order, string type
         {
             try
             {
-                return Ok(await _postBLL.GetPosts());
+                var posts = await _postBLL.GetPosts();
+                if (posts != null)
+                {
+                    return Ok(posts);
+                }
+                else
+                {
+                    return NotFound($"Ingen poster ble funnet");
+                }
             }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av poster");
             }
+
+            //try
+            //{
+            //    //return Ok(await _postBLL.PostPaging(page, count, order, type));
+            //    return Ok(await _postBLL.GetPosts());
+            //}
+            //catch (Exception e)
+            //{
+            //    return StatusCode(StatusCodes.Status500InternalServerError, e);//"Feil ved henting av poster"
+            //}
         }
 
         // GET: Posts/1
@@ -44,12 +63,14 @@ namespace API.Controllers
             try
             {
                 var post = await _postBLL.GetPost(id);
-                if (post == null)
+                if (post != null)
+                {
+                    return Ok(post);
+                }
+                else
                 {
                     return NotFound($"Post med ID {id} ble ikke funnet");
                 }
-
-                return Ok(post);
             }
             catch (Exception)
             {
@@ -63,18 +84,27 @@ namespace API.Controllers
         {
             try
             {
-                if (post == null)
+                if (post != null)
                 {
-                    return BadRequest();
+                    // Legg til posten i databasen og fil på Azure Storage og databasen hvis fil er sendt med
+                    var newPost = await _postBLL.AddPost(file, post);
+                    if (newPost != null)
+                    {
+                        return CreatedAtAction(nameof(GetPost), new { id = newPost.Id }, newPost);
+                    }
+                    else
+                    {
+                        return BadRequest("Post ble ikke opprettet");
+                    }
                 }
-
-                // Legg til posten i databasen og fil på Azure Storage og databasen hvis fil er sendt med
-                var newPost = await _postBLL.AddPost(file, post);
-                return CreatedAtAction(nameof(GetPost), new { id = newPost.Id }, newPost);
+                else
+                {
+                    return BadRequest("Post mangler");
+                }
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av ny post");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av post");
             }
         }
 
@@ -84,18 +114,22 @@ namespace API.Controllers
         {
             try
             {
-                if (id != post.Id)
+                if (id == post.Id)
+                {
+                    var updatePost = await _postBLL.UpdatePost(post);
+                    if (updatePost != null)
+                    {
+                        return Ok(updatePost);
+                    }
+                    else
+                    {
+                        return NotFound($"Post med ID {id} ble ikke funnet");
+                    }
+                }
+                else
                 {
                     return BadRequest("Post ID stemmer ikke");
                 }
-
-                var checkPost = await _postBLL.GetPost(id);
-                if (checkPost == null)
-                {
-                    return NotFound($"Post med ID {id} ble ikke funnet");
-                }
-
-                return Ok(await _postBLL.UpdatePost(post));
             }
             catch (Exception)
             {
@@ -109,13 +143,16 @@ namespace API.Controllers
         {
             try
             {
-                var checkPost = await _postBLL.GetPost(id);
-                if (checkPost == null)
+                var deletePost = await _postBLL.DeletePost(id);
+                if (deletePost != null)
+                {
+                    return Ok(deletePost);
+
+                }
+                else
                 {
                     return NotFound($"Post med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _postBLL.DeletePost(id));
             }
             catch (Exception)
             {

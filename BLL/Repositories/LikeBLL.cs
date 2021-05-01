@@ -35,25 +35,40 @@ namespace BLL.Repositories
         public async Task<LikeDTO> GetLike(Like like)
         {
             var getLike = await _repository.GetLike(like);
-            if (getLike == null) { return null; }
-            var likeDTO = AddDTO(getLike);
-            return likeDTO;
+            if (getLike != null)
+            {
+                return AddDTO(getLike);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<LikeDTO> AddLike(Like like)
         {
             var addLike = await _repository.AddLike(like);
-            if (addLike == null) { return null; }
-            var likeDTO = AddDTO(addLike);
-            return likeDTO;
+            if (addLike != null)
+            {
+                return AddDTO(addLike);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<LikeDTO> DeleteLike(Like like)
         {
             var deleteLike = await _repository.DeleteLike(like);
-            if (deleteLike == null) { return null; }
-            var likeDTO = AddDTO(deleteLike);
-            return likeDTO;
+            if (deleteLike != null)
+            {
+                return AddDTO(deleteLike);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

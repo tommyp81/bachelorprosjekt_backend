@@ -11,7 +11,7 @@ namespace BLL.Interfaces
     public interface IVideoBLL
     {
         VideoDTO AddDTO(Video video);
-        Task<ICollection<VideoDTO>> GetVideos();
+        Task<IEnumerable<VideoDTO>> GetVideos();
         Task<VideoDTO> GetVideo(int id);
         Task<VideoDTO> AddVideo(Video video);
         Task<VideoDTO> UpdateVideo(Video video);

@@ -15,58 +15,106 @@ namespace DAL.Repositories
     {
         private readonly DBContext _context;
         private readonly ICustomRepository _customRepository;
-        private readonly ILikeRepository _likeRepository;
 
-        public CommentRepository(DBContext context, ICustomRepository customRepository, ILikeRepository likeRepository)
+        public CommentRepository(DBContext context, ICustomRepository customRepository)
         {
             _context = context;
             _customRepository = customRepository;
-            _likeRepository = likeRepository;
         }
 
-        // GET: Comment
-        public async Task<ICollection<Comment>> GetComments()
+        // GET: Comments
+        // GET: Comments?postId=1
+        public async Task<IEnumerable<Comment>> GetComments(int? postId)
         {
-            return await _context.Comments.ToListAsync();
+            if (postId != null)
+            {
+                var postComments = _context.Comments.Where(c => c.PostId == postId);
+                if (postComments != null)
+                {
+                    return postComments;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                // Alle kommentarer
+                var allComments = await _context.Comments.ToListAsync();
+                if (allComments != null)
+                {
+                    return allComments;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
-        // GET: Comment/1
+        // GET: Comments/1
         public async Task<Comment> GetComment(int id)
         {
-            return await _context.Comments.FindAsync(id);
+            var comment = await _context.Comments.FindAsync(id);
+            if (comment != null)
+            {
+                return comment;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        // POST: Comment
+        // POST: Comments
         public async Task<Comment> AddComment(IFormFile file, Comment comment)
         {
             // Lagre ny kommentar i databasen først
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             comment.Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
             comment.Edited = false;
+            comment.Like_Count = 0;
+
             var result = await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
 
-            // Se etter fil og last opp hvis den er sendt med
-            if (file != null)
+            if (result != null)
             {
-                if (file.Length > 0)
+                // Legge til en comment_count på posten
+                var post = await _context.Posts.FindAsync(result.Entity.PostId);
+                if (post != null)
                 {
-                    // Kaller på AddDocument metoden fra CustomRepository, så vi får en ny oppføring i databasen til Documents
-                    var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, null, result.Entity.Id, null);
+                    post.Comment_Count++;
+                }
 
-                    // Oppdater denne kommentaren med DocumentId
-                    var update = await _context.Comments.FindAsync(result.Entity.Id);
-                    if (update != null)
+                // Se etter fil og last opp hvis den er sendt med
+                if (file != null)
+                {
+                    if (file.Length > 0)
                     {
-                        update.DocumentId = newDocument.Id;
-                        await _context.SaveChangesAsync();
+                        // Kaller på AddDocument metoden fra CustomRepository, så vi får en ny oppføring i databasen til Documents
+                        var newDocument = await _customRepository.AddDocument(file, result.Entity.UserId, null, result.Entity.Id, null);
+
+                        // Oppdater denne kommentaren med DocumentId
+                        var update = await _context.Comments.FindAsync(result.Entity.Id);
+                        if (update != null)
+                        {
+                            update.DocumentId = newDocument.Id;
+                        }
                     }
                 }
+
+                await _context.SaveChangesAsync();
+                return result.Entity;
             }
-            return result.Entity;
+            else
+            {
+                return null;
+            }
         }
 
-        // PUT: Comment/1
+        // PUT: Comments/1
         public async Task<Comment> UpdateComment(Comment comment)
         {
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
@@ -75,19 +123,23 @@ namespace DAL.Repositories
             {
                 result.Id = result.Id;
                 result.Content = comment.Content;
-                result.Date = result.Date; //TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+                result.Date = result.Date;
                 result.EditDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
                 result.Edited = true;
+                result.Like_Count = result.Like_Count;
                 result.UserId = result.UserId;
                 result.PostId = result.PostId;
                 result.DocumentId = result.DocumentId;
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
-        // DELETE: Comment/1
+        // DELETE: Comments/1
         public async Task<Comment> DeleteComment(int id)
         {
             var result = await _context.Comments.FindAsync(id);
@@ -100,20 +152,25 @@ namespace DAL.Repositories
                 }
 
                 // Hvis denne kommentaren har likes, må de slettes!
-                var likes = await _likeRepository.GetLikes();
-                foreach (var like in likes)
+                var likes = await _context.Likes.ToListAsync();
+                likes.RemoveAll(l => l.CommentId == result.Id);
+
+                // Fjerne Comment_Count fra posten
+                var post = await _context.Posts.FindAsync(result.PostId);
+                if (post != null)
                 {
-                    if (like.CommentId == result.Id)
-                    {
-                        await _likeRepository.DeleteLike(like);
-                    }
+                    post.Comment_Count--;
                 }
 
+                // Lagre alle endringer
                 _context.Comments.Remove(result);
                 await _context.SaveChangesAsync();
                 return result;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
     }
 }

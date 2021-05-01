@@ -9,7 +9,7 @@ namespace DAL.Interfaces
 {
     public interface IInfoTopicRepository
     {
-        Task<ICollection<InfoTopic>> GetInfoTopics();
+        Task<IEnumerable<InfoTopic>> GetInfoTopics();
         Task<InfoTopic> GetInfoTopic(int id);
         Task<InfoTopic> AddInfoTopic(InfoTopic infotopic);
         Task<InfoTopic> UpdateInfoTopic(InfoTopic infotopic);

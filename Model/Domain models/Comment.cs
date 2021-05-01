@@ -17,6 +17,7 @@ namespace Model.Domain_models
         public DateTime Date { get; set; }
         public DateTime? EditDate { get; set; }
         public bool Edited { get; set; }
+        public int Like_Count { get; set; }
 
         // Relasjoner
         [ForeignKey("User")]

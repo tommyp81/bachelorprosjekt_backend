@@ -9,7 +9,7 @@ namespace DAL.Interfaces
 {
     public interface IVideoRepository
     {
-        Task<ICollection<Video>> GetVideos();
+        Task<IEnumerable<Video>> GetVideos();
         Task<Video> GetVideo(int id);
         Task<Video> AddVideo(Video video);
         Task<Video> UpdateVideo(Video video);

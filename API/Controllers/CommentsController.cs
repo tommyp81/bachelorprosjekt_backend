@@ -24,12 +24,21 @@ namespace API.Controllers
         }
 
         // GET: Comments
+        // GET: Comments?postId=1
         [HttpGet]
-        public async Task<ActionResult<ICollection<CommentDTO>>> GetComments()
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int? postId)
         {
             try
             {
-                return Ok(await _commentBLL.GetComments());
+                var posts = await _commentBLL.GetComments(postId);
+                if (posts != null)
+                {
+                    return Ok(posts);
+                }
+                else
+                {
+                    return NotFound($"Ingen kommentar ble funnet");
+                }
             }
             catch (Exception)
             {
@@ -44,16 +53,18 @@ namespace API.Controllers
             try
             {
                 var comment = await _commentBLL.GetComment(id);
-                if (comment == null)
+                if (comment != null)
+                {
+                    return Ok(comment);
+                }
+                else
                 {
                     return NotFound($"Kommentar med ID {id} ble ikke funnet");
                 }
-
-                return Ok(comment);
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av kommentarer");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av kommentar");
             }
         }
 
@@ -63,18 +74,28 @@ namespace API.Controllers
         {
             try
             {
-                if (comment == null)
+                if (comment != null)
                 {
-                    return BadRequest();
+                    // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
+                    var newComment = await _commentBLL.AddComment(file, comment);
+                    if (newComment != null)
+                    {
+                        return CreatedAtAction(nameof(GetComment), new { id = newComment.Id }, newComment);
+                    }
+                    else
+                    {
+                        return BadRequest("Kommentar ble ikke opprettet");
+                    }
                 }
 
-                // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
-                var newComment = await _commentBLL.AddComment(file, comment);
-                return CreatedAtAction(nameof(GetComment), new { id = newComment.Id }, newComment);
+                else
+                {
+                    return BadRequest("Kommentar mangler");
+                }
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av ny kommentar");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av kommentar");
             }
         }
 
@@ -84,18 +105,22 @@ namespace API.Controllers
         {
             try
             {
-                if (id != comment.Id)
+                if (id == comment.Id)
+                {
+                    var updateComment = await _commentBLL.UpdateComment(comment);
+                    if (updateComment != null)
+                    {
+                        return Ok(updateComment);
+                    }
+                    else
+                    {
+                        return NotFound($"Kommentar med ID {id} ble ikke funnet");
+                    }
+                }
+                else
                 {
                     return BadRequest("Kommentar ID stemmer ikke");
                 }
-
-                var checkComment = await _commentBLL.GetComment(id);
-                if (checkComment == null)
-                {
-                    return NotFound($"Kommentar med ID {id} ble ikke funnet");
-                }
-
-                return Ok(await _commentBLL.UpdateComment(comment));
             }
             catch (Exception)
             {
@@ -109,13 +134,15 @@ namespace API.Controllers
         {
             try
             {
-                var checkComment = await _commentBLL.GetComment(id);
-                if (checkComment == null)
+                var deleteComment = await _commentBLL.DeleteComment(id);
+                if (deleteComment != null)
+                {
+                    return Ok(deleteComment);
+                }
+                else
                 {
                     return NotFound($"Kommentar med ID {id} ble ikke funnet");
                 }
-
-                return Ok(await _commentBLL.DeleteComment(id));
             }
             catch (Exception)
             {

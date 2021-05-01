@@ -25,7 +25,7 @@ namespace API.Controllers
 
         // GET: Videos
         [HttpGet]
-        public async Task<ActionResult<ICollection<VideoDTO>>> GetVideos()
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideos()
         {
             try
             {
