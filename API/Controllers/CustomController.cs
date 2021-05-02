@@ -131,9 +131,9 @@ namespace API.Controllers
                     return NotFound($"Dokumentet med ID {id} ble ikke funnet");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, e);//"Feil ved henting av dokument"
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av dokument");
             }
         }
 

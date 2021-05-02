@@ -37,7 +37,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return NotFound($"Ingen kommentar ble funnet");
+                    return NotFound($"Ingen kommentarer ble funnet");
                 }
             }
             catch (Exception)

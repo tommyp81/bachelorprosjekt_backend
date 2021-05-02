@@ -41,7 +41,7 @@ namespace API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av emne");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av emner");
             }
         }
 
@@ -81,7 +81,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return BadRequest("Kommentar objekt mangler");
+                    return BadRequest("Emne objekt mangler");
                 }
             }
             catch (Exception)

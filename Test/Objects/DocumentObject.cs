@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Model.Domain_models;
 using Model.DTO;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Test.Objects
                     FileType = ".txt",
                     FileSize = "17 byte",
                     Uploaded = DateTime.UtcNow,
-                    UniqueName = "Testfil1.txt (test)",
+                    UniqueName = "(test)",
                     Container = "sysadmin",
                     UserId = 1,
                     PostId = 1,
@@ -36,7 +37,7 @@ namespace Test.Objects
                     FileType = ".txt",
                     FileSize = "17 byte",
                     Uploaded = DateTime.UtcNow,
-                    UniqueName = "Testfil2.txt (test)",
+                    UniqueName = "(test)",
                     Container = "sysadmin",
                     UserId = 1,
                     PostId = null,
@@ -50,7 +51,7 @@ namespace Test.Objects
                     FileType = ".txt",
                     FileSize = "17 byte",
                     Uploaded = DateTime.UtcNow,
-                    UniqueName = "Testfil3.txt (test)",
+                    UniqueName = "(test)",
                     Container = "sysadmin",
                     UserId = 1,
                     PostId = null,
@@ -70,7 +71,7 @@ namespace Test.Objects
                 FileType = ".txt",
                 FileSize = "17 byte",
                 Uploaded = DateTime.UtcNow,
-                UniqueName = "Testfil1.txt (test)",
+                UniqueName = "(test)",
                 Container = "sysadmin",
                 UserId = 1,
                 PostId = 1,
@@ -80,7 +81,26 @@ namespace Test.Objects
             return document;
         }
 
-        public static FileStreamResult TestDocument()
+        public static Document TestDocument()
+        {
+            var document = new Document()
+            {
+                Id = 1,
+                FileName = "Testfil1.txt",
+                FileType = ".txt",
+                FileSize = "17 byte",
+                Uploaded = DateTime.UtcNow,
+                UniqueName = "(test)",
+                Container = "sysadmin",
+                UserId = 1,
+                PostId = 1,
+                CommentId = null,
+                InfoTopicId = null
+            };
+            return document;
+        }
+
+        public static FileStreamResult TestFile()
         {
             var stream = Encoding.ASCII.GetBytes("Dette er en test.");
             var content = new MemoryStream(stream);
