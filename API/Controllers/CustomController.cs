@@ -40,25 +40,25 @@ namespace API.Controllers
             try
             {
                 // Liste videoer med paging
-                var page = pageNumber ?? 1;
-                var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Date"; // Id, Name, Date
-                var count = await _customBLL.GetCount("Document", infoTopicId);
-                var pagedList = await _customBLL.PagedList(infoTopicId, page, size, order, type);
+                //var page = pageNumber ?? 1;
+                //var size = pageSize ?? 10;
+                //var order = sortOrder ?? "Asc"; // Asc, Desc
+                //var type = sortType ?? "Date"; // Id, Name, Date
+                //var count = await _customBLL.GetCount("Document", infoTopicId);
+                //var pagedList = await _customBLL.PagedList(infoTopicId, page, size, order, type);
 
-                return Ok(new DocumentResponse<IEnumerable<DocumentDTO>>(pagedList, infoTopicId, page, size, count, order, type));
+                //return Ok(new DocumentResponse<IEnumerable<DocumentDTO>>(pagedList, infoTopicId, page, size, count, order, type));
 
                 // Viser kun dokumenter som har en InfoTopicId
-                //var documents = await _customBLL.GetDocuments();
-                //if (documents != null)
-                //{
-                //    return Ok(documents);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen dokumenter ble funnet");
-                //}
+                var documents = await _customBLL.GetDocuments();
+                if (documents != null)
+                {
+                    return Ok(documents);
+                }
+                else
+                {
+                    return NotFound($"Ingen dokumenter ble funnet");
+                }
             }
             catch (Exception)
             {

@@ -34,24 +34,24 @@ namespace API.Controllers
             try
             {
                 // Liste poster  med paging
-                var page = pageNumber ?? 1;
-                var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Date"; // Date, Like, Comment
-                var count = await _customBLL.GetCount("Post", subTopicId);
-                var pagedList = await _postBLL.PagedList(subTopicId, page, size, order, type);
+                //var page = pageNumber ?? 1;
+                //var size = pageSize ?? 10;
+                //var order = sortOrder ?? "Asc"; // Asc, Desc
+                //var type = sortType ?? "Date"; // Date, Like, Comment
+                //var count = await _customBLL.GetCount("Post", subTopicId);
+                //var pagedList = await _postBLL.PagedList(subTopicId, page, size, order, type);
 
-                return Ok(new PostResponse<IEnumerable<PostDTO>>(pagedList, subTopicId, page, size, count, order, type));
+                //return Ok(new PostResponse<IEnumerable<PostDTO>>(pagedList, subTopicId, page, size, count, order, type));
 
-                //var posts = await _postBLL.GetPosts();
-                //if (posts != null)
-                //{
-                //    return Ok(posts);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen poster ble funnet");
-                //}
+                var posts = await _postBLL.GetPosts();
+                if (posts != null)
+                {
+                    return Ok(posts);
+                }
+                else
+                {
+                    return NotFound($"Ingen poster ble funnet");
+                }
             }
             catch (Exception)
             {

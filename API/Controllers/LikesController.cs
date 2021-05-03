@@ -52,7 +52,7 @@ namespace API.Controllers
                     }
                     else
                     {
-                        return NotFound("Like ble ikke funnet");
+                        return Ok("Like ble ikke funnet");
                     }
                 }
             }

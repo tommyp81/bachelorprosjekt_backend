@@ -34,24 +34,24 @@ namespace API.Controllers
             try
             {
                 // Liste kommentarer med paging
-                var page = pageNumber ?? 1;
-                var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Date"; // Date, Like
-                var count = await _customBLL.GetCount("Comment", postId);
-                var pagedList = await _commentBLL.PagedList(postId, page, size, order, type);
+                //var page = pageNumber ?? 1;
+                //var size = pageSize ?? 10;
+                //var order = sortOrder ?? "Asc"; // Asc, Desc
+                //var type = sortType ?? "Date"; // Date, Like
+                //var count = await _customBLL.GetCount("Comment", postId);
+                //var pagedList = await _commentBLL.PagedList(postId, page, size, order, type);
 
-                return Ok(new CommentResponse<IEnumerable<CommentDTO>>(pagedList, postId, page, size, count, order, type));
+                //return Ok(new CommentResponse<IEnumerable<CommentDTO>>(pagedList, postId, page, size, count, order, type));
 
-                //var comments = await _commentBLL.GetComments(postId);
-                //if (comments != null)
-                //{
-                //    return Ok(comments);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen kommentarer ble funnet");
-                //}
+                var comments = await _commentBLL.GetComments(postId);
+                if (comments != null)
+                {
+                    return Ok(comments);
+                }
+                else
+                {
+                    return NotFound($"Ingen kommentarer ble funnet");
+                }
             }
             catch (Exception)
             {

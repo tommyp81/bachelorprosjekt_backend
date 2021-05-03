@@ -34,24 +34,24 @@ namespace API.Controllers
             try
             {
                 // Liste videoer med paging
-                var page = pageNumber ?? 1;
-                var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Id"; // Id, Title
-                var count = await _customBLL.GetCount("Video", infoTopicId);
-                var pagedList = await _videoBLL.PagedList(infoTopicId, page, size, order, type);
+                //var page = pageNumber ?? 1;
+                //var size = pageSize ?? 10;
+                //var order = sortOrder ?? "Asc"; // Asc, Desc
+                //var type = sortType ?? "Id"; // Id, Title
+                //var count = await _customBLL.GetCount("Video", infoTopicId);
+                //var pagedList = await _videoBLL.PagedList(infoTopicId, page, size, order, type);
 
-                return Ok(new VideoResponse<IEnumerable<VideoDTO>>(pagedList, infoTopicId, page, size, count, order, type));
+                //return Ok(new VideoResponse<IEnumerable<VideoDTO>>(pagedList, infoTopicId, page, size, count, order, type));
 
-                //var videos = await _videoBLL.GetVideos();
-                //if (videos != null)
-                //{
-                //    return Ok(videos);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen videoer ble funnet");
-                //}
+                var videos = await _videoBLL.GetVideos();
+                if (videos != null)
+                {
+                    return Ok(videos);
+                }
+                else
+                {
+                    return NotFound($"Ingen videoer ble funnet");
+                }
             }
             catch (Exception)
             {
