@@ -16,5 +16,6 @@ namespace BLL.Interfaces
         Task<VideoDTO> AddVideo(Video video);
         Task<VideoDTO> UpdateVideo(Video video);
         Task<VideoDTO> DeleteVideo(int id);
+        Task<IEnumerable<VideoDTO>> PagedList(int? infoTopicId, int page, int size, string order, string type);
     }
 }

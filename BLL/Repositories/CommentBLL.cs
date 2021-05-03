@@ -14,20 +14,15 @@ namespace BLL.Repositories
     public class CommentBLL : ICommentBLL
     {
         private readonly ICommentRepository _repository;
-        private readonly ICustomBLL _customBLL;
 
-        public CommentBLL(ICommentRepository repository, ICustomBLL customBLL)
+        public CommentBLL(ICommentRepository repository)
         {
             _repository = repository;
-            _customBLL = customBLL;
         }
 
         // For å lage DTOs for Comments
-        public async Task<CommentDTO> AddDTO(Comment comment)
+        public CommentDTO AddDTO(Comment comment)
         {
-            // Antall likes til kommentarer
-            var likeCount = await _customBLL.Like_Count(null, comment.Id);
-
             var DTO = new CommentDTO
             {
                 Id = comment.Id,
@@ -35,7 +30,7 @@ namespace BLL.Repositories
                 Date = comment.Date,
                 EditDate = comment.EditDate,
                 Edited = comment.Edited,
-                Like_Count = likeCount, // Kun her som DTO
+                Like_Count = comment.Like_Count,
                 UserId = comment.UserId,
                 PostId = comment.PostId,
                 DocumentId = comment.DocumentId
@@ -52,7 +47,7 @@ namespace BLL.Repositories
                 var commentDTOs = new List<CommentDTO>();
                 foreach (var comment in getComments)
                 {
-                    commentDTOs.Add(await AddDTO(comment));
+                    commentDTOs.Add(AddDTO(comment));
                 }
                 return commentDTOs;
             }
@@ -67,7 +62,7 @@ namespace BLL.Repositories
             var getComment = await _repository.GetComment(id);
             if (getComment != null)
             {
-                return await AddDTO(getComment);
+                return AddDTO(getComment);
             }
             else
             {
@@ -80,7 +75,7 @@ namespace BLL.Repositories
             var addComment = await _repository.AddComment(file, comment);
             if (addComment != null)
             {
-                return await AddDTO(addComment);
+                return AddDTO(addComment);
             }
             else
             {
@@ -93,7 +88,7 @@ namespace BLL.Repositories
             var updateComment = await _repository.UpdateComment(comment);
             if (updateComment != null)
             {
-                return await AddDTO(updateComment);
+                return AddDTO(updateComment);
             }
             else
             {
@@ -106,7 +101,25 @@ namespace BLL.Repositories
             var deleteComment = await _repository.DeleteComment(id);
             if (deleteComment != null)
             {
-                return await AddDTO(deleteComment);
+                return AddDTO(deleteComment);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<CommentDTO>> PagedList(int? postId, int page, int size, string order, string type)
+        {
+            var comments = await _repository.PagedList(postId, page, size, order, type);
+            if (comments != null)
+            {
+                var commentDTOs = new List<CommentDTO>();
+                foreach (var comment in comments)
+                {
+                    commentDTOs.Add(AddDTO(comment));
+                }
+                return commentDTOs;
             }
             else
             {

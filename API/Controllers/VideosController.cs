@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,27 +18,40 @@ namespace API.Controllers
         // Controller for Videos API Backend
 
         private readonly IVideoBLL _videoBLL;
+        private readonly ICustomBLL _customBLL;
 
-        public VideosController(IVideoBLL videoBLL)
+        public VideosController(IVideoBLL videoBLL, ICustomBLL customBLL)
         {
             _videoBLL = videoBLL;
+            _customBLL = customBLL;
         }
 
         // GET: Videos
+        // GET: Videos?infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideos()
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideos(int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
             try
             {
-                var videos = await _videoBLL.GetVideos();
-                if (videos != null)
-                {
-                    return Ok(videos);
-                }
-                else
-                {
-                    return NotFound($"Ingen videoer ble funnet");
-                }
+                // Liste videoer med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc"; // Asc, Desc
+                var type = sortType ?? "Id"; // Id, Title
+                var count = await _customBLL.GetCount("Video", infoTopicId);
+                var pagedList = await _videoBLL.PagedList(infoTopicId, page, size, order, type);
+
+                return Ok(new VideoResponse<IEnumerable<VideoDTO>>(pagedList, infoTopicId, page, size, count, order, type));
+
+                //var videos = await _videoBLL.GetVideos();
+                //if (videos != null)
+                //{
+                //    return Ok(videos);
+                //}
+                //else
+                //{
+                //    return NotFound($"Ingen videoer ble funnet");
+                //}
             }
             catch (Exception)
             {
@@ -80,7 +94,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return BadRequest("Video objekt mangler");
+                    return BadRequest("Video mangler");
                 }
             }
             catch (Exception)

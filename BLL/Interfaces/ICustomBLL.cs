@@ -12,8 +12,9 @@ namespace BLL.Interfaces
 {
     public interface ICustomBLL
     {
-        Task<int> Comment_Count(int postId);
-        Task<int> Like_Count(int? postId, int? commentId);
+        //Task<int> Comment_Count(int postId);
+        //Task<int> Like_Count(int? postId, int? commentId);
+        
         DocumentDTO AddDTO(Document document);
         Task<IEnumerable<DocumentDTO>> GetDocuments();
         Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId);
@@ -22,5 +23,7 @@ namespace BLL.Interfaces
         Task<DocumentDTO> DeleteDocument(int id);
         Task<UserDTO> Login(string username, string email, string password);
         Task<UserDTO> SetAdmin(int id, bool admin);
+        Task<int> GetCount(string type, int? id);
+        Task<IEnumerable<DocumentDTO>> PagedList(int? infoTopicId, int page, int size, string order, string type);
     }
 }

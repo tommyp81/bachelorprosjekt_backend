@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,27 +18,40 @@ namespace API.Controllers
         // Controller for Users API Backend
 
         private readonly IUserBLL _userBLL;
+        private readonly ICustomBLL _customBLL;
 
-        public UsersController(IUserBLL userBLL)
+        public UsersController(IUserBLL userBLL, ICustomBLL customBLL)
         {
             _userBLL = userBLL;
+            _customBLL = customBLL;
         }
 
         // GET: Users
+        // GET: Users?pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers(int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
             try
             {
-                var users = await _userBLL.GetUsers();
-                if (users != null)
-                {
-                    return Ok(users);
-                }
-                else
-                {
-                    return NotFound($"Ingen brukere ble funnet");
-                }
+                // Liste brukere med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc"; // Asc, Desc
+                var type = sortType ?? "Id"; // Id, Admin, Username, Name, Email
+                var count = await _customBLL.GetCount("User", null);
+                var pagedList = await _userBLL.PagedList(page, size, order, type);
+
+                return Ok(new UserResponse<IEnumerable<UserDTO>>(pagedList, page, size, count, order, type));
+
+                //var users = await _userBLL.GetUsers();
+                //if (users != null)
+                //{
+                //    return Ok(users);
+                //}
+                //else
+                //{
+                //    return NotFound($"Ingen brukere ble funnet");
+                //}
             }
             catch (Exception)
             {
@@ -73,21 +87,15 @@ namespace API.Controllers
         {
             try
             {
-                if (user != null)
+                var newUser = await _userBLL.AddUser(user);
+                if (newUser != null)
                 {
-                    var newUser = await _userBLL.AddUser(user);
-                    if (newUser != null)
-                    {
-                        return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
-                    }
-                    else
-                    {
-                        return BadRequest("Brukernavn eller epost eksisterer allerede");
-                    }
+                    return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
                 }
                 else
                 {
-                    return BadRequest("Bruker objekt mangler");
+                    return BadRequest("Brukernavn eller epost eksisterer allerede");
+                    //return BadRequest("Feil ved oppretting av ny bruker");
                 }
             }
             catch (Exception)

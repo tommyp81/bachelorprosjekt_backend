@@ -17,6 +17,6 @@ namespace BLL.Interfaces
         Task<PostDTO> AddPost(IFormFile file, Post post);
         Task<PostDTO> UpdatePost(Post post);
         Task<PostDTO> DeletePost(int id);
-        Task<IEnumerable<PostDTO>> PostPaging(int? page, int? count, string order, string type);
+        Task<IEnumerable<PostDTO>> PagedList(int? subTopicId, int page, int size, string order, string type);
     }
 }

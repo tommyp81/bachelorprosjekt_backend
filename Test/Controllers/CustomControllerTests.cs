@@ -22,63 +22,63 @@ namespace API.Controllers.Tests
         //    Assert.True(false, "This test needs an implementation");
         //}
 
-        [Fact]
-        public async void GetDocumentsTest_Ok()
-        {
-            // Arrange
-            var documentDTOs = DocumentObject.TestDocumentListDTO();
-            var mockRepo = new Mock<ICustomBLL>();
-            mockRepo.Setup(repo => repo.GetDocuments()).ReturnsAsync(documentDTOs);
-            var controller = new CustomController(mockRepo.Object, null, null);
+        //[Fact]
+        //public async void GetDocumentsTest_Ok()
+        //{
+        //    // Arrange
+        //    var documentDTOs = DocumentObject.TestDocumentListDTO();
+        //    var mockRepo = new Mock<ICustomBLL>();
+        //    mockRepo.Setup(repo => repo.GetDocuments()).ReturnsAsync(documentDTOs);
+        //    var controller = new CustomController(mockRepo.Object, null, null);
 
-            // Act
-            var result = await controller.GetDocuments();
+        //    // Act
+        //    var result = await controller.GetDocuments();
 
-            // Assert
-            var actionResult = Assert.IsType<ActionResult<IEnumerable<DocumentDTO>>>(result);
-            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
-            var returnValue = Assert.IsAssignableFrom<IEnumerable<DocumentDTO>>(okResult.Value);
-            int id = 1;
-            foreach (var item in returnValue)
-            {
-                Assert.Equal(id, item.Id);
-                id++;
-            }
-        }
+        //    // Assert
+        //    var actionResult = Assert.IsType<ActionResult<IEnumerable<DocumentDTO>>>(result);
+        //    var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+        //    var returnValue = Assert.IsAssignableFrom<IEnumerable<DocumentDTO>>(okResult.Value);
+        //    int id = 1;
+        //    foreach (var item in returnValue)
+        //    {
+        //        Assert.Equal(id, item.Id);
+        //        id++;
+        //    }
+        //}
 
-        [Fact]
-        public async void GetDocumentsTest_NotFound()
-        {
-            // Arrange
-            var mockRepo = new Mock<ICustomBLL>();
-            mockRepo.Setup(repo => repo.GetDocuments()).ReturnsAsync((ICollection<DocumentDTO>)null);
-            var controller = new CustomController(mockRepo.Object, null, null);
+        //[Fact]
+        //public async void GetDocumentsTest_NotFound()
+        //{
+        //    // Arrange
+        //    var mockRepo = new Mock<ICustomBLL>();
+        //    mockRepo.Setup(repo => repo.GetDocuments()).ReturnsAsync((ICollection<DocumentDTO>)null);
+        //    var controller = new CustomController(mockRepo.Object, null, null);
 
-            // Act
-            var result = await controller.GetDocuments();
+        //    // Act
+        //    var result = await controller.GetDocuments();
 
-            // Assert
-            var actionResult = Assert.IsType<ActionResult<IEnumerable<DocumentDTO>>>(result);
-            var notFoundResult = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
-            Assert.Equal("Ingen dokumenter ble funnet", notFoundResult.Value);
-        }
+        //    // Assert
+        //    var actionResult = Assert.IsType<ActionResult<IEnumerable<DocumentDTO>>>(result);
+        //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+        //    Assert.Equal("Ingen dokumenter ble funnet", notFoundResult.Value);
+        //}
 
-        [Fact]
-        public async void GetDocumentsTest_InternalServerError()
-        {
-            // Arrange
-            var mockRepo = new Mock<ICustomBLL>();
-            mockRepo.Setup(repo => repo.GetDocuments()).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object, null, null);
+        //[Fact]
+        //public async void GetDocumentsTest_InternalServerError()
+        //{
+        //    // Arrange
+        //    var mockRepo = new Mock<ICustomBLL>();
+        //    mockRepo.Setup(repo => repo.GetDocuments()).ThrowsAsync(new InvalidOperationException());
+        //    var controller = new CustomController(mockRepo.Object, null, null);
 
-            // Act
-            var result = await controller.GetDocuments();
+        //    // Act
+        //    var result = await controller.GetDocuments();
 
-            // Assert
-            var objectResult = result.Result as ObjectResult;
-            Assert.Equal(500, objectResult.StatusCode);
-            Assert.Equal("Feil ved henting av dokumenter", objectResult.Value);
-        }
+        //    // Assert
+        //    var objectResult = result.Result as ObjectResult;
+        //    Assert.Equal(500, objectResult.StatusCode);
+        //    Assert.Equal("Feil ved henting av dokumenter", objectResult.Value);
+        //}
 
         [Fact]
         public async void UploadDocumentTest_Ok()

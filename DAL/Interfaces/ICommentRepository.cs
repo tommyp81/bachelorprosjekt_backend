@@ -15,5 +15,6 @@ namespace DAL.Interfaces
         Task<Comment> AddComment(IFormFile file, Comment comment);
         Task<Comment> UpdateComment(Comment comment);
         Task<Comment> DeleteComment(int id);
+        Task<IEnumerable<Comment>> PagedList(int? postId, int page, int size, string order, string type);
     }
 }

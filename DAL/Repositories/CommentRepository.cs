@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace DAL.Repositories
 {
@@ -163,6 +164,50 @@ namespace DAL.Repositories
             else
             {
                 return null;
+            }
+        }
+
+        public async Task<IEnumerable<Comment>> PagedList(int? postId, int page, int size, string order, string type)
+        {
+            if (postId != null)
+            {
+                var pagedList = await _context.Comments.Where(p => p.PostId == postId).ToListAsync();
+                return order switch
+                {
+                    "Desc" => type switch
+                    {
+                        "Date" => await pagedList.OrderByDescending(p => p.Date).ToPagedListAsync(page, size),
+                        "Like" => await pagedList.OrderByDescending(p => p.Like_Count).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    "Asc" => type switch
+                    {
+                        "Date" => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
+                        "Like" => await pagedList.OrderBy(p => p.Like_Count).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    _ => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
+                };
+            }
+            else
+            {
+                var pagedList = await _context.Comments.ToListAsync();
+                return order switch
+                {
+                    "Desc" => type switch
+                    {
+                        "Date" => await pagedList.OrderByDescending(p => p.Date).ToPagedListAsync(page, size),
+                        "Like" => await pagedList.OrderByDescending(p => p.Like_Count).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    "Asc" => type switch
+                    {
+                        "Date" => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
+                        "Like" => await pagedList.OrderBy(p => p.Like_Count).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    _ => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
+                };
             }
         }
     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,35 +18,40 @@ namespace API.Controllers
         // Controller for Posts API Backend
 
         private readonly IPostBLL _postBLL;
+        private readonly ICustomBLL _customBLL;
 
-        public PostsController(IPostBLL postBLL)
+        public PostsController(IPostBLL postBLL, ICustomBLL customBLL)
         {
             _postBLL = postBLL;
+            _customBLL = customBLL;
         }
 
         // GET: Posts
-        // GET: Posts?page=1?count=10?order=Asc?type=Date
+        // GET: Posts?subTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
         [HttpGet]
-        //[Route("{page?}?{count?}?{order?}?{type?}")]
-        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts(int? page, int? count, string order, string type)
+        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts(int? subTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
             try
             {
-                if (page != null)
-                {
-                    // Liste med paging
-                    return Ok(await _postBLL.PostPaging(page, count, order, type));
-                }
+                // Liste poster  med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc"; // Asc, Desc
+                var type = sortType ?? "Date"; // Date, Like, Comment
+                var count = await _customBLL.GetCount("Post", subTopicId);
+                var pagedList = await _postBLL.PagedList(subTopicId, page, size, order, type);
 
-                var posts = await _postBLL.GetPosts();
-                if (posts != null)
-                {
-                    return Ok(posts);
-                }
-                else
-                {
-                    return NotFound($"Ingen poster ble funnet");
-                }
+                return Ok(new PostResponse<IEnumerable<PostDTO>>(pagedList, subTopicId, page, size, count, order, type));
+
+                //var posts = await _postBLL.GetPosts();
+                //if (posts != null)
+                //{
+                //    return Ok(posts);
+                //}
+                //else
+                //{
+                //    return NotFound($"Ingen poster ble funnet");
+                //}
             }
             catch (Exception)
             {
@@ -81,7 +87,7 @@ namespace API.Controllers
         {
             try
             {
-                if (post != null)
+                if (post.Title != null || post.Content != null || post.Title != "" || post.Content != "")
                 {
                     // Legg til posten i databasen og fil på Azure Storage og databasen hvis fil er sendt med
                     var newPost = await _postBLL.AddPost(file, post);
@@ -89,7 +95,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return BadRequest("Post objekt mangler");
+                    return BadRequest("Post mangler");
                 }
             }
             catch (Exception)

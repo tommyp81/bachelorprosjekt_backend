@@ -80,7 +80,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return BadRequest("Emne objekt mangler");
+                    return BadRequest("Emne mangler");
                 }
             }
             catch (Exception)

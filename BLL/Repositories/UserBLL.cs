@@ -103,5 +103,23 @@ namespace BLL.Repositories
                 return null;
             }
         }
+
+        public async Task<IEnumerable<UserDTO>> PagedList(int page, int size, string order, string type)
+        {
+            var users = await _repository.PagedList(page, size, order, type);
+            if (users != null)
+            {
+                var userDTOs = new List<UserDTO>();
+                foreach (var user in users)
+                {
+                    userDTOs.Add(AddDTO(user));
+                }
+                return userDTOs;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

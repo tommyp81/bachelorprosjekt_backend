@@ -13,6 +13,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace DAL.Repositories
 {
@@ -58,47 +59,23 @@ namespace DAL.Repositories
             string uniqueName = user.Username + "/" + fileName + " (" + Guid.NewGuid().ToString() + ")";
 
             // Navn på container. Eks: mai-2021
-            string container = "default";
-            int caseSwitch = now.Month;
-            switch (caseSwitch)
+            string container;
+            container = now.Month switch
             {
-                case 1:
-                    container = "januar-" + now.Year;
-                    break;
-                case 2:
-                    container = "februar-" + now.Year;
-                    break;
-                case 3:
-                    container = "mars-" + now.Year;
-                    break;
-                case 4:
-                    container = "april-" + now.Year;
-                    break;
-                case 5:
-                    container = "mai-" + now.Year;
-                    break;
-                case 6:
-                    container = "juni-" + now.Year;
-                    break;
-                case 7:
-                    container = "juli-" + now.Year;
-                    break;
-                case 8:
-                    container = "august-" + now.Year;
-                    break;
-                case 9:
-                    container = "september-" + now.Year;
-                    break;
-                case 10:
-                    container = "oktober-" + now.Year;
-                    break;
-                case 11:
-                    container = "november-" + now.Year;
-                    break;
-                case 12:
-                    container = "desember-" + now.Year;
-                    break;
-            }
+                1 => "januar-" + now.Year,
+                2 => "februar-" + now.Year,
+                3 => "mars-" + now.Year,
+                4 => "april-" + now.Year,
+                5 => "mai-" + now.Year,
+                6 => "juni-" + now.Year,
+                7 => "juli-" + now.Year,
+                8 => "august-" + now.Year,
+                9 => "september-" + now.Year,
+                10 => "oktober-" + now.Year,
+                11 => "november-" + now.Year,
+                12 => "desember-" + now.Year,
+                _ => "usortert",
+            };
 
             // Azure Storage connection
             var containerClient = new BlobContainerClient(_config.GetConnectionString("AzureStorageKey"), container);
@@ -329,6 +306,82 @@ namespace DAL.Repositories
             else
             {
                 return null;
+            }
+        }
+
+        // GET: GetCount
+        public async Task<int> GetCount(string type, int? id)
+        {
+            if (id != null)
+            {
+                return type switch
+                {
+                    "Post" => await _context.Posts.Where(p => p.SubTopicId == id).CountAsync(),
+                    "Comment" => await _context.Comments.Where(c => c.PostId == id).CountAsync(),
+                    "Document" => await _context.Documents.Where(d => d.InfoTopicId == id).CountAsync(),
+                    "Video" => await _context.Videos.Where(v => v.InfoTopicId == id).CountAsync(),
+                    _ => 0,
+                };
+            }
+            else
+            {
+                return type switch
+                {
+                    "Post" => await _context.Posts.CountAsync(),
+                    "Comment" => await _context.Comments.CountAsync(),
+                    "User" => await _context.Users.CountAsync(),
+                    "Document" => await _context.Documents.CountAsync(),
+                    "Video" => await _context.Videos.CountAsync(),
+                    _ => 0,
+                };
+            }
+        }
+        
+        public async Task<IEnumerable<Document>> PagedList(int? infoTopicId, int page, int size, string order, string type)
+        {
+            if (infoTopicId != null)
+            {
+                var pagedList = await _context.Documents.Where(p => p.InfoTopicId == infoTopicId).ToListAsync();
+                return order switch
+                {
+                    "Desc" => type switch
+                    {
+                        "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                        "Name" => await pagedList.OrderByDescending(p => p.FileName).ToPagedListAsync(page, size),
+                        "Date" => await pagedList.OrderByDescending(p => p.Uploaded).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    "Asc" => type switch
+                    {
+                        "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                        "Name" => await pagedList.OrderBy(p => p.FileName).ToPagedListAsync(page, size),
+                        "Date" => await pagedList.OrderBy(p => p.Uploaded).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                };
+            }
+            else
+            {
+                var pagedList = await _context.Documents.ToListAsync();
+                return order switch
+                {
+                    "Desc" => type switch
+                    {
+                        "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                        "Name" => await pagedList.OrderByDescending(p => p.FileName).ToPagedListAsync(page, size),
+                        "Date" => await pagedList.OrderByDescending(p => p.Uploaded).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    "Asc" => type switch
+                    {
+                        "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                        "Name" => await pagedList.OrderBy(p => p.FileName).ToPagedListAsync(page, size),
+                        "Date" => await pagedList.OrderBy(p => p.Uploaded).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                };
             }
         }
     }

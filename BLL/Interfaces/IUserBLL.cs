@@ -16,5 +16,6 @@ namespace BLL.Interfaces
         Task<UserDTO> AddUser(AuthUser user);
         Task<UserDTO> UpdateUser(AuthUser user);
         Task<UserDTO> DeleteUser(int id);
+        Task<IEnumerable<UserDTO>> PagedList(int page, int size, string order, string type);
     }
 }

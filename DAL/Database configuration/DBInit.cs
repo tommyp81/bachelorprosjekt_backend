@@ -93,129 +93,129 @@ namespace DAL.Database_configuration
                 context.SaveChanges();
             }
 
-            // Instillinger for tidsone
-            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+            //// Instillinger for tidsone
+            //var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            //var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
 
-            // Instillinger for antall oppføringer
-            int userCount = 0;
-            int postCount = 0;
-            int commentCount = 0;
-            var random = new Random();
+            //// Instillinger for antall oppføringer
+            //int userCount = 0;
+            //int postCount = 0;
+            //int commentCount = 0;
+            //var random = new Random();
 
-            // Tekst til tittler
-            string[] postTitle = new string[5]
-            {
-                "Dette er en testpost!",
-                "Post om et kjedelig tema...",
-                "Til den det måtte gjelde",
-                "Les dette!!!",
-                "En dag på banen"
-            };
+            //// Tekst til tittler
+            //string[] postTitle = new string[5]
+            //{
+            //    "Dette er en testpost!",
+            //    "Post om et kjedelig tema...",
+            //    "Til den det måtte gjelde",
+            //    "Les dette!!!",
+            //    "En dag på banen"
+            //};
 
-            // Tekst til poster
-            string[] postContent = new string[5]
-            {
-                "Hva syntes du om denne posten?",
-                "Det var to tomater som skulle gå over en vei.. så ja, nei!",
-                "Hei. Hvor mange likes får denne posten?",
-                "Husk å ta med gymbaggen på fredag :)",
-                "Nei forresten, bare glem det!"
-            };
+            //// Tekst til poster
+            //string[] postContent = new string[5]
+            //{
+            //    "Hva syntes du om denne posten?",
+            //    "Det var to tomater som skulle gå over en vei.. så ja, nei!",
+            //    "Hei. Hvor mange likes får denne posten?",
+            //    "Husk å ta med gymbaggen på fredag :)",
+            //    "Nei forresten, bare glem det!"
+            //};
 
-            // Tekst til kommentarer
-            string[] commentContent = new string[5]
-            {
-                "Hva var det du sa fornoe?",
-                "Dette testsvaret er ikke så viktig.",
-                "Heihei, blablabla :P",
-                "Ja neida, sååå... OKEY!!!",
-                "Hei, ville bare si at jeg er helt enig"
-            };
+            //// Tekst til kommentarer
+            //string[] commentContent = new string[5]
+            //{
+            //    "Hva var det du sa fornoe?",
+            //    "Dette testsvaret er ikke så viktig.",
+            //    "Heihei, blablabla :P",
+            //    "Ja neida, sååå... OKEY!!!",
+            //    "Hei, ville bare si at jeg er helt enig"
+            //};
 
-            // Brukere
-            var testUsers = new List<User>();
-            byte[] testPasswordSalt = AddSalt();
-            byte[] testPasswordHash = AddHash("0000", passwordSalt);
-            for (int i = 1; i <= userCount; i++)
-            {
-                var user = new User
-                {
-                    Username = "testbruker" + i,
-                    FirstName = "Test",
-                    LastName = "Bruker",
-                    Email = "testbruker" + i + "@test.no",
-                    Password = testPasswordHash,
-                    Salt = testPasswordSalt
-                };
+            //// Brukere
+            //var testUsers = new List<User>();
+            //byte[] testPasswordSalt = AddSalt();
+            //byte[] testPasswordHash = AddHash("0000", passwordSalt);
+            //for (int i = 1; i <= userCount; i++)
+            //{
+            //    var user = new User
+            //    {
+            //        Username = "testbruker" + i,
+            //        FirstName = "Test",
+            //        LastName = "Bruker",
+            //        Email = "testbruker" + i + "@test.no",
+            //        Password = testPasswordHash,
+            //        Salt = testPasswordSalt
+            //    };
 
-                testUsers.Add(user);
-            }
-            foreach (var user in testUsers)
-            {
-                context.Users.Add(user);
-            }
-            context.SaveChanges();
+            //    testUsers.Add(user);
+            //}
+            //foreach (var user in testUsers)
+            //{
+            //    context.Users.Add(user);
+            //}
+            //context.SaveChanges();
 
-            // Poster
-            var testPosts = new List<Post>();
-            for (int i = 1; i <= postCount; i++)
-            {
-                int t = random.Next(1, 5);
-                int c = random.Next(1, 5);
-                int userId = random.Next(2, userCount);
-                int subTopicId = random.Next(1, 20);
+            //// Poster
+            //var testPosts = new List<Post>();
+            //for (int i = 1; i <= postCount; i++)
+            //{
+            //    int t = random.Next(1, 5);
+            //    int c = random.Next(1, 5);
+            //    int userId = random.Next(2, userCount);
+            //    int subTopicId = random.Next(1, 20);
 
-                var post = new Post
-                {
-                    Title = postTitle[t],
-                    Content = postContent[c],
-                    Date = now,
-                    UserId = userId,
-                    SubTopicId = subTopicId
-                };
+            //    var post = new Post
+            //    {
+            //        Title = postTitle[t],
+            //        Content = postContent[c],
+            //        Date = now,
+            //        UserId = userId,
+            //        SubTopicId = subTopicId
+            //    };
 
-                testPosts.Add(post);
-            }
-            foreach (var post in testPosts)
-            {
-                context.Posts.Add(post);
-            }
-            context.SaveChanges();
+            //    testPosts.Add(post);
+            //}
+            //foreach (var post in testPosts)
+            //{
+            //    context.Posts.Add(post);
+            //}
+            //context.SaveChanges();
 
-            // Kommentarer
-            var testComments = new List<Comment>();
-            for (int i = 1; i <= commentCount; i++)
-            {
-                int c = random.Next(1, 5);
-                int userId = random.Next(2, userCount);
-                int postId = random.Next(1, postCount);
+            //// Kommentarer
+            //var testComments = new List<Comment>();
+            //for (int i = 1; i <= commentCount; i++)
+            //{
+            //    int c = random.Next(1, 5);
+            //    int userId = random.Next(2, userCount);
+            //    int postId = random.Next(1, postCount);
 
-                var comment = new Comment
-                {
-                    Content = commentContent[c],
-                    Date = now,
-                    UserId = userId,
-                    PostId = postId
-                };
+            //    var comment = new Comment
+            //    {
+            //        Content = commentContent[c],
+            //        Date = now,
+            //        UserId = userId,
+            //        PostId = postId
+            //    };
 
-                testComments.Add(comment);
-            }
-            foreach (var comment in testComments)
-            {
-                context.Comments.Add(comment);
-            }
-            context.SaveChanges();
+            //    testComments.Add(comment);
+            //}
+            //foreach (var comment in testComments)
+            //{
+            //    context.Comments.Add(comment);
+            //}
+            //context.SaveChanges();
         }
 
-        public static byte[] AddHash(string password, byte[] salt)
+        private static byte[] AddHash(string password, byte[] salt)
         {
             const int keyLength = 24;
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 1000);
             return pbkdf2.GetBytes(keyLength);
         }
 
-        public static byte[] AddSalt()
+        private static byte[] AddSalt()
         {
             var csprng = new RNGCryptoServiceProvider();
             var salt = new byte[24];

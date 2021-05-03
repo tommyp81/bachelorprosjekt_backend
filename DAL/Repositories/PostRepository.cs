@@ -165,137 +165,52 @@ namespace DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Post>> PostPaging(int? page, int? count, string order, string type)
+        public async Task<IEnumerable<Post>> PagedList(int? subTopicId, int page, int size, string order, string type)
         {
-            var pageNumber = page ?? 1;
-            var countNumber = count ?? 10;
-            var sortOrder = order ?? "Asc";
-            var sortType = type ?? "Date";
-
-            if (sortOrder == "Asc")
+            if (subTopicId != null)
             {
-                if (sortType == "Date")
+                var pagedList = await _context.Posts.Where(p => p.SubTopicId == subTopicId).ToListAsync();
+                return order switch
                 {
-                    // Sortere poster etter stigende dato
-                    var posts = await _context.Posts.ToListAsync();
-                    var postAscDate = from post in posts
-                                      orderby post.Date
-                                      select post;
-
-                    return postAscDate.ToPagedList(pageNumber, countNumber);
-                }
-                else if (sortType == "Like")
-                {
-                    // Sortere poster etter stigende antall likes
-                    //var posts = await _context.Posts.ToListAsync();
-                    //var likes = await _context.Likes.ToListAsync();
-                    //var postAscLike = from post in posts
-                    //                  join like in likes
-                    //                  on post.Id equals like.PostId
-                    //                  into l
-                    //                  select new
-                    //                  {
-                    //                      Post = post,
-                    //                      Count = l.Count()
-                    //                  } into p
-                    //                  orderby p.Count
-                    //                  select p.Post;
-
-                    var posts = await _context.Posts.ToListAsync();
-                    var postAscLike = from post in posts
-                                      orderby post.Like_Count
-                                      select post;
-
-                    return postAscLike.ToPagedList(pageNumber, countNumber);
-                }
-                else if (sortType == "Comment")
-                {
-                    // Sortere poster etter stigende antall kommentarer
-                    //var posts = await _context.Posts.ToListAsync();
-                    //var comments = await _context.Comments.ToListAsync();
-                    //var postAscComment = from post in posts
-                    //                     join comment in comments
-                    //                     on post.Id equals comment.PostId
-                    //                     into c
-                    //                     select new
-                    //                     {
-                    //                         Post = post,
-                    //                         Count = c.Count()
-                    //                     } into p
-                    //                     orderby p.Count
-                    //                     select p.Post;
-
-                    var posts = await _context.Posts.ToListAsync();
-                    var postAscComment = from post in posts
-                                         orderby post.Comment_Count
-                                         select post;
-
-                    return postAscComment.ToPagedList(pageNumber, countNumber);
-                }
+                    "Desc" => type switch
+                    {
+                        "Date" => await pagedList.OrderByDescending(p => p.Date).ToPagedListAsync(page, size),
+                        "Like" => await pagedList.OrderByDescending(p => p.Like_Count).ToPagedListAsync(page, size),
+                        "Comment" => await pagedList.OrderByDescending(p => p.Comment_Count).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    "Asc" => type switch
+                    {
+                        "Date" => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
+                        "Like" => await pagedList.OrderBy(p => p.Like_Count).ToPagedListAsync(page, size),
+                        "Comment" => await pagedList.OrderBy(p => p.Comment_Count).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    _ => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
+                };
             }
-            else if (sortOrder == "Desc")
+            else
             {
-                if (sortType == "Date")
+                var pagedList = await _context.Posts.ToListAsync();
+                return order switch
                 {
-                    // Sortere poster etter synkende dato
-                    var posts = await _context.Posts.ToListAsync();
-                    var postDescDate = from post in posts
-                                       orderby post.Date descending
-                                       select post;
-
-                    return postDescDate.ToPagedList(pageNumber, countNumber);
-                }
-                else if (sortType == "Like")
-                {
-                    // Sortere poster etter synkende antall likes
-                    //var posts = await _context.Posts.ToListAsync();
-                    //var likes = await _context.Likes.ToListAsync();
-                    //var postDescLike = from post in posts
-                    //                   join like in likes
-                    //                   on post.Id equals like.PostId
-                    //                   into l
-                    //                   select new
-                    //                   {
-                    //                       Post = post,
-                    //                       Count = l.Count()
-                    //                   } into p
-                    //                   orderby p.Count descending
-                    //                   select p.Post;
-
-                    var posts = await _context.Posts.ToListAsync();
-                    var postDescLike = from post in posts
-                                       orderby post.Like_Count descending
-                                       select post;
-
-                    return postDescLike.ToPagedList(pageNumber, countNumber);
-                }
-                else if (sortType == "Comment")
-                {
-                    // Sortere poster etter synkende antall kommentarer
-                    //var posts = await _context.Posts.ToListAsync();
-                    //var comments = await _context.Comments.ToListAsync();
-                    //var postDescComment = from post in posts
-                    //                      join comment in comments
-                    //                      on post.Id equals comment.PostId
-                    //                      into c
-                    //                      select new
-                    //                      {
-                    //                          Post = post,
-                    //                          Count = c.Count()
-                    //                      } into p
-                    //                      orderby p.Count descending
-                    //                      select p.Post;
-
-                    var posts = await _context.Posts.ToListAsync();
-                    var postDescComment = from post in posts
-                                          orderby post.Comment_Count descending
-                                          select post;
-
-                    return postDescComment.ToPagedList(pageNumber, countNumber);
-                }
+                    "Desc" => type switch
+                    {
+                        "Date" => await pagedList.OrderByDescending(p => p.Date).ToPagedListAsync(page, size),
+                        "Like" => await pagedList.OrderByDescending(p => p.Like_Count).ToPagedListAsync(page, size),
+                        "Comment" => await pagedList.OrderByDescending(p => p.Comment_Count).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    "Asc" => type switch
+                    {
+                        "Date" => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
+                        "Like" => await pagedList.OrderBy(p => p.Like_Count).ToPagedListAsync(page, size),
+                        "Comment" => await pagedList.OrderBy(p => p.Comment_Count).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    _ => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
+                };
             }
-
-            return null;
         }
     }
 }

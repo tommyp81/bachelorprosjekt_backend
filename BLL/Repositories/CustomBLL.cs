@@ -16,62 +16,58 @@ namespace BLL.Repositories
     {
         private readonly ICustomRepository _repository;
         private readonly IUserBLL _userBLL;
-        private readonly ICommentRepository _commentRepository;
-        private readonly ILikeRepository _likeRepository;
 
-        public CustomBLL(ICustomRepository repository, IUserBLL userBLL, ICommentRepository commentRepository, ILikeRepository likeRepository)
+        public CustomBLL(ICustomRepository repository, IUserBLL userBLL)
         {
             _repository = repository;
             _userBLL = userBLL;
-            _commentRepository = commentRepository;
-            _likeRepository = likeRepository;
         }
 
-        // GET: GetCommentCount
-        public async Task<int> Comment_Count(int postId)
-        {
-            // Telle antall kommentarer til en post på PostId
-            var comments = await _commentRepository.GetComments(postId);
-            if (comments != null)
-            {
-                return comments.Count();
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        //// GET: GetCommentCount
+        //public async Task<int> Comment_Count(int postId)
+        //{
+        //    // Telle antall kommentarer til en post på PostId
+        //    var comments = await _commentRepository.GetComments(postId);
+        //    if (comments != null)
+        //    {
+        //        return comments.Count();
+        //    }
+        //    else
+        //    {
+        //        return 0;
+        //    }
+        //}
 
-        // GET: GetLikeCount
-        public async Task<int> Like_Count(int? postId, int? commentId)
-        {
-            // Telle antall likes til poster eller kommentarer
-            var likes = await _likeRepository.GetLikes();
-            if (likes != null)
-            {
-                // Telle for poster hvis vi får postId
-                if (postId != null)
-                {
-                    var likeCount = likes.Where(l => l.PostId == postId).AsEnumerable();
-                    if (likeCount != null)
-                    {
-                        return likeCount.Count();
-                    }
-                }
+        //// GET: GetLikeCount
+        //public async Task<int> Like_Count(int? postId, int? commentId)
+        //{
+        //    // Telle antall likes til poster eller kommentarer
+        //    var likes = await _likeRepository.GetLikes();
+        //    if (likes != null)
+        //    {
+        //        // Telle for poster hvis vi får postId
+        //        if (postId != null)
+        //        {
+        //            var likeCount = likes.Where(l => l.PostId == postId).AsEnumerable();
+        //            if (likeCount != null)
+        //            {
+        //                return likeCount.Count();
+        //            }
+        //        }
 
-                // Telle for kommentarer hvis vi får commentId
-                if (commentId != null)
-                {
-                    var likeCount = likes.Where(l => l.CommentId == commentId).AsEnumerable();
-                    if (likeCount != null)
-                    {
-                        return likeCount.Count();
-                    }
-                }
-            }
+        //        // Telle for kommentarer hvis vi får commentId
+        //        if (commentId != null)
+        //        {
+        //            var likeCount = likes.Where(l => l.CommentId == commentId).AsEnumerable();
+        //            if (likeCount != null)
+        //            {
+        //                return likeCount.Count();
+        //            }
+        //        }
+        //    }
 
-            return 0;
-        }
+        //    return 0;
+        //}
 
         // For å lage DTOs for Documents
         public DocumentDTO AddDTO(Document document)
@@ -195,6 +191,30 @@ namespace BLL.Repositories
             if (setAdmin != null)
             {
                 return _userBLL.AddDTO(setAdmin);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        // GET: GetCount
+        public async Task<int> GetCount(string type, int? id)
+        {
+            return await _repository.GetCount(type, id);
+        }
+
+        public async Task<IEnumerable<DocumentDTO>> PagedList(int? infoTopicId, int page, int size, string order, string type)
+        {
+            var documents = await _repository.PagedList(infoTopicId, page, size, order, type);
+            if (documents != null)
+            {
+                var documentDTOs = new List<DocumentDTO>();
+                foreach (var video in documents)
+                {
+                    documentDTOs.Add(AddDTO(video));
+                }
+                return documentDTOs;
             }
             else
             {

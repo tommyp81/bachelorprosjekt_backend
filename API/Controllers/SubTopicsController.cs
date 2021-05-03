@@ -81,7 +81,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return BadRequest("Underemne objekt mangler");
+                    return BadRequest("Underemne mangler");
                 }
             }
             catch (Exception)

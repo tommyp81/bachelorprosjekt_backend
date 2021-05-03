@@ -15,5 +15,6 @@ namespace DAL.Interfaces
         Task<User> AddUser(AuthUser user);
         Task<User> UpdateUser(AuthUser user);
         Task<User> DeleteUser(int id);
+        Task<IEnumerable<User>> PagedList(int page, int size, string order, string type);
     }
 }

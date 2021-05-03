@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace DAL.Repositories
 {
@@ -102,6 +103,50 @@ namespace DAL.Repositories
             else
             {
                 return null;
+            }
+        }
+
+        public async Task<IEnumerable<Video>> PagedList(int? infoTopicId, int page, int size, string order, string type)
+        {
+            if (infoTopicId != null)
+            {
+                var pagedList = await _context.Videos.Where(p => p.InfoTopicId == infoTopicId).ToListAsync();
+                return order switch
+                {
+                    "Desc" => type switch
+                    {
+                        "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                        "Title" => await pagedList.OrderByDescending(p => p.Title).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    "Asc" => type switch
+                    {
+                        "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                        "Title" => await pagedList.OrderBy(p => p.Title).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                };
+            }
+            else
+            {
+                var pagedList = await _context.Videos.ToListAsync();
+                return order switch
+                {
+                    "Desc" => type switch
+                    {
+                        "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                        "Title" => await pagedList.OrderByDescending(p => p.Title).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    "Asc" => type switch
+                    {
+                        "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                        "Title" => await pagedList.OrderBy(p => p.Title).ToPagedListAsync(page, size),
+                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    },
+                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                };
             }
         }
     }

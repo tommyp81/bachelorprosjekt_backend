@@ -104,5 +104,23 @@ namespace BLL.Repositories
                 return null;
             }
         }
+
+        public async Task<IEnumerable<VideoDTO>> PagedList(int? infoTopicId, int page, int size, string order, string type)
+        {
+            var videos = await _repository.PagedList(infoTopicId, page, size, order, type);
+            if (videos != null)
+            {
+                var videoDTOs = new List<VideoDTO>();
+                foreach (var video in videos)
+                {
+                    videoDTOs.Add(AddDTO(video));
+                }
+                return videoDTOs;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

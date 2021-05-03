@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,28 +18,40 @@ namespace API.Controllers
         // Controller for Comments API Backend
 
         private readonly ICommentBLL _commentBLL;
+        private readonly ICustomBLL _customBLL;
 
-        public CommentsController(ICommentBLL commentBLL)
+        public CommentsController(ICommentBLL commentBLL, ICustomBLL customBLL)
         {
             _commentBLL = commentBLL;
+            _customBLL = customBLL;
         }
 
         // GET: Comments
-        // GET: Comments?postId=1
+        // GET: Comments?postId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int? postId)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
             try
             {
-                var comments = await _commentBLL.GetComments(postId);
-                if (comments != null)
-                {
-                    return Ok(comments);
-                }
-                else
-                {
-                    return NotFound($"Ingen kommentarer ble funnet");
-                }
+                // Liste kommentarer med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc"; // Asc, Desc
+                var type = sortType ?? "Date"; // Date, Like
+                var count = await _customBLL.GetCount("Comment", postId);
+                var pagedList = await _commentBLL.PagedList(postId, page, size, order, type);
+
+                return Ok(new CommentResponse<IEnumerable<CommentDTO>>(pagedList, postId, page, size, count, order, type));
+
+                //var comments = await _commentBLL.GetComments(postId);
+                //if (comments != null)
+                //{
+                //    return Ok(comments);
+                //}
+                //else
+                //{
+                //    return NotFound($"Ingen kommentarer ble funnet");
+                //}
             }
             catch (Exception)
             {
@@ -80,10 +93,9 @@ namespace API.Controllers
                     var newComment = await _commentBLL.AddComment(file, comment);
                     return CreatedAtAction(nameof(GetComment), new { id = newComment.Id }, newComment);
                 }
-
                 else
                 {
-                    return BadRequest("Kommentar objekt mangler");
+                    return BadRequest("Kommentar mangler");
                 }
             }
             catch (Exception)

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace DAL.Repositories
 {
@@ -60,8 +61,8 @@ namespace DAL.Repositories
                 {
                     if (existingUser.Username == user.Username || existingUser.Email == user.Email)
                     {
-                        // Returnerer null hvis bruker eller epost finnes fra før
-                        return null;
+                        // Returnerer existingUser hvis bruker eller epost finnes fra før
+                        return existingUser;
                     }
                 }
             }
@@ -172,6 +173,33 @@ namespace DAL.Repositories
             var salt = new byte[24];
             csprng.GetBytes(salt);
             return salt;
+        }
+
+        public async Task<IEnumerable<User>> PagedList(int page, int size, string order, string type)
+        {
+            var pagedList = await _context.Users.ToListAsync();
+            return order switch
+            {
+                "Desc" => type switch
+                {
+                    "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                    "Admin" => await pagedList.OrderByDescending(p => p.Admin).ToPagedListAsync(page, size),
+                    "Username" => await pagedList.OrderByDescending(p => p.Username).ToPagedListAsync(page, size),
+                    "Name" => await pagedList.OrderByDescending(p => p.FirstName).ToPagedListAsync(page, size),
+                    "Email" => await pagedList.OrderByDescending(p => p.Email).ToPagedListAsync(page, size),
+                    _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
+                },
+                "Asc" => type switch
+                {
+                    "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                    "Admin" => await pagedList.OrderBy(p => p.Admin).ToPagedListAsync(page, size),
+                    "Username" => await pagedList.OrderBy(p => p.Username).ToPagedListAsync(page, size),
+                    "Name" => await pagedList.OrderBy(p => p.FirstName).ToPagedListAsync(page, size),
+                    "Email" => await pagedList.OrderBy(p => p.Email).ToPagedListAsync(page, size),
+                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+                },
+                _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
+            };
         }
     }
 }

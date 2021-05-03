@@ -14,5 +14,6 @@ namespace DAL.Interfaces
         Task<Video> AddVideo(Video video);
         Task<Video> UpdateVideo(Video video);
         Task<Video> DeleteVideo(int id);
+        Task<IEnumerable<Video>> PagedList(int? infoTopicId, int page, int size, string order, string type);
     }
 }
