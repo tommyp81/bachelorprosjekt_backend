@@ -46,14 +46,7 @@ namespace API.Controllers
                 {
                     // Hent status på likes fra databasen
                     var getLike = await _likeBLL.GetLike(like);
-                    if (getLike != null)
-                    {
-                        return Ok(getLike);
-                    }
-                    else
-                    {
-                        return Ok("Like ble ikke funnet");
-                    }
+                    return Ok(getLike);
                 }
             }
             catch (Exception)
