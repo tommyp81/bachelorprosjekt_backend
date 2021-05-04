@@ -1,12 +1,11 @@
-﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using BLL.Interfaces;
+﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Model.Auth;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,18 +21,15 @@ namespace API.Controllers
         // Controller for Custom API Backend
 
         private readonly ICustomBLL _customBLL;
-        private readonly IConfiguration _config;
-        private readonly IUserBLL _userBLL;
 
-        public CustomController(ICustomBLL customBLL, IConfiguration configuration, IUserBLL userBLL)
+        public CustomController(ICustomBLL customBLL)
         {
             _customBLL = customBLL;
-            _config = configuration;
-            _userBLL = userBLL;
         }
 
         // GET: GetDocuments
         // GET: GetDocuments?infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        //[Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentDTO>>> GetDocuments(int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -73,6 +69,7 @@ namespace API.Controllers
         }
 
         // POST: UploadDocument
+        //[Authorize]
         [HttpPost]
         public async Task<ActionResult<DocumentDTO>> UploadDocument(
             [FromForm] IFormFile file, [FromForm] int? userId, [FromForm] int? postId, [FromForm] int? commentId, [FromForm] int? infoTopicId)
@@ -112,6 +109,7 @@ namespace API.Controllers
         }
 
         // GET: GetDocumentInfo/1
+        //[Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<DocumentDTO>> GetDocumentInfo(int id)
         {
@@ -134,6 +132,7 @@ namespace API.Controllers
         }
 
         // GET: GetDocument/1
+        //[Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetDocument(int id)
         {
@@ -156,6 +155,7 @@ namespace API.Controllers
         }
 
         // DELETE: DeleteDocument/1
+        //[Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<DocumentDTO>> DeleteDocument(int id)
         {
@@ -179,28 +179,29 @@ namespace API.Controllers
 
         // POST: Login
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> Login([FromForm] string username, [FromForm] string email, [FromForm] string password)
+        public async Task<ActionResult<AuthResponse>> Login([FromForm] AuthRequest resquest)//[FromForm] string username, [FromForm] string email, [FromForm] string password
         {
             try
             {
-                var user = await _customBLL.Login(username, email, password);
-                if (user != null)
+                var response = await _customBLL.Login(resquest);
+                if (response != null)
                 {
                     // Ok hvis brukernavn/epost og passord stemmer
-                    return Ok(user);
+                    return Ok(response);
                 }
                 else
                 {
                     return Unauthorized("Feil ved brukernavn, epost eller passord");
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved login");
+                return StatusCode(StatusCodes.Status500InternalServerError, e);//"Feil ved login"
             }
         }
 
         // POST: SetAdmin
+        //[Authorize]
         [HttpPost]
         public async Task<ActionResult<UserDTO>> SetAdmin([FromForm] int id, [FromForm] bool admin)
         {
@@ -224,6 +225,7 @@ namespace API.Controllers
 
         // GET: SearchDocuments?query=eksempel tekst
         // GET: SearchDocuments?query=eksempel tekst&infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        //[Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentDTO>>> SearchDocuments(string query, int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

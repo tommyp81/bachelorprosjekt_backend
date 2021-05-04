@@ -14,19 +14,19 @@ namespace Test.Objects
         {
             var infotopics = new List<InfoTopicDTO>
             {
-                new InfoTopicDTO()
+                new InfoTopicDTO(null)
                 {
                     Id = 1,
                     Title="InfoTopic Test 1",
                     Description="Informasjon om InfoTopic Test 1"
                 },
-                new InfoTopicDTO()
+                new InfoTopicDTO(null)
                 {
                     Id = 2,
                     Title="InfoTopic Test 2",
                     Description="Informasjon om InfoTopic Test 2"
                 },
-                new InfoTopicDTO()
+                new InfoTopicDTO(null)
                 {
                     Id = 3,
                     Title="InfoTopic Test 3",
@@ -38,7 +38,7 @@ namespace Test.Objects
 
         public static InfoTopicDTO TestInfoTopicDTO()
         {
-            var infotopic = new InfoTopicDTO()
+            var infotopic = new InfoTopicDTO(null)
             {
                 Id = 1,
                 Title = "InfoTopic Test 1",

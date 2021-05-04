@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.Domain_models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,5 +22,20 @@ namespace Model.DTO
         public int? TopicId { get; set; }
         public int SubTopicId { get; set; }
         public int? DocumentId { get; set; }
+
+        public PostDTO(Post post)
+        {
+            Id = post.Id;
+            Title = post.Title;
+            Content = post.Content;
+            Date = post.Date;
+            EditDate = post.EditDate;
+            Edited = post.Edited;
+            Comment_Count = post.Comment_Count;
+            Like_Count = post.Like_Count;
+            UserId = post.UserId;
+            SubTopicId = post.SubTopicId;
+            DocumentId = post.DocumentId;
+        }
     }
 }

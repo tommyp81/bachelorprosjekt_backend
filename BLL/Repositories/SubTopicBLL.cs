@@ -19,19 +19,6 @@ namespace BLL.Repositories
             _repository = repository;
         }
 
-        // For å lage DTOs for SubTopics
-        public SubTopicDTO AddDTO(SubTopic subtopic)
-        {
-            var DTO = new SubTopicDTO
-            {
-                Id = subtopic.Id,
-                Title = subtopic.Title,
-                Description = subtopic.Description,
-                TopicId = subtopic.TopicId
-            };
-            return DTO;
-        }
-
         public async Task<IEnumerable<SubTopicDTO>> GetSubTopics()
         {
             var subtopics = await _repository.GetSubTopics();
@@ -40,7 +27,7 @@ namespace BLL.Repositories
                 var subtopicDTOs = new List<SubTopicDTO>();
                 foreach (SubTopic subtopic in subtopics)
                 {
-                    subtopicDTOs.Add(AddDTO(subtopic));
+                    subtopicDTOs.Add(new SubTopicDTO(subtopic));
                 }
                 return subtopicDTOs;
             }
@@ -55,7 +42,7 @@ namespace BLL.Repositories
             var getSubTopic = await _repository.GetSubTopic(id);
             if (getSubTopic != null)
             {
-                return AddDTO(getSubTopic);
+                return new SubTopicDTO(getSubTopic);
             }
             else
             {
@@ -68,7 +55,7 @@ namespace BLL.Repositories
             var addSubTopic = await _repository.AddSubTopic(subtopic);
             if (addSubTopic != null)
             {
-                return AddDTO(addSubTopic);
+                return new SubTopicDTO(addSubTopic);
             }
             else
             {
@@ -81,7 +68,7 @@ namespace BLL.Repositories
             var updateSubTopic = await _repository.UpdateSubTopic(subtopic);
             if (updateSubTopic != null)
             {
-                return AddDTO(updateSubTopic);
+                return new SubTopicDTO(updateSubTopic);
             }
             else
             {
@@ -94,7 +81,7 @@ namespace BLL.Repositories
             var deleteSubTopic = await _repository.DeleteSubTopic(id);
             if (deleteSubTopic != null)
             {
-                return AddDTO(deleteSubTopic);
+                return new SubTopicDTO(deleteSubTopic);
             }
             else
             {

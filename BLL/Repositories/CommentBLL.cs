@@ -1,9 +1,9 @@
 ﻿using BLL.Interfaces;
+using DAL.Helpers;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,31 +15,10 @@ namespace BLL.Repositories
     public class CommentBLL : ICommentBLL
     {
         private readonly ICommentRepository _repository;
-        private readonly ICustomBLL _customBLL;
 
-        public CommentBLL(ICommentRepository repository, ICustomBLL customBLL)
+        public CommentBLL(ICommentRepository repository)
         {
             _repository = repository;
-            _customBLL = customBLL;
-        }
-
-        // For å lage DTOs for Comments
-        public CommentDTO AddDTO(Comment comment)
-        {
-            var DTO = new CommentDTO
-            {
-                Id = comment.Id,
-                Content = comment.Content,
-                Date = comment.Date,
-                EditDate = comment.EditDate,
-                Edited = comment.Edited,
-                Like_Count = comment.Like_Count,
-                UserId = comment.UserId,
-                PostId = comment.PostId,
-                DocumentId = comment.DocumentId
-            };
-
-            return DTO;
         }
 
         public async Task<IEnumerable<CommentDTO>> GetComments(int? postId)
@@ -50,7 +29,7 @@ namespace BLL.Repositories
                 var commentDTOs = new List<CommentDTO>();
                 foreach (var comment in getComments)
                 {
-                    commentDTOs.Add(AddDTO(comment));
+                    commentDTOs.Add(new CommentDTO(comment));
                 }
                 return commentDTOs;
             }
@@ -65,7 +44,7 @@ namespace BLL.Repositories
             var getComment = await _repository.GetComment(id);
             if (getComment != null)
             {
-                return AddDTO(getComment);
+                return new CommentDTO(getComment);
             }
             else
             {
@@ -78,7 +57,7 @@ namespace BLL.Repositories
             var addComment = await _repository.AddComment(file, comment);
             if (addComment != null)
             {
-                return AddDTO(addComment);
+                return new CommentDTO (addComment);
             }
             else
             {
@@ -91,7 +70,7 @@ namespace BLL.Repositories
             var updateComment = await _repository.UpdateComment(comment);
             if (updateComment != null)
             {
-                return AddDTO(updateComment);
+                return new CommentDTO(updateComment);
             }
             else
             {
@@ -104,7 +83,7 @@ namespace BLL.Repositories
             var deleteComment = await _repository.DeleteComment(id);
             if (deleteComment != null)
             {
-                return AddDTO(deleteComment);
+                return new CommentDTO(deleteComment);
             }
             else
             {
@@ -120,9 +99,9 @@ namespace BLL.Repositories
                 var commentDTOs = new List<CommentDTO>();
                 foreach (var comment in comments.Data)
                 {
-                    commentDTOs.Add(AddDTO(comment));
+                    commentDTOs.Add(new CommentDTO(comment));
                 }
-                return _customBLL.CreateReponse(commentDTOs, comments.Count, postId, page, size, order, type);
+                return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
             }
             else
             {
@@ -138,9 +117,9 @@ namespace BLL.Repositories
                 var commentDTOs = new List<CommentDTO>();
                 foreach (var comment in comments.Data)
                 {
-                    commentDTOs.Add(AddDTO(comment));
+                    commentDTOs.Add(new CommentDTO(comment));
                 }
-                return _customBLL.CreateReponse(commentDTOs, comments.Count, postId, page, size, order, type);
+                return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
             }
             else
             {

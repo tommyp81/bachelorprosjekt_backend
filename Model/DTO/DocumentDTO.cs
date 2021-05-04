@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.Domain_models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,5 +21,20 @@ namespace Model.DTO
         public int? PostId { get; set; }
         public int? CommentId { get; set; }
         public int? InfoTopicId { get; set; }
+
+        public DocumentDTO(Document document)
+        {
+            Id = document.Id;
+            FileName = document.FileName;
+            FileType = document.FileType;
+            FileSize = document.FileSize;
+            Uploaded = document.Uploaded;
+            UniqueName = document.UniqueName;
+            Container = document.Container;
+            UserId = document.UserId;
+            PostId = document.PostId;
+            CommentId = document.CommentId;
+            InfoTopicId = document.InfoTopicId;
+        }
     }
 }

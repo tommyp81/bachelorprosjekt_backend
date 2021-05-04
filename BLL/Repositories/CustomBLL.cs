@@ -1,10 +1,11 @@
 ﻿using BLL.Interfaces;
+using DAL.Helpers;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Model.Auth;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,26 +69,6 @@ namespace BLL.Repositories
         //    return 0;
         //}
 
-        // For å lage DTOs for Documents
-        public DocumentDTO AddDTO(Document document)
-        {
-            var DTO = new DocumentDTO
-            {
-                Id = document.Id,
-                FileName = document.FileName,
-                FileType = document.FileType,
-                FileSize = document.FileSize,
-                Uploaded = document.Uploaded,
-                UniqueName = document.UniqueName,
-                Container = document.Container,
-                UserId = document.UserId,
-                PostId = document.PostId,
-                CommentId = document.CommentId,
-                InfoTopicId = document.InfoTopicId
-            };
-            return DTO;
-        }
-
         // GET: GetDocuments
         public async Task<IEnumerable<DocumentDTO>> GetDocuments()
         {
@@ -101,7 +82,7 @@ namespace BLL.Repositories
                     if (document.InfoTopicId != null)
                     {
                         // Legg dokumentet til i listen
-                        documentDTOs.Add(AddDTO(document));
+                        documentDTOs.Add(new DocumentDTO(document));
                     }
                 }
                 // Returnerer alle dokumenter som har en InfoTopicId
@@ -119,7 +100,7 @@ namespace BLL.Repositories
             var addDocument = await _repository.UploadDocument(file, userId, postId, commentId, infoTopicId);
             if (addDocument != null)
             {
-                return AddDTO(addDocument);
+                return new DocumentDTO(addDocument);
             }
             else
             {
@@ -133,7 +114,7 @@ namespace BLL.Repositories
             var getDocument = await _repository.GetDocumentInfo(id);
             if (getDocument != null)
             {
-                return AddDTO(getDocument);
+                return new DocumentDTO(getDocument);
             }
             else
             {
@@ -161,7 +142,7 @@ namespace BLL.Repositories
             var deleteDocument = await _repository.DeleteDocument(id);
             if (deleteDocument != null)
             {
-                return AddDTO(deleteDocument);
+                return new DocumentDTO(deleteDocument);
             }
             else
             {
@@ -169,27 +150,13 @@ namespace BLL.Repositories
             }
         }
 
-        private static UserDTO AddUserDTO(User user)
-        {
-            var DTO = new UserDTO
-            {
-                Id = user.Id,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Admin = user.Admin
-            };
-            return DTO;
-        }
-
         // POST: Login
-        public async Task<UserDTO> Login(string username, string email, string password)
+        public async Task<AuthResponse> Login(AuthRequest request)
         {
-            var login = await _repository.Login(username, email, password);
-            if (login != null)
+            var response = await _repository.Login(request);
+            if (response != null)
             {
-                return AddUserDTO(login);
+                return response;
             }
             else
             {
@@ -203,7 +170,7 @@ namespace BLL.Repositories
             var setAdmin = await _repository.SetAdmin(id, admin);
             if (setAdmin != null)
             {
-                return AddUserDTO(setAdmin);
+                return new UserDTO(setAdmin);
             }
             else
             {
@@ -219,9 +186,9 @@ namespace BLL.Repositories
                 var documentDTOs = new List<DocumentDTO>();
                 foreach (var document in documents.Data)
                 {
-                    documentDTOs.Add(AddDTO(document));
+                    documentDTOs.Add(new DocumentDTO(document));
                 }
-                return CreateReponse(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
+                return new PageResponse<IEnumerable<DocumentDTO>>(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
             }
             else
             {
@@ -237,29 +204,14 @@ namespace BLL.Repositories
                 var documentDTOs = new List<DocumentDTO>();
                 foreach (var document in documents.Data)
                 {
-                    documentDTOs.Add(AddDTO(document));
+                    documentDTOs.Add(new DocumentDTO(document));
                 }
-                return CreateReponse(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
+                return new PageResponse<IEnumerable<DocumentDTO>>(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
             }
             else
             {
                 return null;
             }
-        }
-
-        public PageResponse<IEnumerable<T>> CreateReponse<T>(IEnumerable<T> pagedData, int count, int? id, int page, int size, string order, string type)
-        {
-            var response = new PageResponse<IEnumerable<T>>(pagedData);
-            int totalPages = (count / size);
-            if (count % size != 0) { totalPages++; }
-            response.Id = id;
-            response.PageNumber = page;
-            response.PageSize = size;
-            response.TotalPages = totalPages;
-            response.TotalRecords = count;
-            response.SortOrder = order;
-            response.SortType = type;
-            return response;
         }
     }
 }

@@ -19,19 +19,6 @@ namespace BLL.Repositories
             _repository = repository;
         }
 
-        // For å lage DTOs for Topics
-        public TopicDTO AddDTO(Topic topic)
-        {
-            var DTO = new TopicDTO
-            {
-                Id = topic.Id,
-                Title = topic.Title,
-                Description = topic.Description,
-                ImageUrl = topic.ImageUrl
-            };
-            return DTO;
-        }
-
         public async Task<IEnumerable<TopicDTO>> GetTopics()
         {
             var topics = await _repository.GetTopics();
@@ -40,7 +27,7 @@ namespace BLL.Repositories
                 var topicDTOs = new List<TopicDTO>();
                 foreach (Topic topic in topics)
                 {
-                    topicDTOs.Add(AddDTO(topic));
+                    topicDTOs.Add(new TopicDTO(topic));
                 }
                 return topicDTOs;
             }
@@ -55,7 +42,7 @@ namespace BLL.Repositories
             var getTopic = await _repository.GetTopic(id);
             if (getTopic != null)
             {
-                return AddDTO(getTopic);
+                return new TopicDTO(getTopic);
             }
             else
             {
@@ -68,7 +55,7 @@ namespace BLL.Repositories
             var addTopic = await _repository.AddTopic(topic);
             if (addTopic != null)
             {
-                return AddDTO(addTopic);
+                return new TopicDTO(addTopic);
             }
             else
             {
@@ -81,7 +68,7 @@ namespace BLL.Repositories
             var updateTopic = await _repository.UpdateTopic(topic);
             if (updateTopic != null)
             {
-                return AddDTO(updateTopic);
+                return new TopicDTO(updateTopic);
             }
             else
             {
@@ -94,7 +81,7 @@ namespace BLL.Repositories
             var deleteTopic = await _repository.DeleteTopic(id);
             if (deleteTopic != null)
             {
-                return AddDTO(deleteTopic);
+                return new TopicDTO(deleteTopic);
             }
             else
             {

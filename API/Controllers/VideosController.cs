@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +17,10 @@ namespace API.Controllers
         // Controller for Videos API Backend
 
         private readonly IVideoBLL _videoBLL;
-        private readonly ICustomBLL _customBLL;
 
-        public VideosController(IVideoBLL videoBLL, ICustomBLL customBLL)
+        public VideosController(IVideoBLL videoBLL)
         {
             _videoBLL = videoBLL;
-            _customBLL = customBLL;
         }
 
         // GET: Videos

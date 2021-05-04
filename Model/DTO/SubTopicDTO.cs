@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.Domain_models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,13 @@ namespace Model.DTO
         public string Title { get; set; }
         public string Description { get; set; }
         public int TopicId { get; set; }
+
+        public SubTopicDTO(SubTopic subTopic)
+        {
+            Id = subTopic.Id;
+            Title = subTopic.Title;
+            Description = subTopic.Description;
+            TopicId = subTopic.TopicId;
+        }
     }
 }

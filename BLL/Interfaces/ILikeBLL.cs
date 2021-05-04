@@ -10,7 +10,6 @@ namespace BLL.Interfaces
 {
     public interface ILikeBLL
     {
-        LikeDTO AddDTO(Like like);
         Task<LikeDTO> GetLike(Like like);
         Task<LikeDTO> AddLike(Like like);
         Task<LikeDTO> DeleteLike(Like like);

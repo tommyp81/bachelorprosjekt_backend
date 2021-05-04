@@ -19,18 +19,6 @@ namespace BLL.Repositories
             _repository = repository;
         }
 
-        // For å lage DTOs for Topics
-        public InfoTopicDTO AddDTO(InfoTopic infotopic)
-        {
-            var DTO = new InfoTopicDTO
-            {
-                Id = infotopic.Id,
-                Title = infotopic.Title,
-                Description = infotopic.Description
-            };
-            return DTO;
-        }
-
         public async Task<IEnumerable<InfoTopicDTO>> GetInfoTopics()
         {
             var infotopics = await _repository.GetInfoTopics();
@@ -39,7 +27,7 @@ namespace BLL.Repositories
                 var infotopicDTOs = new List<InfoTopicDTO>();
                 foreach (InfoTopic infotopic in infotopics)
                 {
-                    infotopicDTOs.Add(AddDTO(infotopic));
+                    infotopicDTOs.Add(new InfoTopicDTO(infotopic));
                 }
                 return infotopicDTOs;
             }
@@ -54,7 +42,7 @@ namespace BLL.Repositories
             var getInfoTopic = await _repository.GetInfoTopic(id);
             if (getInfoTopic != null)
             {
-                return AddDTO(getInfoTopic);
+                return new InfoTopicDTO(getInfoTopic);
             }
             else
             {
@@ -67,7 +55,7 @@ namespace BLL.Repositories
             var addInfoTopic = await _repository.AddInfoTopic(infotopic);
             if (addInfoTopic != null)
             {
-                return AddDTO(addInfoTopic);
+                return new InfoTopicDTO(addInfoTopic);
             }
             else
             {
@@ -80,7 +68,7 @@ namespace BLL.Repositories
             var updateInfoTopic = await _repository.UpdateInfoTopic(infotopic);
             if (updateInfoTopic != null)
             {
-                return AddDTO(updateInfoTopic);
+                return new InfoTopicDTO(updateInfoTopic);
             }
             else
             {
@@ -93,7 +81,7 @@ namespace BLL.Repositories
             var deleteInfoTopic = await _repository.DeleteInfoTopic(id);
             if (deleteInfoTopic != null)
             {
-                return AddDTO(deleteInfoTopic);
+                return new InfoTopicDTO(deleteInfoTopic);
             }
             else
             {

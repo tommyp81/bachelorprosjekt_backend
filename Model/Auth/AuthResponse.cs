@@ -5,35 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.DTO
+namespace Model.Auth
 {
-    public class UserDTO
+    public class AuthResponse
     {
         public int Id { get; set; }
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public bool Admin { get; set; }
+        public string Token { get; set; }
 
-        public UserDTO(User user)
+        public AuthResponse(User user)//, string token
         {
             Id = user.Id;
             Username = user.Username;
             FirstName = user.FirstName;
             LastName = user.LastName;
             Email = user.Email;
-            Admin = user.Admin;
+            //Token = token;
         }
-    }
-
-    public class NewUser
-    {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
+    }  
 }

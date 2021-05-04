@@ -19,25 +19,12 @@ namespace BLL.Repositories
             _repository = repository;
         }
 
-        // For å lage DTOs for Likes
-        public LikeDTO AddDTO(Like like)
-        {
-            var DTO = new LikeDTO
-            {
-                Id = like.Id,
-                UserId = like.UserId,
-                PostId = like.PostId,
-                CommentId = like.CommentId
-            };
-            return DTO;
-        }
-
         public async Task<LikeDTO> GetLike(Like like)
         {
             var getLike = await _repository.GetLike(like);
             if (getLike != null)
             {
-                return AddDTO(getLike);
+                return new LikeDTO(getLike);
             }
             else
             {
@@ -50,7 +37,7 @@ namespace BLL.Repositories
             var addLike = await _repository.AddLike(like);
             if (addLike != null)
             {
-                return AddDTO(addLike);
+                return new LikeDTO(addLike);
             }
             else
             {
@@ -63,7 +50,7 @@ namespace BLL.Repositories
             var deleteLike = await _repository.DeleteLike(like);
             if (deleteLike != null)
             {
-                return AddDTO(deleteLike);
+                return new LikeDTO(deleteLike);
             }
             else
             {

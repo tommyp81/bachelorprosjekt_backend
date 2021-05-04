@@ -16,7 +16,7 @@ namespace Test.Objects
         {
             var documents = new List<DocumentDTO>
             {
-                new DocumentDTO()
+                new DocumentDTO(null)
                 {
                     Id = 1,
                     FileName = "Testfil1.txt",
@@ -30,7 +30,7 @@ namespace Test.Objects
                     CommentId = null,
                     InfoTopicId = null
                 },
-                new DocumentDTO()
+                new DocumentDTO(null)
                 {
                     Id = 2,
                     FileName = "Testfil2.txt",
@@ -44,7 +44,7 @@ namespace Test.Objects
                     CommentId = 1,
                     InfoTopicId = null
                 },
-                new DocumentDTO()
+                new DocumentDTO(null)
                 {
                     Id = 3,
                     FileName = "Testfil3.txt",
@@ -64,7 +64,7 @@ namespace Test.Objects
 
         public static DocumentDTO TestDocumentDTO()
         {
-            var document = new DocumentDTO()
+            var document = new DocumentDTO(null)
             {
                 Id = 1,
                 FileName = "Testfil1.txt",

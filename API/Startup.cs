@@ -21,6 +21,7 @@ using Microsoft.Extensions.Azure;
 using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
 using Azure.Storage.Queues;
+using DAL.Helpers;
 
 namespace API
 {
@@ -57,6 +58,9 @@ namespace API
             });
 
             services.AddControllers();
+
+            // For JWT tokens autentisering
+            //services.Configure<AuthSettings>(Configuration.GetSection("AuthSettings"));
 
             // For BLL
             services.AddTransient<IUserBLL, UserBLL>();
@@ -101,6 +105,8 @@ namespace API
             app.UseRouting();
 
             app.UseAuthorization();
+            // For JWT tokens autentisering
+            //app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

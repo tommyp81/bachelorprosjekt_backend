@@ -1,9 +1,9 @@
 ﻿using DAL.Database_configuration;
+using DAL.Helpers;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Model.Domain_models;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +24,19 @@ namespace DAL.Repositories
         {
             _context = context;
             _customRepository = customRepository;
+        }
+
+        public async Task<int?> GetTopicId(int id)
+        {
+            var subTopicId = await _context.SubTopics.FindAsync(id);
+            if (subTopicId != null)
+            {
+                return subTopicId.TopicId;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // GET: Posts

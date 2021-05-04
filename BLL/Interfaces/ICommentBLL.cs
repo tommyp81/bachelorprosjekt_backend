@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DAL.Helpers;
+using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,6 @@ namespace BLL.Interfaces
 {
     public interface ICommentBLL
     {
-        CommentDTO AddDTO(Comment comment);
         Task<IEnumerable<CommentDTO>> GetComments(int? postId);
         Task<CommentDTO> GetComment(int id);
         Task<CommentDTO> AddComment(IFormFile file, Comment comment);

@@ -1,11 +1,10 @@
-﻿using Model.Domain_models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Wrappers
+namespace DAL.Helpers
 {
     public class Response<T>
     {

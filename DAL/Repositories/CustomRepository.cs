@@ -1,17 +1,22 @@
 ﻿using Azure.Storage.Blobs;
 using DAL.Database_configuration;
+using DAL.Helpers;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Model.Auth;
 using Model.Domain_models;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,11 +28,13 @@ namespace DAL.Repositories
     {
         private readonly DBContext _context;
         private readonly IConfiguration _config;
+        private readonly AuthSettings _authSettings;
 
-        public CustomRepository(DBContext context, IConfiguration configuration)
+        public CustomRepository(DBContext context, IConfiguration configuration, IOptions<AuthSettings> authSettings)
         {
             _context = context;
             _config = configuration;
+            _authSettings = authSettings.Value;
         }
 
         // POST: AddDocument
@@ -265,8 +272,24 @@ namespace DAL.Repositories
             }
         }
 
+        // From: https://jasonwatmore.com/post/2019/10/11/aspnet-core-3-jwt-authentication-tutorial-with-example-api
+        //private string GenerateJwtToken(User user)
+        //{
+        //    // generate token that is valid for 7 days
+        //    var tokenHandler = new JwtSecurityTokenHandler();
+        //    var key = Encoding.ASCII.GetBytes(_authSettings.Secret);
+        //    var tokenDescriptor = new SecurityTokenDescriptor
+        //    {
+        //        Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+        //        Expires = DateTime.UtcNow.AddDays(7),
+        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        //    };
+        //    var token = tokenHandler.CreateToken(tokenDescriptor);
+        //    return tokenHandler.WriteToken(token);
+        //}
+
         // POST: Login
-        public async Task<User> Login(string username, string email, string password)
+        public async Task<AuthResponse> Login(AuthRequest request)
         {
             // Liste over alle eksisterende brukere
             var users = await _context.Users.ToListAsync();
@@ -275,17 +298,18 @@ namespace DAL.Repositories
                 foreach (var user in users)
                 {
                     // Sjekk om brukernavn eller epost stemmer
-                    if (user.Username == username || user.Email == email)
+                    if (user.Username == request.Username || user.Email == request.Email)
                     {
                         // Sjekk passord med kryptering
                         const int keyLength = 24;
-                        var pbkdf2 = new Rfc2898DeriveBytes(password, user.Salt, 1000);
+                        var pbkdf2 = new Rfc2898DeriveBytes(request.Password, user.Salt, 1000);
                         byte[] passwordTest = pbkdf2.GetBytes(keyLength);
-                        bool authUser = user.Password.SequenceEqual(passwordTest);
-                        if (authUser == true)
+                        bool passwordCheck = user.Password.SequenceEqual(passwordTest);
+                        if (passwordCheck == true)
                         {
                             // Sende tilbake brukerobjekt hvis ok
-                            return user;
+                            //var token = GenerateJwtToken(user);
+                            return new AuthResponse(user); // tommy er token :D
                         }
                     }
                 }

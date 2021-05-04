@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +17,10 @@ namespace API.Controllers
         // Controller for Comments API Backend
 
         private readonly ICommentBLL _commentBLL;
-        private readonly ICustomBLL _customBLL;
 
-        public CommentsController(ICommentBLL commentBLL, ICustomBLL customBLL)
+        public CommentsController(ICommentBLL commentBLL)
         {
             _commentBLL = commentBLL;
-            _customBLL = customBLL;
         }
 
         // GET: Comments

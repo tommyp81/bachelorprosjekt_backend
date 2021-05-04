@@ -10,7 +10,6 @@ namespace BLL.Interfaces
 {
     public interface ISubTopicBLL
     {
-        SubTopicDTO AddDTO(SubTopic subtopic);
         Task<IEnumerable<SubTopicDTO>> GetSubTopics();
         Task<SubTopicDTO> GetSubTopic(int id);
         Task<SubTopicDTO> AddSubTopic(SubTopic subtopic);

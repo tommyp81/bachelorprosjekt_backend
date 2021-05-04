@@ -1,8 +1,8 @@
 ﻿using BLL.Interfaces;
+using DAL.Helpers;
 using DAL.Interfaces;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,27 +14,10 @@ namespace BLL.Repositories
     public class UserBLL : IUserBLL
     {
         private readonly IUserRepository _repository;
-        private readonly ICustomBLL _customBLL;
 
-        public UserBLL(IUserRepository repository, ICustomBLL customBLL)
+        public UserBLL(IUserRepository repository)
         {
             _repository = repository;
-            _customBLL = customBLL;
-        }
-
-        // For å lage DTOs for Users
-        public UserDTO AddDTO(User user)
-        {
-            var DTO = new UserDTO
-            {
-                Id = user.Id,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Admin = user.Admin
-            };
-            return DTO;
         }
 
         public async Task<IEnumerable<UserDTO>> GetUsers()
@@ -45,7 +28,7 @@ namespace BLL.Repositories
                 var userDTOs = new List<UserDTO>();
                 foreach (User user in users)
                 {
-                    userDTOs.Add(AddDTO(user));
+                    userDTOs.Add(new UserDTO(user));
                 }
                 return userDTOs;
             }
@@ -60,7 +43,7 @@ namespace BLL.Repositories
             var getUser = await _repository.GetUser(id);
             if (getUser != null)
             {
-                return AddDTO(getUser);
+                return new UserDTO(getUser);
             }
             else
             {
@@ -68,12 +51,12 @@ namespace BLL.Repositories
             }
         }
 
-        public async Task<UserDTO> AddUser(AuthUser user)
+        public async Task<UserDTO> AddUser(NewUser user)
         {
             var addUser = await _repository.AddUser(user);
             if (addUser != null)
             {
-                return AddDTO(addUser);
+                return new UserDTO(addUser);
             }
             else
             {
@@ -81,12 +64,12 @@ namespace BLL.Repositories
             }
         }
 
-        public async Task<UserDTO> UpdateUser(AuthUser user)
+        public async Task<UserDTO> UpdateUser(NewUser user)
         {
             var updateUser = await _repository.UpdateUser(user);
             if (updateUser != null)
             {
-                return AddDTO(updateUser);
+                return new UserDTO(updateUser);
             }
             else
             {
@@ -99,7 +82,7 @@ namespace BLL.Repositories
             var deleteUser = await _repository.DeleteUser(id);
             if (deleteUser != null)
             {
-                return AddDTO(deleteUser);
+                return new UserDTO(deleteUser);
             }
             else
             {
@@ -115,9 +98,9 @@ namespace BLL.Repositories
                 var userDTOs = new List<UserDTO>();
                 foreach (var user in users.Data)
                 {
-                    userDTOs.Add(AddDTO(user));
+                    userDTOs.Add(new UserDTO(user));
                 }
-                return _customBLL.CreateReponse(userDTOs, users.Count, null, page, size, order, type);
+                return new PageResponse<IEnumerable<UserDTO>>(userDTOs, users.Count, null, page, size, order, type);
             }
             else
             {
@@ -133,9 +116,9 @@ namespace BLL.Repositories
                 var userDTOs = new List<UserDTO>();
                 foreach (var user in users.Data)
                 {
-                    userDTOs.Add(AddDTO(user));
+                    userDTOs.Add(new UserDTO(user));
                 }
-                return _customBLL.CreateReponse(userDTOs, users.Count, null, page, size, order, type);
+                return new PageResponse<IEnumerable<UserDTO>>(userDTOs, users.Count, null, page, size, order, type);
             }
             else
             {

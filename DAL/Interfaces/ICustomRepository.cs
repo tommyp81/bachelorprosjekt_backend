@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DAL.Helpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Model.Auth;
 using Model.Domain_models;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace DAL.Interfaces
         Task<Document> GetDocumentInfo(int id);
         Task<FileStreamResult> GetDocument(int id);
         Task<Document> DeleteDocument(int id);
-        Task<User> Login(string username, string email, string password);
+        Task<AuthResponse> Login(AuthRequest request);
         Task<User> SetAdmin(int id, bool admin);
         Task<Response<IEnumerable<Document>>> PagedList(int? infoTopicId, int page, int size, string order, string type);
         Task<Response<IEnumerable<Document>>> Search(string query, int? infoTopicId, int page, int size, string order, string type);

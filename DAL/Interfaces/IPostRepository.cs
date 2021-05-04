@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DAL.Helpers;
+using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,7 @@ namespace DAL.Interfaces
 {
     public interface IPostRepository
     {
+        Task<int?> GetTopicId(int id);
         Task<IEnumerable<Post>> GetPosts();
         Task<Post> GetPost(int id);
         Task<Post> AddPost(IFormFile file, Post post);

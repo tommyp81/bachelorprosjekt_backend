@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +17,10 @@ namespace API.Controllers
         // Controller for Posts API Backend
 
         private readonly IPostBLL _postBLL;
-        private readonly ICustomBLL _customBLL;
 
-        public PostsController(IPostBLL postBLL, ICustomBLL customBLL)
+        public PostsController(IPostBLL postBLL)
         {
             _postBLL = postBLL;
-            _customBLL = customBLL;
         }
 
         // GET: Posts

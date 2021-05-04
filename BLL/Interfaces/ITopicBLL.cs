@@ -10,7 +10,6 @@ namespace BLL.Interfaces
 {
     public interface ITopicBLL
     {
-        TopicDTO AddDTO(Topic topic);
         Task<IEnumerable<TopicDTO>> GetTopics();
         Task<TopicDTO> GetTopic(int id);
         Task<TopicDTO> AddTopic(Topic topic);

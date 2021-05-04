@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.Domain_models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,16 @@ namespace Model.DTO
         public string Username { get; set; }
         public int PostId { get; set; }
         public int InfoTopicId { get; set; }
+
+        public VideoDTO(Video video)
+        {
+            Id = video.Id;
+            YouTubeId = video.YouTubeId;
+            Title = video.Title;
+            Description = video.Description;
+            UserId = video.UserId;
+            PostId = video.PostId;
+            InfoTopicId = video.InfoTopicId;
+        }
     }
 }

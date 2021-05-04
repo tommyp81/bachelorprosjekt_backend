@@ -1,9 +1,9 @@
 ﻿using BLL.Interfaces;
+using DAL.Helpers;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,38 +16,21 @@ namespace BLL.Repositories
     public class PostBLL : IPostBLL
     {
         private readonly IPostRepository _repository;
-        private readonly ISubTopicBLL _subTopicBLL;
-        private readonly ICustomBLL _customBLL;
 
-        public PostBLL(IPostRepository repository, ISubTopicBLL subTopicBLL, ICustomBLL customBLL)
+        public PostBLL(IPostRepository repository)
         {
             _repository = repository;
-            _subTopicBLL = subTopicBLL;
-            _customBLL = customBLL;
         }
 
-        // For å lage DTOs for Posts
-        public async Task<PostDTO> AddDTO(Post post)
+        private async Task<PostDTO> AddDTO(Post post)
         {
-            // Hente SubTopic
-            var subtopic = await _subTopicBLL.GetSubTopic(post.SubTopicId);
-
-            var DTO = new PostDTO
+            // Sende med Topic ID i DTO
+            var topicId = await _repository.GetTopicId(post.SubTopicId);
+            var postDTO = new PostDTO(post)
             {
-                Id = post.Id,
-                Title = post.Title,
-                Content = post.Content,
-                Date = post.Date,
-                EditDate = post.EditDate,
-                Edited = post.Edited,
-                Comment_Count = post.Comment_Count,
-                Like_Count = post.Like_Count,
-                UserId = post.UserId,
-                TopicId = subtopic.TopicId, // Hentes fra SubTopic og vises kun med DTO
-                SubTopicId = post.SubTopicId,
-                DocumentId = post.DocumentId
+                TopicId = topicId
             };
-            return DTO;
+            return postDTO;
         }
 
         public async Task<IEnumerable<PostDTO>> GetPosts()
@@ -130,7 +113,7 @@ namespace BLL.Repositories
                 {
                     postDTOs.Add(await AddDTO(post));
                 }
-                return _customBLL.CreateReponse(postDTOs, posts.Count, subTopicId, page, size, order, type);
+                return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
             }
             else
             {
@@ -148,7 +131,7 @@ namespace BLL.Repositories
                 {
                     postDTOs.Add(await AddDTO(post));
                 }
-                return _customBLL.CreateReponse(postDTOs, posts.Count, subTopicId, page, size, order, type);
+                return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
             }
             else
             {

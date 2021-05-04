@@ -1,6 +1,6 @@
-﻿using Model.Domain_models;
+﻿using DAL.Helpers;
+using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,6 @@ namespace BLL.Interfaces
 {
     public interface IVideoBLL
     {
-        VideoDTO AddDTO(Video video);
         Task<IEnumerable<VideoDTO>> GetVideos();
         Task<VideoDTO> GetVideo(int id);
         Task<VideoDTO> AddVideo(Video video);

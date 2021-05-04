@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Wrappers
+namespace DAL.Helpers
 {
     public class PageResponse<T>
     {
@@ -26,6 +26,24 @@ namespace Model.Wrappers
             TotalRecords = 0;
             SortOrder = "Asc";
             SortType = "Id";
+            Data = data;
+        }
+
+        public PageResponse(T data, int count, int? id, int page, int size, string order, string type)
+        {
+            int totalPages = (count / size);
+            if (count % size != 0)
+            { 
+                totalPages++;
+            }
+
+            Id = id;
+            PageNumber = page;
+            PageSize = size;
+            TotalPages = totalPages;
+            TotalRecords = count;
+            SortOrder = order;
+            SortType = type;
             Data = data;
         }
     }

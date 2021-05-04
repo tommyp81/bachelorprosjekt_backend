@@ -1,9 +1,9 @@
 ﻿using DAL.Database_configuration;
+using DAL.Helpers;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +53,7 @@ namespace DAL.Repositories
         }
 
         // POST: Users
-        public async Task<User> AddUser(AuthUser user)
+        public async Task<User> AddUser(NewUser user)
         {
             // Sjekke om brukernavn eller epost eksisterer først
             var users = await _context.Users.ToArrayAsync();
@@ -91,7 +91,7 @@ namespace DAL.Repositories
         }
 
         // PUT: Users/1
-        public async Task<User> UpdateUser(AuthUser user)
+        public async Task<User> UpdateUser(NewUser user)
         {
             var result = await _context.Users.FindAsync(user.Id);
             if (result != null)
@@ -120,7 +120,6 @@ namespace DAL.Repositories
                 result.FirstName = user.FirstName;
                 result.LastName = user.LastName;
                 result.Email = user.Email;
-                result.Admin = user.Admin;
                 result.Password = passwordHash;
                 result.Salt = passwordSalt;
                 await _context.SaveChangesAsync();

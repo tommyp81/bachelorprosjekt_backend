@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DAL.Helpers;
+using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,6 @@ namespace BLL.Interfaces
 {
     public interface IPostBLL
     {
-        Task<PostDTO> AddDTO(Post post);
         Task<IEnumerable<PostDTO>> GetPosts();
         Task<PostDTO> GetPost(int id);
         Task<PostDTO> AddPost(IFormFile file, Post post);

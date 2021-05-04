@@ -11,7 +11,7 @@ namespace Test.Objects
     {
         public static UserDTO TestUserDTO()
         {
-            var user = new UserDTO()
+            var user = new UserDTO(null)
             {
                 Id = 1,
                 Username = "sysadmin",

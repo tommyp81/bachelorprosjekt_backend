@@ -14,7 +14,7 @@ namespace Test.Objects
         {
             var comments = new List<CommentDTO>
             {
-                new CommentDTO()
+                new CommentDTO(null)
                 {
                     Id = 1,
                     Content = "testkommentar1",
@@ -23,7 +23,7 @@ namespace Test.Objects
                     PostId = 1,
                     DocumentId = 1
                 },
-                new CommentDTO()
+                new CommentDTO(null)
                 {
                     Id = 2,
                     Content = "testkommentar2",
@@ -32,7 +32,7 @@ namespace Test.Objects
                     PostId = 2,
                     DocumentId = 2
                 },
-                new CommentDTO()
+                new CommentDTO(null)
                 {
                     Id = 3,
                     Content = "testkommentar3",
@@ -47,7 +47,7 @@ namespace Test.Objects
 
         public static CommentDTO TestCommentDTO()
         {
-            var comment = new CommentDTO()
+            var comment = new CommentDTO(null)
             {
                 Id = 1,
                 Content = "testkommentar1",

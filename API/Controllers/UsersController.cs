@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +17,10 @@ namespace API.Controllers
         // Controller for Users API Backend
 
         private readonly IUserBLL _userBLL;
-        private readonly ICustomBLL _customBLL;
 
-        public UsersController(IUserBLL userBLL, ICustomBLL customBLL)
+        public UsersController(IUserBLL userBLL)
         {
             _userBLL = userBLL;
-            _customBLL = customBLL;
         }
 
         // GET: Users
@@ -89,7 +86,7 @@ namespace API.Controllers
 
         // POST: Users
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> AddUser(AuthUser user)
+        public async Task<ActionResult<UserDTO>> AddUser(NewUser user)
         {
             try
             {
@@ -112,7 +109,7 @@ namespace API.Controllers
 
         // PUT: Users/1
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<UserDTO>> UpdateUser(int id, AuthUser user)
+        public async Task<ActionResult<UserDTO>> UpdateUser(int id, NewUser user)
         {
             try
             {

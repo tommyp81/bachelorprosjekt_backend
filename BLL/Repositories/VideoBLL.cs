@@ -1,8 +1,8 @@
 ﻿using BLL.Interfaces;
+using DAL.Helpers;
 using DAL.Interfaces;
 using Model.Domain_models;
 using Model.DTO;
-using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,28 +14,10 @@ namespace BLL.Repositories
     public class VideoBLL : IVideoBLL
     {
         private readonly IVideoRepository _repository;
-        private readonly ICustomBLL _customBLL;
 
-        public VideoBLL(IVideoRepository repository, ICustomBLL customBLL)
+        public VideoBLL(IVideoRepository repository)
         {
             _repository = repository;
-            _customBLL = customBLL;
-        }
-
-        // For å lage DTOs for Users
-        public VideoDTO AddDTO(Video video)
-        {
-            var DTO = new VideoDTO
-            {
-                Id = video.Id,
-                YouTubeId = video.YouTubeId,
-                Title = video.Title,
-                Description = video.Description,
-                UserId = video.UserId,
-                PostId = video.PostId,
-                InfoTopicId = video.InfoTopicId
-            };
-            return DTO;
         }
 
         public async Task<IEnumerable<VideoDTO>> GetVideos()
@@ -46,7 +28,7 @@ namespace BLL.Repositories
                 var videoDTOs = new List<VideoDTO>();
                 foreach (Video video in videos)
                 {
-                    videoDTOs.Add(AddDTO(video));
+                    videoDTOs.Add(new VideoDTO(video));
                 }
                 return videoDTOs;
             }
@@ -61,7 +43,7 @@ namespace BLL.Repositories
             var getVideo = await _repository.GetVideo(id);
             if (getVideo != null)
             {
-                return AddDTO(getVideo);
+                return new VideoDTO(getVideo);
             }
             else
             {
@@ -74,7 +56,7 @@ namespace BLL.Repositories
             var addVideo = await _repository.AddVideo(video);
             if (addVideo != null)
             {
-                return AddDTO(addVideo);
+                return new VideoDTO(addVideo);
             }
             else
             {
@@ -87,7 +69,7 @@ namespace BLL.Repositories
             var updateVideo = await _repository.UpdateVideo(video);
             if (updateVideo != null)
             {
-                return AddDTO(updateVideo);
+                return new VideoDTO(updateVideo);
             }
             else
             {
@@ -100,7 +82,7 @@ namespace BLL.Repositories
             var deleteVideo = await _repository.DeleteVideo(id);
             if (deleteVideo != null)
             {
-                return AddDTO(deleteVideo);
+                return new VideoDTO(deleteVideo);
             }
             else
             {
@@ -116,9 +98,9 @@ namespace BLL.Repositories
                 var videoDTOs = new List<VideoDTO>();
                 foreach (var video in videos.Data)
                 {
-                    videoDTOs.Add(AddDTO(video));
+                    videoDTOs.Add(new VideoDTO(video));
                 }
-                return _customBLL.CreateReponse(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
+                return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
             }
             else
             {
@@ -134,9 +116,9 @@ namespace BLL.Repositories
                 var videoDTOs = new List<VideoDTO>();
                 foreach (var video in videos.Data)
                 {
-                    videoDTOs.Add(AddDTO(video));
+                    videoDTOs.Add(new VideoDTO(video));
                 }
-                return _customBLL.CreateReponse(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
+                return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
             }
             else
             {
