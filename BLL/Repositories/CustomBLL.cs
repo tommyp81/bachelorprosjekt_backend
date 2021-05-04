@@ -169,7 +169,7 @@ namespace BLL.Repositories
             }
         }
 
-        public UserDTO AddUserDTO(User user)
+        private static UserDTO AddUserDTO(User user)
         {
             var DTO = new UserDTO
             {

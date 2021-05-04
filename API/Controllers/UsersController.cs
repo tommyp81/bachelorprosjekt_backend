@@ -36,8 +36,8 @@ namespace API.Controllers
                 // Liste brukere med paging
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Id"; // Id, Admin, Username, Name, Email
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Id";
 
                 var users = await _userBLL.PagedList(page, size, order, type);
                 if (users != null)
@@ -159,6 +159,35 @@ namespace API.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved sletting av bruker");
+            }
+        }
+
+        // GET: Users/Search?query=eksempel tekst
+        // GET: Users/Search?query=eksempel tekst&?pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        [HttpGet("{Search}")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> Search(string query, int? pageNumber, int? pageSize, string sortOrder, string sortType)
+        {
+            try
+            {
+                // Liste søk i brukere med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Username";
+
+                var search = await _userBLL.Search(query, page, size, order, type);
+                if (search != null)
+                {
+                    return Ok(search);
+                }
+                else
+                {
+                    return NotFound($"Søket ga ingen resultater");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i kommentarer");
             }
         }
     }

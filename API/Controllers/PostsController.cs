@@ -36,8 +36,8 @@ namespace API.Controllers
                 // Liste poster med paging
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Date"; // Id, Date, Like_Count, Comment_Count
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Date";
 
                 var posts = await _postBLL.PagedList(subTopicId, page, size, order, type);
                 if (posts != null)
@@ -163,6 +163,7 @@ namespace API.Controllers
         }
 
         // GET: Posts/Search?query=eksempel tekst
+        // GET: Posts/Search?query=eksempel tekst&subTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
         [HttpGet("{Search}")]
         public async Task<ActionResult<IEnumerable<PostDTO>>> Search(string query, int? subTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -171,8 +172,8 @@ namespace API.Controllers
                 // Liste søk i poster med paging
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Date"; // Id, Date, Like_Count, Comment_Count
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Date";
 
                 var search = await _postBLL.Search(query, subTopicId, page, size, order, type);
                 if (search != null)

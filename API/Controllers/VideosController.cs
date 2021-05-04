@@ -36,8 +36,8 @@ namespace API.Controllers
                 // Liste videoer med paging
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Id"; // Id, Title
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Id";
 
                 var videos = await _videoBLL.PagedList(infoTopicId, page, size, order, type);
                 if (videos != null)
@@ -158,6 +158,35 @@ namespace API.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved sletting av video");
+            }
+        }
+
+        // GET: Videos/Search?query=eksempel tekst
+        // GET: Videos/Search?query=eksempel tekst&?infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        [HttpGet("{Search}")]
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> Search(string query, int? subTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
+        {
+            try
+            {
+                // Liste søk i videoer med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Title";
+
+                var search = await _videoBLL.Search(query, subTopicId, page, size, order, type);
+                if (search != null)
+                {
+                    return Ok(search);
+                }
+                else
+                {
+                    return NotFound($"Søket ga ingen resultater");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i kommentarer");
             }
         }
     }

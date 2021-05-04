@@ -29,15 +29,15 @@ namespace API.Controllers
         // GET: Comments
         // GET: Comments?postId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetComments(int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
             try
             {
                 // Liste kommentarer med paging
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Date"; // Id, Date, Like_Count
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Date";
 
                 var comments = await _commentBLL.PagedList(postId, page, size, order, type);
                 if (comments != null)
@@ -67,7 +67,7 @@ namespace API.Controllers
 
         // GET: Comments/1
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<CommentDTO>> GetComment(int id)
+        public async Task<ActionResult<UserDTO>> GetComment(int id)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace API.Controllers
 
         // POST: Comments
         [HttpPost]
-        public async Task<ActionResult<CommentDTO>> AddComment([FromForm] IFormFile file, [FromForm] Comment comment)
+        public async Task<ActionResult<UserDTO>> AddComment([FromForm] IFormFile file, [FromForm] Comment comment)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace API.Controllers
 
         // PUT: Comments/1
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<CommentDTO>> UpdateComment(int id, [FromForm] Comment comment)
+        public async Task<ActionResult<UserDTO>> UpdateComment(int id, [FromForm] Comment comment)
         {
             try
             {
@@ -141,7 +141,7 @@ namespace API.Controllers
 
         // DELETE: Comments/1
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<CommentDTO>> DeleteComment(int id)
+        public async Task<ActionResult<UserDTO>> DeleteComment(int id)
         {
             try
             {
@@ -162,12 +162,13 @@ namespace API.Controllers
         }
 
         // GET: Comments/Search?query=eksempel tekst
+        // GET: Comments/Search?query=eksempel tekst&postId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
         [HttpGet("{Search}")]
         public async Task<ActionResult<IEnumerable<CommentDTO>>> Search(string query, int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
             try
             {
-                // Liste søk i poster med paging
+                // Liste søk i kommentarer med paging
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
                 var order = sortOrder ?? "Asc";

@@ -42,8 +42,8 @@ namespace API.Controllers
                 // Liste videoer med paging
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
-                var order = sortOrder ?? "Asc"; // Asc, Desc
-                var type = sortType ?? "Date"; // Id, FileName, Uploaded
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Date";
 
                 var documents = await _customBLL.PagedList(infoTopicId, page, size, order, type);
                 if (documents != null)
@@ -219,6 +219,35 @@ namespace API.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved endring av admin");
+            }
+        }
+
+        // GET: SearchDocuments?query=eksempel tekst
+        // GET: SearchDocuments?query=eksempel tekst&infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<DocumentDTO>>> SearchDocuments(string query, int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
+        {
+            try
+            {
+                // Liste søk i dokumenter med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "FileName";
+
+                var search = await _customBLL.Search(query, infoTopicId, page, size, order, type);
+                if (search != null)
+                {
+                    return Ok(search);
+                }
+                else
+                {
+                    return NotFound($"Søket ga ingen resultater");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i kommentarer");
             }
         }
     }
