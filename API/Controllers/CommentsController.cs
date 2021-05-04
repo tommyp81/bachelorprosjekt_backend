@@ -34,24 +34,30 @@ namespace API.Controllers
             try
             {
                 // Liste kommentarer med paging
-                //var page = pageNumber ?? 1;
-                //var size = pageSize ?? 10;
-                //var order = sortOrder ?? "Asc"; // Asc, Desc
-                //var type = sortType ?? "Date"; // Date, Like
-                //var count = await _customBLL.GetCount("Comment", postId);
-                //var pagedList = await _commentBLL.PagedList(postId, page, size, order, type);
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc"; // Asc, Desc
+                var type = sortType ?? "Date"; // Id, Date, Like_Count
 
-                //return Ok(new CommentResponse<IEnumerable<CommentDTO>>(pagedList, postId, page, size, count, order, type));
-
-                var comments = await _commentBLL.GetComments(postId);
+                var comments = await _commentBLL.PagedList(postId, page, size, order, type);
                 if (comments != null)
                 {
                     return Ok(comments);
                 }
                 else
                 {
-                    return NotFound($"Ingen kommentarer ble funnet");
+                    return null;
                 }
+
+                //var comments = await _commentBLL.GetComments(postId);
+                //if (comments != null)
+                //{
+                //    return Ok(comments);
+                //}
+                //else
+                //{
+                //    return NotFound($"Ingen kommentarer ble funnet");
+                //}
             }
             catch (Exception)
             {
@@ -152,6 +158,34 @@ namespace API.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved sletting av kommentar");
+            }
+        }
+
+        // GET: Comments/Search?query=eksempel tekst
+        [HttpGet("{Search}")]
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> Search(string query, int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
+        {
+            try
+            {
+                // Liste søk i poster med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc";
+                var type = sortType ?? "Date";
+
+                var search = await _commentBLL.Search(query, postId, page, size, order, type);
+                if (search != null)
+                {
+                    return Ok(search);
+                }
+                else
+                {
+                    return NotFound($"Søket ga ingen resultater");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i kommentarer");
             }
         }
     }

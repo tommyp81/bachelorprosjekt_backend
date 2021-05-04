@@ -3,9 +3,11 @@ using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -175,31 +177,49 @@ namespace DAL.Repositories
             return salt;
         }
 
-        public async Task<IEnumerable<User>> PagedList(int page, int size, string order, string type)
+        public async Task<Response<IEnumerable<User>>> PagedList(int page, int size, string order, string type)
         {
-            var pagedList = await _context.Users.ToListAsync();
-            return order switch
+            var list = await _context.Users.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+            if (list != null)
             {
-                "Desc" => type switch
+                var count = list.Count;
+                if (count != 0)
                 {
-                    "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                    "Admin" => await pagedList.OrderByDescending(p => p.Admin).ToPagedListAsync(page, size),
-                    "Username" => await pagedList.OrderByDescending(p => p.Username).ToPagedListAsync(page, size),
-                    "Name" => await pagedList.OrderByDescending(p => p.FirstName).ToPagedListAsync(page, size),
-                    "Email" => await pagedList.OrderByDescending(p => p.Email).ToPagedListAsync(page, size),
-                    _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                },
-                "Asc" => type switch
+                    var pagedList = await list.ToPagedListAsync(page, size);
+                    return new Response<IEnumerable<User>>(pagedList, count);
+                }
+                else
                 {
-                    "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                    "Admin" => await pagedList.OrderBy(p => p.Admin).ToPagedListAsync(page, size),
-                    "Username" => await pagedList.OrderBy(p => p.Username).ToPagedListAsync(page, size),
-                    "Name" => await pagedList.OrderBy(p => p.FirstName).ToPagedListAsync(page, size),
-                    "Email" => await pagedList.OrderBy(p => p.Email).ToPagedListAsync(page, size),
-                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                },
-                _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-            };
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<Response<IEnumerable<User>>> Search(string query, int page, int size, string order, string type)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
+                var list = await _context.Users.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+                var searchList = list.Where(q => q.Username.Contains(query) || q.FirstName.Contains(query) || q.LastName.Contains(query) || q.Email.Contains(query));
+                var count = searchList.Count();
+                if (count != 0)
+                {
+                    var pagedSearchList = await searchList.ToPagedListAsync(page, size);
+                    return new Response<IEnumerable<User>>(pagedSearchList, count);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

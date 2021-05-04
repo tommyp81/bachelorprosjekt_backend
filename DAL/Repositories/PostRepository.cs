@@ -3,10 +3,12 @@ using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Model.Domain_models;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -165,51 +167,66 @@ namespace DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Post>> PagedList(int? subTopicId, int page, int size, string order, string type)
+        public async Task<Response<IEnumerable<Post>>> PagedList(int? subTopicId, int page, int size, string order, string type)
         {
+            IEnumerable<Post> list;
             if (subTopicId != null)
             {
-                var pagedList = await _context.Posts.Where(p => p.SubTopicId == subTopicId).ToListAsync();
-                return order switch
-                {
-                    "Desc" => type switch
-                    {
-                        "Date" => await pagedList.OrderByDescending(p => p.Date).ToPagedListAsync(page, size),
-                        "Like" => await pagedList.OrderByDescending(p => p.Like_Count).ToPagedListAsync(page, size),
-                        "Comment" => await pagedList.OrderByDescending(p => p.Comment_Count).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    "Asc" => type switch
-                    {
-                        "Date" => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
-                        "Like" => await pagedList.OrderBy(p => p.Like_Count).ToPagedListAsync(page, size),
-                        "Comment" => await pagedList.OrderBy(p => p.Comment_Count).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    _ => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
-                };
+                list = await _context.Posts.AsQueryable().Where(q => q.SubTopicId == subTopicId).OrderBy(type + " " + order).ToListAsync();
             }
             else
             {
-                var pagedList = await _context.Posts.ToListAsync();
-                return order switch
+                list = await _context.Posts.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+            }
+
+            if (list != null)
+            {
+                var count = list.Count();
+                if (count != 0)
                 {
-                    "Desc" => type switch
-                    {
-                        "Date" => await pagedList.OrderByDescending(p => p.Date).ToPagedListAsync(page, size),
-                        "Like" => await pagedList.OrderByDescending(p => p.Like_Count).ToPagedListAsync(page, size),
-                        "Comment" => await pagedList.OrderByDescending(p => p.Comment_Count).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    "Asc" => type switch
-                    {
-                        "Date" => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
-                        "Like" => await pagedList.OrderBy(p => p.Like_Count).ToPagedListAsync(page, size),
-                        "Comment" => await pagedList.OrderBy(p => p.Comment_Count).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    _ => await pagedList.OrderBy(p => p.Date).ToPagedListAsync(page, size),
-                };
+                    var pagedList = await list.ToPagedListAsync(page, size);
+                    return new Response<IEnumerable<Post>>(pagedList, count);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<Response<IEnumerable<Post>>> Search(string query, int? subTopicId, int page, int size, string order, string type)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
+                IEnumerable<Post> list;
+                if (subTopicId != null)
+                {
+                    list = await _context.Posts.AsQueryable().Where(q => q.SubTopicId == subTopicId).OrderBy(type + " " + order).ToListAsync();
+                }
+                else
+                {
+                    list = await _context.Posts.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+                }
+
+                var searchList = list.Where(q => q.Title.Contains(query) || q.Content.Contains(query));
+                var count = searchList.Count();
+                if (count != 0)
+                {
+                    var pagedSearchList = await searchList.ToPagedListAsync(page, size);
+                    return new Response<IEnumerable<Post>>(pagedSearchList, count);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace BLL.Interfaces
         Task<CommentDTO> AddComment(IFormFile file, Comment comment);
         Task<CommentDTO> UpdateComment(Comment comment);
         Task<CommentDTO> DeleteComment(int id);
-        Task<IEnumerable<CommentDTO>> PagedList(int? postId, int page, int size, string order, string type);
+        Task<PageResponse<IEnumerable<CommentDTO>>> PagedList(int? postId, int page, int size, string order, string type);
+        Task<PageResponse<IEnumerable<CommentDTO>>> Search(string query, int? postId, int page, int size, string order, string type);
     }
 }

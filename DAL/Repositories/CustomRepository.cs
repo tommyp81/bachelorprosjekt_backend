@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Model.Domain_models;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -309,79 +311,66 @@ namespace DAL.Repositories
             }
         }
 
-        // GET: GetCount
-        public async Task<int> GetCount(string type, int? id)
+        public async Task<Response<IEnumerable<Document>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
-            if (id != null)
-            {
-                return type switch
-                {
-                    "Post" => await _context.Posts.Where(p => p.SubTopicId == id).CountAsync(),
-                    "Comment" => await _context.Comments.Where(c => c.PostId == id).CountAsync(),
-                    "Document" => await _context.Documents.Where(d => d.InfoTopicId == id).CountAsync(),
-                    "Video" => await _context.Videos.Where(v => v.InfoTopicId == id).CountAsync(),
-                    _ => 0,
-                };
-            }
-            else
-            {
-                return type switch
-                {
-                    "Post" => await _context.Posts.CountAsync(),
-                    "Comment" => await _context.Comments.CountAsync(),
-                    "User" => await _context.Users.CountAsync(),
-                    "Document" => await _context.Documents.CountAsync(),
-                    "Video" => await _context.Videos.CountAsync(),
-                    _ => 0,
-                };
-            }
-        }
-        
-        public async Task<IEnumerable<Document>> PagedList(int? infoTopicId, int page, int size, string order, string type)
-        {
+            IEnumerable<Document> list;
             if (infoTopicId != null)
             {
-                var pagedList = await _context.Documents.Where(p => p.InfoTopicId == infoTopicId).ToListAsync();
-                return order switch
-                {
-                    "Desc" => type switch
-                    {
-                        "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                        "Name" => await pagedList.OrderByDescending(p => p.FileName).ToPagedListAsync(page, size),
-                        "Date" => await pagedList.OrderByDescending(p => p.Uploaded).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    "Asc" => type switch
-                    {
-                        "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                        "Name" => await pagedList.OrderBy(p => p.FileName).ToPagedListAsync(page, size),
-                        "Date" => await pagedList.OrderBy(p => p.Uploaded).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                };
+                list = await _context.Documents.AsQueryable().Where(q => q.InfoTopicId == infoTopicId).OrderBy(type + " " + order).ToListAsync();
             }
             else
             {
-                var pagedList = await _context.Documents.ToListAsync();
-                return order switch
+                list = await _context.Documents.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+            }
+
+            if (list != null)
+            {
+                var count = list.Count();
+                if (count != 0)
                 {
-                    "Desc" => type switch
-                    {
-                        "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                        "Name" => await pagedList.OrderByDescending(p => p.FileName).ToPagedListAsync(page, size),
-                        "Date" => await pagedList.OrderByDescending(p => p.Uploaded).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    "Asc" => type switch
-                    {
-                        "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                        "Name" => await pagedList.OrderBy(p => p.FileName).ToPagedListAsync(page, size),
-                        "Date" => await pagedList.OrderBy(p => p.Uploaded).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                };
+                    var pagedList = await list.ToPagedListAsync(page, size);
+                    return new Response<IEnumerable<Document>>(pagedList, count);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<Response<IEnumerable<Document>>> Search(string query, int? infoTopicId, int page, int size, string order, string type)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
+                IEnumerable<Document> list;
+                if (infoTopicId != null)
+                {
+                    list = await _context.Documents.AsQueryable().Where(q => q.InfoTopicId == infoTopicId).OrderBy(type + " " + order).ToListAsync();
+                }
+                else
+                {
+                    list = await _context.Documents.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+                }
+
+                var searchList = list.Where(q => q.FileName.Contains(query));
+                var count = searchList.Count();
+                if (count != 0)
+                {
+                    var pagedSearchList = await searchList.ToPagedListAsync(page, size);
+                    return new Response<IEnumerable<Document>>(pagedSearchList, count);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
             }
         }
     }

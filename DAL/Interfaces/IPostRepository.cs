@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace DAL.Interfaces
         Task<Post> AddPost(IFormFile file, Post post);
         Task<Post> UpdatePost(Post post);
         Task<Post> DeletePost(int id);
-        Task<IEnumerable<Post>> PagedList(int? subTopicId, int page, int size, string order, string type);
+        Task<Response<IEnumerable<Post>>> PagedList(int? subTopicId, int page, int size, string order, string type);
+        Task<Response<IEnumerable<Post>>> Search(string query, int? subTopicId, int page, int size, string order, string type);
     }
 }

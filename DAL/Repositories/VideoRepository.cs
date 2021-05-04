@@ -2,9 +2,11 @@
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Model.Domain_models;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -106,47 +108,66 @@ namespace DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Video>> PagedList(int? infoTopicId, int page, int size, string order, string type)
+        public async Task<Response<IEnumerable<Video>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
+            IEnumerable<Video> list;
             if (infoTopicId != null)
             {
-                var pagedList = await _context.Videos.Where(p => p.InfoTopicId == infoTopicId).ToListAsync();
-                return order switch
-                {
-                    "Desc" => type switch
-                    {
-                        "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                        "Title" => await pagedList.OrderByDescending(p => p.Title).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    "Asc" => type switch
-                    {
-                        "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                        "Title" => await pagedList.OrderBy(p => p.Title).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                };
+                list = await _context.Videos.AsQueryable().Where(q => q.InfoTopicId == infoTopicId).OrderBy(type + " " + order).ToListAsync();
             }
             else
             {
-                var pagedList = await _context.Videos.ToListAsync();
-                return order switch
+                list = await _context.Videos.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+            }
+
+            if (list != null)
+            {
+                var count = list.Count();
+                if (count != 0)
                 {
-                    "Desc" => type switch
-                    {
-                        "Id" => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                        "Title" => await pagedList.OrderByDescending(p => p.Title).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderByDescending(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    "Asc" => type switch
-                    {
-                        "Id" => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                        "Title" => await pagedList.OrderBy(p => p.Title).ToPagedListAsync(page, size),
-                        _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                    },
-                    _ => await pagedList.OrderBy(p => p.Id).ToPagedListAsync(page, size),
-                };
+                    var pagedList = await list.ToPagedListAsync(page, size);
+                    return new Response<IEnumerable<Video>>(pagedList, count);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<Response<IEnumerable<Video>>> Search(string query, int? infoTopicId, int page, int size, string order, string type)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
+                IEnumerable<Video> list;
+                if (infoTopicId != null)
+                {
+                    list = await _context.Videos.AsQueryable().Where(q => q.InfoTopicId == infoTopicId).OrderBy(type + " " + order).ToListAsync();
+                }
+                else
+                {
+                    list = await _context.Videos.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+                }
+
+                var searchList = list.Where(q => q.Title.Contains(query) || q.Description.Contains(query));
+                var count = searchList.Count();
+                if (count != 0)
+                {
+                    var pagedSearchList = await searchList.ToPagedListAsync(page, size);
+                    return new Response<IEnumerable<Video>>(pagedSearchList, count);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
             }
         }
     }

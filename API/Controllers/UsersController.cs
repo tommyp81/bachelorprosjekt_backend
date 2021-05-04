@@ -34,16 +34,12 @@ namespace API.Controllers
             try
             {
                 // Liste brukere med paging
-                //var page = pageNumber ?? 1;
-                //var size = pageSize ?? 10;
-                //var order = sortOrder ?? "Asc"; // Asc, Desc
-                //var type = sortType ?? "Id"; // Id, Admin, Username, Name, Email
-                //var count = await _customBLL.GetCount("User", null);
-                //var pagedList = await _userBLL.PagedList(page, size, order, type);
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc"; // Asc, Desc
+                var type = sortType ?? "Id"; // Id, Admin, Username, Name, Email
 
-                //return Ok(new UserResponse<IEnumerable<UserDTO>>(pagedList, page, size, count, order, type));
-
-                var users = await _userBLL.GetUsers();
+                var users = await _userBLL.PagedList(page, size, order, type);
                 if (users != null)
                 {
                     return Ok(users);
@@ -52,6 +48,16 @@ namespace API.Controllers
                 {
                     return NotFound($"Ingen brukere ble funnet");
                 }
+
+                //var users = await _userBLL.GetUsers();
+                //if (users != null)
+                //{
+                //    return Ok(users);
+                //}
+                //else
+                //{
+                //    return NotFound($"Ingen brukere ble funnet");
+                //}
             }
             catch (Exception)
             {

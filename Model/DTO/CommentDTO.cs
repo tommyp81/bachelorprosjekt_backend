@@ -15,6 +15,7 @@ namespace Model.DTO
         public bool Edited { get; set; }
         public int Like_Count { get; set; }
         public int? UserId { get; set; }
+        public string Username { get; set; }
         public int PostId { get; set; }
         public int? DocumentId { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace BLL.Interfaces
         Task<UserDTO> AddUser(AuthUser user);
         Task<UserDTO> UpdateUser(AuthUser user);
         Task<UserDTO> DeleteUser(int id);
-        Task<IEnumerable<UserDTO>> PagedList(int page, int size, string order, string type);
+        Task<PageResponse<IEnumerable<UserDTO>>> PagedList(int page, int size, string order, string type);
+        Task<PageResponse<IEnumerable<UserDTO>>> Search(string query, int page, int size, string order, string type);
     }
 }

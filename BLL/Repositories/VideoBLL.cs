@@ -2,6 +2,7 @@
 using DAL.Interfaces;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace BLL.Repositories
     public class VideoBLL : IVideoBLL
     {
         private readonly IVideoRepository _repository;
+        private readonly ICustomBLL _customBLL;
 
-        public VideoBLL(IVideoRepository repository)
+        public VideoBLL(IVideoRepository repository, ICustomBLL customBLL)
         {
             _repository = repository;
+            _customBLL = customBLL;
         }
 
         // For å lage DTOs for Users
@@ -105,17 +108,35 @@ namespace BLL.Repositories
             }
         }
 
-        public async Task<IEnumerable<VideoDTO>> PagedList(int? infoTopicId, int page, int size, string order, string type)
+        public async Task<PageResponse<IEnumerable<VideoDTO>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
             var videos = await _repository.PagedList(infoTopicId, page, size, order, type);
             if (videos != null)
             {
                 var videoDTOs = new List<VideoDTO>();
-                foreach (var video in videos)
+                foreach (var video in videos.Data)
                 {
                     videoDTOs.Add(AddDTO(video));
                 }
-                return videoDTOs;
+                return _customBLL.CreateReponse(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<PageResponse<IEnumerable<VideoDTO>>> Search(string query, int? infoTopicId, int page, int size, string order, string type)
+        {
+            var videos = await _repository.Search(query, infoTopicId, page, size, order, type);
+            if (videos != null)
+            {
+                var videoDTOs = new List<VideoDTO>();
+                foreach (var video in videos.Data)
+                {
+                    videoDTOs.Add(AddDTO(video));
+                }
+                return _customBLL.CreateReponse(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
             }
             else
             {

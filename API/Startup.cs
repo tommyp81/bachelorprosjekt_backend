@@ -20,6 +20,7 @@ using Microsoft.Extensions.Azure;
 //using Azure.Storage.Queues;
 using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
+using Azure.Storage.Queues;
 
 namespace API
 {

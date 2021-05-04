@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace DAL.Interfaces
         Task<Comment> AddComment(IFormFile file, Comment comment);
         Task<Comment> UpdateComment(Comment comment);
         Task<Comment> DeleteComment(int id);
-        Task<IEnumerable<Comment>> PagedList(int? postId, int page, int size, string order, string type);
+        Task<Response<IEnumerable<Comment>>> PagedList(int? postId, int page, int size, string order, string type);
+        Task<Response<IEnumerable<Comment>>> Search(string query, int? postId, int page, int size, string order, string type);
     }
 }

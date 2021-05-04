@@ -3,6 +3,7 @@ using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,13 @@ namespace BLL.Repositories
     {
         private readonly IPostRepository _repository;
         private readonly ISubTopicBLL _subTopicBLL;
+        private readonly ICustomBLL _customBLL;
 
-        public PostBLL(IPostRepository repository, ISubTopicBLL subTopicBLL)
+        public PostBLL(IPostRepository repository, ISubTopicBLL subTopicBLL, ICustomBLL customBLL)
         {
             _repository = repository;
             _subTopicBLL = subTopicBLL;
+            _customBLL = customBLL;
         }
 
         // For å lage DTOs for Posts
@@ -117,17 +120,35 @@ namespace BLL.Repositories
             }
         }
 
-        public async Task<IEnumerable<PostDTO>> PagedList(int? subTopicId, int page, int size, string order, string type)
+        public async Task<PageResponse<IEnumerable<PostDTO>>> PagedList(int? subTopicId, int page, int size, string order, string type)
         {
             var posts = await _repository.PagedList(subTopicId, page, size, order, type);
             if (posts != null)
             {
                 var postDTOs = new List<PostDTO>();
-                foreach (var post in posts)
+                foreach (var post in posts.Data)
                 {
                     postDTOs.Add(await AddDTO(post));
                 }
-                return postDTOs;
+                return _customBLL.CreateReponse(postDTOs, posts.Count, subTopicId, page, size, order, type);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<PageResponse<IEnumerable<PostDTO>>> Search(string query, int? subTopicId, int page, int size, string order, string type)
+        {
+            var posts = await _repository.Search(query, subTopicId, page, size, order, type);
+            if (posts != null)
+            {
+                var postDTOs = new List<PostDTO>();
+                foreach (var post in posts.Data)
+                {
+                    postDTOs.Add(await AddDTO(post));
+                }
+                return _customBLL.CreateReponse(postDTOs, posts.Count, subTopicId, page, size, order, type);
             }
             else
             {

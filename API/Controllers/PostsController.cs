@@ -33,17 +33,13 @@ namespace API.Controllers
         {
             try
             {
-                // Liste poster  med paging
-                //var page = pageNumber ?? 1;
-                //var size = pageSize ?? 10;
-                //var order = sortOrder ?? "Asc"; // Asc, Desc
-                //var type = sortType ?? "Date"; // Date, Like, Comment
-                //var count = await _customBLL.GetCount("Post", subTopicId);
-                //var pagedList = await _postBLL.PagedList(subTopicId, page, size, order, type);
+                // Liste poster med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc"; // Asc, Desc
+                var type = sortType ?? "Date"; // Id, Date, Like_Count, Comment_Count
 
-                //return Ok(new PostResponse<IEnumerable<PostDTO>>(pagedList, subTopicId, page, size, count, order, type));
-
-                var posts = await _postBLL.GetPosts();
+                var posts = await _postBLL.PagedList(subTopicId, page, size, order, type);
                 if (posts != null)
                 {
                     return Ok(posts);
@@ -52,10 +48,20 @@ namespace API.Controllers
                 {
                     return NotFound($"Ingen poster ble funnet");
                 }
+
+                //var posts = await _postBLL.GetPosts();
+                //if (posts != null)
+                //{
+                //    return Ok(posts);
+                //}
+                //else
+                //{
+                //    return NotFound($"Ingen poster ble funnet");
+                //}
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av poster");
+                return StatusCode(StatusCodes.Status500InternalServerError, e);//"Feil ved henting av poster"
             }
         }
 
@@ -153,6 +159,34 @@ namespace API.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved sletting av post");
+            }
+        }
+
+        // GET: Posts/Search?query=eksempel tekst
+        [HttpGet("{Search}")]
+        public async Task<ActionResult<IEnumerable<PostDTO>>> Search(string query, int? subTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
+        {
+            try
+            {
+                // Liste søk i poster med paging
+                var page = pageNumber ?? 1;
+                var size = pageSize ?? 10;
+                var order = sortOrder ?? "Asc"; // Asc, Desc
+                var type = sortType ?? "Date"; // Id, Date, Like_Count, Comment_Count
+
+                var search = await _postBLL.Search(query, subTopicId, page, size, order, type);
+                if (search != null)
+                {
+                    return Ok(search);
+                }
+                else
+                {
+                    return NotFound($"Søket ga ingen resultater");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i poster");
             }
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,10 @@ namespace BLL.Repositories
     public class CustomBLL : ICustomBLL
     {
         private readonly ICustomRepository _repository;
-        private readonly IUserBLL _userBLL;
 
-        public CustomBLL(ICustomRepository repository, IUserBLL userBLL)
+        public CustomBLL(ICustomRepository repository)
         {
             _repository = repository;
-            _userBLL = userBLL;
         }
 
         //// GET: GetCommentCount
@@ -170,13 +169,27 @@ namespace BLL.Repositories
             }
         }
 
+        public UserDTO AddUserDTO(User user)
+        {
+            var DTO = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Admin = user.Admin
+            };
+            return DTO;
+        }
+
         // POST: Login
         public async Task<UserDTO> Login(string username, string email, string password)
         {
             var login = await _repository.Login(username, email, password);
             if (login != null)
             {
-                return _userBLL.AddDTO(login);
+                return AddUserDTO(login);
             }
             else
             {
@@ -190,7 +203,7 @@ namespace BLL.Repositories
             var setAdmin = await _repository.SetAdmin(id, admin);
             if (setAdmin != null)
             {
-                return _userBLL.AddDTO(setAdmin);
+                return AddUserDTO(setAdmin);
             }
             else
             {
@@ -198,28 +211,55 @@ namespace BLL.Repositories
             }
         }
 
-        // GET: GetCount
-        public async Task<int> GetCount(string type, int? id)
-        {
-            return await _repository.GetCount(type, id);
-        }
-
-        public async Task<IEnumerable<DocumentDTO>> PagedList(int? infoTopicId, int page, int size, string order, string type)
+        public async Task<PageResponse<IEnumerable<DocumentDTO>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
             var documents = await _repository.PagedList(infoTopicId, page, size, order, type);
             if (documents != null)
             {
                 var documentDTOs = new List<DocumentDTO>();
-                foreach (var video in documents)
+                foreach (var document in documents.Data)
                 {
-                    documentDTOs.Add(AddDTO(video));
+                    documentDTOs.Add(AddDTO(document));
                 }
-                return documentDTOs;
+                return CreateReponse(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
             }
             else
             {
                 return null;
             }
+        }
+
+        public async Task<PageResponse<IEnumerable<DocumentDTO>>> Search(string query, int? infoTopicId, int page, int size, string order, string type)
+        {
+            var documents = await _repository.Search(query, infoTopicId, page, size, order, type);
+            if (documents != null)
+            {
+                var documentDTOs = new List<DocumentDTO>();
+                foreach (var document in documents.Data)
+                {
+                    documentDTOs.Add(AddDTO(document));
+                }
+                return CreateReponse(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public PageResponse<IEnumerable<T>> CreateReponse<T>(IEnumerable<T> pagedData, int count, int? id, int page, int size, string order, string type)
+        {
+            var response = new PageResponse<IEnumerable<T>>(pagedData);
+            int totalPages = (count / size);
+            if (count % size != 0) { totalPages++; }
+            response.Id = id;
+            response.PageNumber = page;
+            response.PageSize = size;
+            response.TotalPages = totalPages;
+            response.TotalRecords = count;
+            response.SortOrder = order;
+            response.SortType = type;
+            return response;
         }
     }
 }

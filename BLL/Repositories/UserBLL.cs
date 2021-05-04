@@ -2,6 +2,7 @@
 using DAL.Interfaces;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace BLL.Repositories
     public class UserBLL : IUserBLL
     {
         private readonly IUserRepository _repository;
+        private readonly ICustomBLL _customBLL;
 
-        public UserBLL(IUserRepository repository)
+        public UserBLL(IUserRepository repository, ICustomBLL customBLL)
         {
             _repository = repository;
+            _customBLL = customBLL;
         }
 
         // For å lage DTOs for Users
@@ -104,17 +107,35 @@ namespace BLL.Repositories
             }
         }
 
-        public async Task<IEnumerable<UserDTO>> PagedList(int page, int size, string order, string type)
+        public async Task<PageResponse<IEnumerable<UserDTO>>> PagedList(int page, int size, string order, string type)
         {
             var users = await _repository.PagedList(page, size, order, type);
             if (users != null)
             {
                 var userDTOs = new List<UserDTO>();
-                foreach (var user in users)
+                foreach (var user in users.Data)
                 {
                     userDTOs.Add(AddDTO(user));
                 }
-                return userDTOs;
+                return _customBLL.CreateReponse(userDTOs, users.Count, null, page, size, order, type);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<PageResponse<IEnumerable<UserDTO>>> Search(string query, int page, int size, string order, string type)
+        {
+            var users = await _repository.Search(query, page, size, order, type);
+            if (users != null)
+            {
+                var userDTOs = new List<UserDTO>();
+                foreach (var user in users.Data)
+                {
+                    userDTOs.Add(AddDTO(user));
+                }
+                return _customBLL.CreateReponse(userDTOs, users.Count, null, page, size, order, type);
             }
             else
             {

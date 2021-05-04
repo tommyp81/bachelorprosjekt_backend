@@ -3,6 +3,7 @@ using DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Model.Domain_models;
 using Model.DTO;
+using Model.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,12 @@ namespace BLL.Repositories
     public class CommentBLL : ICommentBLL
     {
         private readonly ICommentRepository _repository;
+        private readonly ICustomBLL _customBLL;
 
-        public CommentBLL(ICommentRepository repository)
+        public CommentBLL(ICommentRepository repository, ICustomBLL customBLL)
         {
             _repository = repository;
+            _customBLL = customBLL;
         }
 
         // For å lage DTOs for Comments
@@ -109,17 +112,35 @@ namespace BLL.Repositories
             }
         }
 
-        public async Task<IEnumerable<CommentDTO>> PagedList(int? postId, int page, int size, string order, string type)
+        public async Task<PageResponse<IEnumerable<CommentDTO>>> PagedList(int? postId, int page, int size, string order, string type)
         {
             var comments = await _repository.PagedList(postId, page, size, order, type);
             if (comments != null)
             {
                 var commentDTOs = new List<CommentDTO>();
-                foreach (var comment in comments)
+                foreach (var comment in comments.Data)
                 {
                     commentDTOs.Add(AddDTO(comment));
                 }
-                return commentDTOs;
+                return _customBLL.CreateReponse(commentDTOs, comments.Count, postId, page, size, order, type);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<PageResponse<IEnumerable<CommentDTO>>> Search(string query, int? postId, int page, int size, string order, string type)
+        {
+            var comments = await _repository.Search(query, postId, page, size, order, type);
+            if (comments != null)
+            {
+                var commentDTOs = new List<CommentDTO>();
+                foreach (var comment in comments.Data)
+                {
+                    commentDTOs.Add(AddDTO(comment));
+                }
+                return _customBLL.CreateReponse(commentDTOs, comments.Count, postId, page, size, order, type);
             }
             else
             {
