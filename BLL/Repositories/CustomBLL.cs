@@ -23,52 +23,6 @@ namespace BLL.Repositories
             _repository = repository;
         }
 
-        //// GET: GetCommentCount
-        //public async Task<int> Comment_Count(int postId)
-        //{
-        //    // Telle antall kommentarer til en post på PostId
-        //    var comments = await _commentRepository.GetComments(postId);
-        //    if (comments != null)
-        //    {
-        //        return comments.Count();
-        //    }
-        //    else
-        //    {
-        //        return 0;
-        //    }
-        //}
-
-        //// GET: GetLikeCount
-        //public async Task<int> Like_Count(int? postId, int? commentId)
-        //{
-        //    // Telle antall likes til poster eller kommentarer
-        //    var likes = await _likeRepository.GetLikes();
-        //    if (likes != null)
-        //    {
-        //        // Telle for poster hvis vi får postId
-        //        if (postId != null)
-        //        {
-        //            var likeCount = likes.Where(l => l.PostId == postId).AsEnumerable();
-        //            if (likeCount != null)
-        //            {
-        //                return likeCount.Count();
-        //            }
-        //        }
-
-        //        // Telle for kommentarer hvis vi får commentId
-        //        if (commentId != null)
-        //        {
-        //            var likeCount = likes.Where(l => l.CommentId == commentId).AsEnumerable();
-        //            if (likeCount != null)
-        //            {
-        //                return likeCount.Count();
-        //            }
-        //        }
-        //    }
-
-        //    return 0;
-        //}
-
         // GET: GetDocuments
         public async Task<IEnumerable<DocumentDTO>> GetDocuments()
         {

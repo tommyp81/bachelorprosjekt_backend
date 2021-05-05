@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
@@ -25,6 +26,7 @@ namespace API.Controllers
 
         // GET: Posts
         // GET: Posts?subTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts(int? subTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -55,6 +57,7 @@ namespace API.Controllers
         }
 
         // GET: Posts/1
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<PostDTO>> GetPost(int id)
         {
@@ -77,6 +80,7 @@ namespace API.Controllers
         }
 
         // POST: Posts
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<PostDTO>> AddPost([FromForm] IFormFile file, [FromForm] Post post)
         {
@@ -100,6 +104,7 @@ namespace API.Controllers
         }
 
         // PUT: Posts/1
+        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<PostDTO>> UpdatePost(int id, [FromForm] Post post)
         {
@@ -129,6 +134,7 @@ namespace API.Controllers
         }
 
         // DELETE: Posts/1
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<PostDTO>> DeletePost(int id)
         {
@@ -153,6 +159,7 @@ namespace API.Controllers
 
         // GET: Posts/Search?query=eksempel tekst
         // GET: Posts/Search?query=eksempel tekst&subTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
+        [Authorize]
         [HttpGet("{Search}")]
         public async Task<ActionResult<IEnumerable<PostDTO>>> Search(string query, int? subTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

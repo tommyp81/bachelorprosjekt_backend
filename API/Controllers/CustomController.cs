@@ -1,15 +1,14 @@
-﻿using BLL.Interfaces;
+﻿using API.Auth;
+using BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Model.Auth;
-using Model.Domain_models;
 using Model.DTO;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -29,7 +28,7 @@ namespace API.Controllers
 
         // GET: GetDocuments
         // GET: GetDocuments?infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentDTO>>> GetDocuments(int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -61,7 +60,7 @@ namespace API.Controllers
         }
 
         // POST: UploadDocument
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<DocumentDTO>> UploadDocument(
             [FromForm] IFormFile file, [FromForm] int? userId, [FromForm] int? postId, [FromForm] int? commentId, [FromForm] int? infoTopicId)
@@ -108,7 +107,7 @@ namespace API.Controllers
         }
 
         // GET: GetDocumentInfo/1
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<DocumentDTO>> GetDocumentInfo(int id)
         {
@@ -131,7 +130,7 @@ namespace API.Controllers
         }
 
         // GET: GetDocument/1
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetDocument(int id)
         {
@@ -154,7 +153,7 @@ namespace API.Controllers
         }
 
         // DELETE: DeleteDocument/1
-        //[Authorize]
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<DocumentDTO>> DeleteDocument(int id)
         {
@@ -177,6 +176,7 @@ namespace API.Controllers
         }
 
         // POST: Login
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<AuthResponse>> Login([FromForm] AuthRequest resquest)//[FromForm] string username, [FromForm] string email, [FromForm] string password
         {
@@ -186,6 +186,8 @@ namespace API.Controllers
                 if (response != null)
                 {
                     // Ok hvis brukernavn/epost og passord stemmer
+                    var token = TokenService.CreateToken(response);
+                    response.Token = token;
                     return Ok(response);
                 }
                 else
@@ -200,7 +202,7 @@ namespace API.Controllers
         }
 
         // POST: SetAdmin
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<UserDTO>> SetAdmin([FromForm] int id, [FromForm] bool admin)
         {
@@ -224,7 +226,7 @@ namespace API.Controllers
 
         // GET: SearchDocuments?query=eksempel tekst
         // GET: SearchDocuments?query=eksempel tekst&infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentDTO>>> SearchDocuments(string query, int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

@@ -17,14 +17,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Azure;
-//using Azure.Storage.Queues;
 using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
-using Azure.Storage.Queues;
 using DAL.Helpers;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using API.Auth;
 
 namespace API
 {
@@ -63,7 +62,26 @@ namespace API
             services.AddControllers();
 
             // For JWT tokens autentisering
-            // From: https://codeburst.io/jwt-auth-in-asp-net-core-148fb72bed03
+            // From: https://medium.com/the-innovation/asp-net-core-3-authorization-and-authentication-with-bearer-and-jwt-3041c47c8b1d
+            var key = Encoding.ASCII.GetBytes(AuthSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+
+            });
 
             // For BLL
             services.AddTransient<IUserBLL, UserBLL>();
@@ -110,6 +128,7 @@ namespace API
             // For JWT tokens autentisering
             app.UseAuthentication();
             app.UseAuthorization();
+            //app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

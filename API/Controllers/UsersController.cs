@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
@@ -25,6 +26,7 @@ namespace API.Controllers
 
         // GET: Users
         // GET: Users?pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers(int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -55,6 +57,7 @@ namespace API.Controllers
         }
 
         // GET: Users/1
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
@@ -77,6 +80,7 @@ namespace API.Controllers
         }
 
         // POST: Users
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<UserDTO>> AddUser(NewUser user)
         {
@@ -100,6 +104,7 @@ namespace API.Controllers
         }
 
         // PUT: Users/1
+        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<UserDTO>> UpdateUser(int id, NewUser user)
         {
@@ -129,6 +134,7 @@ namespace API.Controllers
         }
 
         // DELETE: Users/1
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<UserDTO>> DeleteUser(int id)
         {
@@ -153,6 +159,7 @@ namespace API.Controllers
 
         // GET: Users/Search?query=eksempel tekst
         // GET: Users/Search?query=eksempel tekst&?pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        [Authorize]
         [HttpGet("{Search}")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> Search(string query, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

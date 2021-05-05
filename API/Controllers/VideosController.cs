@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
@@ -25,6 +26,7 @@ namespace API.Controllers
 
         // GET: Videos
         // GET: Videos?infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideos(int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -55,6 +57,7 @@ namespace API.Controllers
         }
 
         // GET: Videos/1
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<VideoDTO>> GetVideo(int id)
         {
@@ -77,6 +80,7 @@ namespace API.Controllers
         }
 
         // POST: Videos
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<VideoDTO>> AddVideo(Video video)
         {
@@ -99,6 +103,7 @@ namespace API.Controllers
         }
 
         // PUT: Videos/1
+        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<VideoDTO>> UpdateVideo(int id, Video video)
         {
@@ -128,6 +133,7 @@ namespace API.Controllers
         }
 
         // DELETE: Videos/1
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<VideoDTO>> DeleteVideo(int id)
         {
@@ -152,6 +158,7 @@ namespace API.Controllers
 
         // GET: Videos/Search?query=eksempel tekst
         // GET: Videos/Search?query=eksempel tekst&?infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
+        [Authorize]
         [HttpGet("{Search}")]
         public async Task<ActionResult<IEnumerable<VideoDTO>>> Search(string query, int? subTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

@@ -16,14 +16,14 @@ namespace Model.Auth
         public string Email { get; set; }
         public string Token { get; set; }
 
-        public AuthResponse(User user)//, string token
+        public AuthResponse(User user)
         {
             Id = user.Id;
             Username = user.Username;
             FirstName = user.FirstName;
             LastName = user.LastName;
             Email = user.Email;
-            //Token = token;
+            Token = null;
         }
     }  
 }
