@@ -42,15 +42,7 @@ namespace DAL.Repositories
         // GET: Posts
         public async Task<IEnumerable<Post>> GetPosts()
         {
-            var posts = await _context.Posts.ToListAsync();
-            if (posts != null)
-            {
-                return posts;
-            }
-            else
-            {
-                return null;
-            }
+            return await _context.Posts.ToListAsync();
         }
 
         // GET: Posts/1
@@ -192,23 +184,9 @@ namespace DAL.Repositories
                 list = await _context.Posts.AsQueryable().OrderBy(type + " " + order).ToListAsync();
             }
 
-            if (list != null)
-            {
-                var count = list.Count();
-                if (count != 0)
-                {
-                    var pagedList = await list.ToPagedListAsync(page, size);
-                    return new Response<IEnumerable<Post>>(pagedList, count);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
+            var count = list.Count();
+            var pagedList = await list.ToPagedListAsync(page, size);
+            return new Response<IEnumerable<Post>>(pagedList, count);
         }
 
         public async Task<Response<IEnumerable<Post>>> Search(string query, int? subTopicId, int page, int size, string order, string type)
@@ -227,15 +205,8 @@ namespace DAL.Repositories
 
                 var searchList = list.Where(q => q.Title.Contains(query) || q.Content.Contains(query));
                 var count = searchList.Count();
-                if (count != 0)
-                {
-                    var pagedSearchList = await searchList.ToPagedListAsync(page, size);
-                    return new Response<IEnumerable<Post>>(pagedSearchList, count);
-                }
-                else
-                {
-                    return null;
-                }
+                var pagedSearchList = await searchList.ToPagedListAsync(page, size);
+                return new Response<IEnumerable<Post>>(pagedSearchList, count);
             }
             else
             {

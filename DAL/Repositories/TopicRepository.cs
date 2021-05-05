@@ -24,15 +24,7 @@ namespace DAL.Repositories
         // GET: Topics
         public async Task<IEnumerable<Topic>> GetTopics()
         {
-            var topics = await _context.Topics.ToListAsync();
-            if (topics != null)
-            {
-                return topics;
-            }
-            else
-            {
-                return null;
-            }
+            return await _context.Topics.ToListAsync();
         }
 
         // GET: Topics/1

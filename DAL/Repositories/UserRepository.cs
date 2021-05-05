@@ -27,15 +27,7 @@ namespace DAL.Repositories
         // GET: Users
         public async Task<IEnumerable<User>> GetUsers()
         {
-            var users = await _context.Users.ToListAsync();
-            if (users != null)
-            {
-                return users;
-            }
-            else
-            {
-                return null;
-            }
+            return await _context.Users.ToListAsync();
         }
 
         // GET: Users/1
@@ -179,23 +171,9 @@ namespace DAL.Repositories
         public async Task<Response<IEnumerable<User>>> PagedList(int page, int size, string order, string type)
         {
             var list = await _context.Users.AsQueryable().OrderBy(type + " " + order).ToListAsync();
-            if (list != null)
-            {
-                var count = list.Count;
-                if (count != 0)
-                {
-                    var pagedList = await list.ToPagedListAsync(page, size);
-                    return new Response<IEnumerable<User>>(pagedList, count);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
+            var count = list.Count;
+            var pagedList = await list.ToPagedListAsync(page, size);
+            return new Response<IEnumerable<User>>(pagedList, count);
         }
 
         public async Task<Response<IEnumerable<User>>> Search(string query, int page, int size, string order, string type)
@@ -205,15 +183,8 @@ namespace DAL.Repositories
                 var list = await _context.Users.AsQueryable().OrderBy(type + " " + order).ToListAsync();
                 var searchList = list.Where(q => q.Username.Contains(query) || q.FirstName.Contains(query) || q.LastName.Contains(query) || q.Email.Contains(query));
                 var count = searchList.Count();
-                if (count != 0)
-                {
-                    var pagedSearchList = await searchList.ToPagedListAsync(page, size);
-                    return new Response<IEnumerable<User>>(pagedSearchList, count);
-                }
-                else
-                {
-                    return null;
-                }
+                var pagedSearchList = await searchList.ToPagedListAsync(page, size);
+                return new Response<IEnumerable<User>>(pagedSearchList, count);
             }
             else
             {

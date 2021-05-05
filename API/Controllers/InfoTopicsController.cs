@@ -29,15 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                var infoTopics = await _infoTopicBLL.GetInfoTopics();
-                if (infoTopics != null)
-                {
-                    return Ok(infoTopics);
-                }
-                else
-                {
-                    return NotFound($"Ingen emner ble funnet");
-                }
+                return Ok(await _infoTopicBLL.GetInfoTopics());
             }
             catch (Exception)
             {
@@ -73,15 +65,15 @@ namespace API.Controllers
         {
             try
             {
-                if (infotopic != null)
+                // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
+                var newInfoTopic = await _infoTopicBLL.AddInfoTopic(infotopic);
+                if (newInfoTopic != null)
                 {
-                    // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
-                    var newInfoTopic = await _infoTopicBLL.AddInfoTopic(infotopic);
                     return CreatedAtAction(nameof(GetInfoTopic), new { id = newInfoTopic.Id }, newInfoTopic);
                 }
                 else
                 {
-                    return BadRequest("Emne mangler");
+                    return BadRequest("Emne ble ikke opprettet");
                 }
             }
             catch (Exception)

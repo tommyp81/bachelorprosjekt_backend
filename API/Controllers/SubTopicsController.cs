@@ -29,15 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                var subTopics = await _subTopicBLL.GetSubTopics();
-                if (subTopics != null)
-                {
-                    return Ok(subTopics);
-                }
-                else
-                {
-                    return NotFound($"Ingen underemner ble funnet");
-                }
+                return Ok(await _subTopicBLL.GetSubTopics());
             }
             catch (Exception)
             {
@@ -73,7 +65,7 @@ namespace API.Controllers
         {
             try
             {
-                if (subtopic != null)
+                if (!(string.IsNullOrEmpty(subtopic.Title) || string.IsNullOrEmpty(subtopic.Description)))
                 {
                     var newSubTopic = await _subTopicBLL.AddSubTopic(subtopic);
                     return CreatedAtAction(nameof(GetSubTopic), new { id = newSubTopic.Id }, newSubTopic);

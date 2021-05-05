@@ -28,13 +28,11 @@ namespace DAL.Repositories
     {
         private readonly DBContext _context;
         private readonly IConfiguration _config;
-        private readonly AuthSettings _authSettings;
 
-        public CustomRepository(DBContext context, IConfiguration configuration, IOptions<AuthSettings> authSettings)
+        public CustomRepository(DBContext context, IConfiguration configuration)
         {
             _context = context;
             _config = configuration;
-            _authSettings = authSettings.Value;
         }
 
         // POST: AddDocument
@@ -170,15 +168,7 @@ namespace DAL.Repositories
         // GET: GetDocuments
         public async Task<IEnumerable<Document>> GetDocuments()
         {
-            var documents = await _context.Documents.ToListAsync();
-            if (documents != null)
-            {
-                return documents;
-            }
-            else
-            {
-                return null;
-            }
+            return await _context.Documents.ToListAsync();
         }
 
         // GET: GetDocumentInfo/1
@@ -347,30 +337,16 @@ namespace DAL.Repositories
                 list = await _context.Documents.AsQueryable().OrderBy(type + " " + order).ToListAsync();
             }
 
-            if (list != null)
-            {
-                var count = list.Count();
-                if (count != 0)
-                {
-                    var pagedList = await list.ToPagedListAsync(page, size);
-                    return new Response<IEnumerable<Document>>(pagedList, count);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
+            var count = list.Count();
+            var pagedList = await list.ToPagedListAsync(page, size);
+            return new Response<IEnumerable<Document>>(pagedList, count);
         }
 
         public async Task<Response<IEnumerable<Document>>> Search(string query, int? infoTopicId, int page, int size, string order, string type)
         {
+            IEnumerable<Document> list;
             if (!string.IsNullOrEmpty(query))
             {
-                IEnumerable<Document> list;
                 if (infoTopicId != null)
                 {
                     list = await _context.Documents.AsQueryable().Where(q => q.InfoTopicId == infoTopicId).OrderBy(type + " " + order).ToListAsync();
@@ -382,15 +358,8 @@ namespace DAL.Repositories
 
                 var searchList = list.Where(q => q.FileName.Contains(query));
                 var count = searchList.Count();
-                if (count != 0)
-                {
-                    var pagedSearchList = await searchList.ToPagedListAsync(page, size);
-                    return new Response<IEnumerable<Document>>(pagedSearchList, count);
-                }
-                else
-                {
-                    return null;
-                }
+                var pagedSearchList = await searchList.ToPagedListAsync(page, size);
+                return new Response<IEnumerable<Document>>(pagedSearchList, count);
             }
             else
             {

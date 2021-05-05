@@ -36,15 +36,7 @@ namespace API.Controllers
                 var order = sortOrder ?? "Asc";
                 var type = sortType ?? "Id";
 
-                var users = await _userBLL.PagedList(page, size, order, type);
-                if (users != null)
-                {
-                    return Ok(users);
-                }
-                else
-                {
-                    return NotFound($"Ingen brukere ble funnet");
-                }
+                return Ok(await _userBLL.PagedList(page, size, order, type));
 
                 //var users = await _userBLL.GetUsers();
                 //if (users != null)
@@ -170,17 +162,9 @@ namespace API.Controllers
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
                 var order = sortOrder ?? "Asc";
-                var type = sortType ?? "Username";
+                var type = sortType ?? "Id";
 
-                var search = await _userBLL.Search(query, page, size, order, type);
-                if (search != null)
-                {
-                    return Ok(search);
-                }
-                else
-                {
-                    return NotFound($"Søket ga ingen resultater");
-                }
+                return Ok(await _userBLL.Search(query, page, size, order, type));
             }
             catch (Exception)
             {

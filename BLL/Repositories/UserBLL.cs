@@ -93,37 +93,23 @@ namespace BLL.Repositories
         public async Task<PageResponse<IEnumerable<UserDTO>>> PagedList(int page, int size, string order, string type)
         {
             var users = await _repository.PagedList(page, size, order, type);
-            if (users != null)
+            var userDTOs = new List<UserDTO>();
+            foreach (var user in users.Data)
             {
-                var userDTOs = new List<UserDTO>();
-                foreach (var user in users.Data)
-                {
-                    userDTOs.Add(new UserDTO(user));
-                }
-                return new PageResponse<IEnumerable<UserDTO>>(userDTOs, users.Count, null, page, size, order, type);
+                userDTOs.Add(new UserDTO(user));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<UserDTO>>(userDTOs, users.Count, null, page, size, order, type);
         }
 
         public async Task<PageResponse<IEnumerable<UserDTO>>> Search(string query, int page, int size, string order, string type)
         {
             var users = await _repository.Search(query, page, size, order, type);
-            if (users != null)
+            var userDTOs = new List<UserDTO>();
+            foreach (var user in users.Data)
             {
-                var userDTOs = new List<UserDTO>();
-                foreach (var user in users.Data)
-                {
-                    userDTOs.Add(new UserDTO(user));
-                }
-                return new PageResponse<IEnumerable<UserDTO>>(userDTOs, users.Count, null, page, size, order, type);
+                userDTOs.Add(new UserDTO(user));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<UserDTO>>(userDTOs, users.Count, null, page, size, order, type);
         }
     }
 }

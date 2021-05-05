@@ -36,15 +36,7 @@ namespace API.Controllers
                 var order = sortOrder ?? "Asc";
                 var type = sortType ?? "Date";
 
-                var posts = await _postBLL.PagedList(subTopicId, page, size, order, type);
-                if (posts != null)
-                {
-                    return Ok(posts);
-                }
-                else
-                {
-                    return NotFound($"Ingen poster ble funnet");
-                }
+                return Ok(await _postBLL.PagedList(subTopicId, page, size, order, type));
 
                 //var posts = await _postBLL.GetPosts();
                 //if (posts != null)
@@ -90,15 +82,15 @@ namespace API.Controllers
         {
             try
             {
-                if (post.Title != null || post.Content != null || post.Title != "" || post.Content != "")
+                // Legg til posten i databasen og fil på Azure Storage og databasen hvis fil er sendt med
+                var newPost = await _postBLL.AddPost(file, post);
+                if (newPost != null)
                 {
-                    // Legg til posten i databasen og fil på Azure Storage og databasen hvis fil er sendt med
-                    var newPost = await _postBLL.AddPost(file, post);
                     return CreatedAtAction(nameof(GetPost), new { id = newPost.Id }, newPost);
                 }
                 else
                 {
-                    return BadRequest("Post mangler");
+                    return BadRequest("Post ble ikke opprettet");
                 }
             }
             catch (Exception)
@@ -172,15 +164,7 @@ namespace API.Controllers
                 var order = sortOrder ?? "Asc";
                 var type = sortType ?? "Date";
 
-                var search = await _postBLL.Search(query, subTopicId, page, size, order, type);
-                if (search != null)
-                {
-                    return Ok(search);
-                }
-                else
-                {
-                    return NotFound($"Søket ga ingen resultater");
-                }
+                return Ok(await _postBLL.Search(query, subTopicId, page, size, order, type));
             }
             catch (Exception)
             {

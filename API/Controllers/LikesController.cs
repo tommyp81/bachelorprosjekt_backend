@@ -45,8 +45,7 @@ namespace API.Controllers
                 else
                 {
                     // Hent status på likes fra databasen
-                    var getLike = await _likeBLL.GetLike(like);
-                    return Ok(getLike);
+                    return Ok(await _likeBLL.GetLike(like));
                 }
             }
             catch (Exception)
@@ -108,15 +107,7 @@ namespace API.Controllers
                 else
                 {
                     // Slett like fra databasen
-                    var deleteLike = await _likeBLL.DeleteLike(like);
-                    if (deleteLike != null)
-                    {
-                        return Ok(deleteLike);
-                    }
-                    else
-                    {
-                        return NotFound($"Like ble ikke funnet");
-                    }
+                    return Ok(await _likeBLL.DeleteLike(like));
                 }
             }
             catch (Exception)

@@ -24,15 +24,7 @@ namespace DAL.Repositories
         // GET: SubTopics
         public async Task<IEnumerable<SubTopic>> GetSubTopics()
         {
-            var subTopics = await _context.SubTopics.ToListAsync();
-            if (subTopics != null)
-            {
-                return subTopics;
-            }
-            else
-            {
-                return null;
-            }
+            return await _context.SubTopics.ToListAsync();
         }
 
         // GET: SubTopics/1

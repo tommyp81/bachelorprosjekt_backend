@@ -93,37 +93,23 @@ namespace BLL.Repositories
         public async Task<PageResponse<IEnumerable<VideoDTO>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
             var videos = await _repository.PagedList(infoTopicId, page, size, order, type);
-            if (videos != null)
+            var videoDTOs = new List<VideoDTO>();
+            foreach (var video in videos.Data)
             {
-                var videoDTOs = new List<VideoDTO>();
-                foreach (var video in videos.Data)
-                {
-                    videoDTOs.Add(new VideoDTO(video));
-                }
-                return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
+                videoDTOs.Add(new VideoDTO(video));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
         }
 
         public async Task<PageResponse<IEnumerable<VideoDTO>>> Search(string query, int? infoTopicId, int page, int size, string order, string type)
         {
             var videos = await _repository.Search(query, infoTopicId, page, size, order, type);
-            if (videos != null)
+            var videoDTOs = new List<VideoDTO>();
+            foreach (var video in videos.Data)
             {
-                var videoDTOs = new List<VideoDTO>();
-                foreach (var video in videos.Data)
-                {
-                    videoDTOs.Add(new VideoDTO(video));
-                }
-                return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
+                videoDTOs.Add(new VideoDTO(video));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
         }
     }
 }

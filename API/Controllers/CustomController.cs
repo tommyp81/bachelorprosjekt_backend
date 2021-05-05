@@ -39,17 +39,9 @@ namespace API.Controllers
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
                 var order = sortOrder ?? "Asc";
-                var type = sortType ?? "Date";
+                var type = sortType ?? "Id";
 
-                var documents = await _customBLL.PagedList(infoTopicId, page, size, order, type);
-                if (documents != null)
-                {
-                    return Ok(documents);
-                }
-                else
-                {
-                    return NotFound($"Ingen dokumenter ble funnet");
-                }
+                return Ok(await _customBLL.PagedList(infoTopicId, page, size, order, type));
 
                 // Viser kun dokumenter som har en InfoTopicId
                 //var documents = await _customBLL.GetDocuments();
@@ -100,7 +92,14 @@ namespace API.Controllers
 
                 // Legg til fil på Azure Storage og i databasen
                 var newDocument = await _customBLL.UploadDocument(file, userId, postId, commentId, infoTopicId);
-                return CreatedAtAction(nameof(GetDocumentInfo), new { id = newDocument.Id }, newDocument);
+                if (newDocument != null)
+                {
+                    return CreatedAtAction(nameof(GetDocumentInfo), new { id = newDocument.Id }, newDocument);
+                }
+                else
+                {
+                    return BadRequest("Dokument ble ikke lastet opp");
+                }
             }
             catch (Exception)
             {
@@ -235,17 +234,9 @@ namespace API.Controllers
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
                 var order = sortOrder ?? "Asc";
-                var type = sortType ?? "FileName";
+                var type = sortType ?? "Id";
 
-                var search = await _customBLL.Search(query, infoTopicId, page, size, order, type);
-                if (search != null)
-                {
-                    return Ok(search);
-                }
-                else
-                {
-                    return NotFound($"Søket ga ingen resultater");
-                }
+                return Ok(await _customBLL.Search(query, infoTopicId, page, size, order, type));
             }
             catch (Exception)
             {

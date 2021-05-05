@@ -36,15 +36,7 @@ namespace API.Controllers
                 var order = sortOrder ?? "Asc";
                 var type = sortType ?? "Date";
 
-                var comments = await _commentBLL.PagedList(postId, page, size, order, type);
-                if (comments != null)
-                {
-                    return Ok(comments);
-                }
-                else
-                {
-                    return null;
-                }
+                return Ok(await _commentBLL.PagedList(postId, page, size, order, type));
 
                 //var comments = await _commentBLL.GetComments(postId);
                 //if (comments != null)
@@ -90,15 +82,15 @@ namespace API.Controllers
         {
             try
             {
-                if (comment != null)
+                // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
+                var newComment = await _commentBLL.AddComment(file, comment);
+                if (newComment != null)
                 {
-                    // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
-                    var newComment = await _commentBLL.AddComment(file, comment);
                     return CreatedAtAction(nameof(GetComment), new { id = newComment.Id }, newComment);
                 }
                 else
                 {
-                    return BadRequest("Kommentar mangler");
+                    return BadRequest("Kommentar ble ikke opprettet");
                 }
             }
             catch (Exception)
@@ -171,15 +163,7 @@ namespace API.Controllers
                 var order = sortOrder ?? "Asc";
                 var type = sortType ?? "Date";
 
-                var search = await _commentBLL.Search(query, postId, page, size, order, type);
-                if (search != null)
-                {
-                    return Ok(search);
-                }
-                else
-                {
-                    return NotFound($"Søket ga ingen resultater");
-                }
+                return Ok(await _commentBLL.Search(query, postId, page, size, order, type));
             }
             catch (Exception)
             {

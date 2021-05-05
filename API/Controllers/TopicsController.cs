@@ -29,15 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                var topics = await _topicBLL.GetTopics();
-                if (topics != null)
-                {
-                    return Ok(topics);
-                }
-                else
-                {
-                    return NotFound($"Ingen emner ble funnet");
-                }
+                return Ok(await _topicBLL.GetTopics());
             }
             catch (Exception)
             {
@@ -73,7 +65,7 @@ namespace API.Controllers
         {
             try
             {
-                if (topic != null)
+                if (!(string.IsNullOrEmpty(topic.Title) || string.IsNullOrEmpty(topic.Description)))
                 {
                     var newTopic = await _topicBLL.AddTopic(topic);
                     return CreatedAtAction(nameof(GetTopic), new { id = newTopic.Id }, newTopic);

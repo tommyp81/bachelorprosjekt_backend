@@ -94,37 +94,23 @@ namespace BLL.Repositories
         public async Task<PageResponse<IEnumerable<CommentDTO>>> PagedList(int? postId, int page, int size, string order, string type)
         {
             var comments = await _repository.PagedList(postId, page, size, order, type);
-            if (comments != null)
+            var commentDTOs = new List<CommentDTO>();
+            foreach (var comment in comments.Data)
             {
-                var commentDTOs = new List<CommentDTO>();
-                foreach (var comment in comments.Data)
-                {
-                    commentDTOs.Add(new CommentDTO(comment));
-                }
-                return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
+                commentDTOs.Add(new CommentDTO(comment));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
         }
 
         public async Task<PageResponse<IEnumerable<CommentDTO>>> Search(string query, int? postId, int page, int size, string order, string type)
         {
             var comments = await _repository.Search(query, postId, page, size, order, type);
-            if (comments != null)
+            var commentDTOs = new List<CommentDTO>();
+            foreach (var comment in comments.Data)
             {
-                var commentDTOs = new List<CommentDTO>();
-                foreach (var comment in comments.Data)
-                {
-                    commentDTOs.Add(new CommentDTO(comment));
-                }
-                return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
+                commentDTOs.Add(new CommentDTO(comment));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
         }
     }
 }

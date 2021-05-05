@@ -31,28 +31,12 @@ namespace DAL.Repositories
         {
             if (postId != null)
             {
-                var postComments = _context.Comments.Where(c => c.PostId == postId);
-                if (postComments != null)
-                {
-                    return postComments;
-                }
-                else
-                {
-                    return null;
-                }
+                return _context.Comments.Where(c => c.PostId == postId);
             }
             else
             {
                 // Alle kommentarer
-                var allComments = await _context.Comments.ToListAsync();
-                if (allComments != null)
-                {
-                    return allComments;
-                }
-                else
-                {
-                    return null;
-                }
+                return await _context.Comments.ToListAsync();
             }
         }
 
@@ -181,23 +165,9 @@ namespace DAL.Repositories
                 list = await _context.Comments.AsQueryable().OrderBy(type + " " + order).ToListAsync();
             }
 
-            if (list != null)
-            {
-                var count = list.Count();
-                if (count != 0)
-                {
-                    var pagedList = await list.ToPagedListAsync(page, size);
-                    return new Response<IEnumerable<Comment>>(pagedList, count);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
+            var count = list.Count();
+            var pagedList = await list.ToPagedListAsync(page, size);
+            return new Response<IEnumerable<Comment>>(pagedList, count);
         }
 
         public async Task<Response<IEnumerable<Comment>>> Search(string query, int? postId, int page, int size, string order, string type)
@@ -216,15 +186,8 @@ namespace DAL.Repositories
 
                 var searchList = list.Where(q => q.Content.Contains(query));
                 var count = searchList.Count();
-                if (count != 0)
-                {
-                    var pagedSearchList = await searchList.ToPagedListAsync(page, size);
-                    return new Response<IEnumerable<Comment>>(pagedSearchList, count);
-                }
-                else
-                {
-                    return null;
-                }
+                var pagedSearchList = await searchList.ToPagedListAsync(page, size);
+                return new Response<IEnumerable<Comment>>(pagedSearchList, count);
             }
             else
             {

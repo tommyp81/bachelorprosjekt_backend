@@ -26,24 +26,16 @@ namespace DAL.Repositories
         // GET: InfoTopics
         public async Task<IEnumerable<InfoTopic>> GetInfoTopics()
         {
-            var infoTopics = await _context.InfoTopics.ToListAsync();
-            if (infoTopics != null)
-            {
-                return infoTopics;
-            }
-            else
-            {
-                return null;
-            }
+            return await _context.InfoTopics.ToListAsync();
         }
 
         // GET: InfoTopics/1
         public async Task<InfoTopic> GetInfoTopic(int id)
         {
-            var infoTopic = await _context.InfoTopics.FindAsync(id);
-            if (infoTopic != null)
+            var infotopic = await _context.InfoTopics.FindAsync(id);
+            if (infotopic != null)
             {
-                return infoTopic;
+                return infotopic;
             }
             else
             {

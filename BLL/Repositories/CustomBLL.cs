@@ -181,37 +181,23 @@ namespace BLL.Repositories
         public async Task<PageResponse<IEnumerable<DocumentDTO>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
             var documents = await _repository.PagedList(infoTopicId, page, size, order, type);
-            if (documents != null)
+            var documentDTOs = new List<DocumentDTO>();
+            foreach (var document in documents.Data)
             {
-                var documentDTOs = new List<DocumentDTO>();
-                foreach (var document in documents.Data)
-                {
-                    documentDTOs.Add(new DocumentDTO(document));
-                }
-                return new PageResponse<IEnumerable<DocumentDTO>>(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
+                documentDTOs.Add(new DocumentDTO(document));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<DocumentDTO>>(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
         }
 
         public async Task<PageResponse<IEnumerable<DocumentDTO>>> Search(string query, int? infoTopicId, int page, int size, string order, string type)
         {
             var documents = await _repository.Search(query, infoTopicId, page, size, order, type);
-            if (documents != null)
+            var documentDTOs = new List<DocumentDTO>();
+            foreach (var document in documents.Data)
             {
-                var documentDTOs = new List<DocumentDTO>();
-                foreach (var document in documents.Data)
-                {
-                    documentDTOs.Add(new DocumentDTO(document));
-                }
-                return new PageResponse<IEnumerable<DocumentDTO>>(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
+                documentDTOs.Add(new DocumentDTO(document));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<DocumentDTO>>(documentDTOs, documents.Count, infoTopicId, page, size, order, type);
         }
     }
 }

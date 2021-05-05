@@ -36,15 +36,7 @@ namespace API.Controllers
                 var order = sortOrder ?? "Asc";
                 var type = sortType ?? "Id";
 
-                var videos = await _videoBLL.PagedList(infoTopicId, page, size, order, type);
-                if (videos != null)
-                {
-                    return Ok(videos);
-                }
-                else
-                {
-                    return NotFound($"Ingen videoer ble funnet");
-                }
+                return Ok(await _videoBLL.PagedList(infoTopicId, page, size, order, type));
 
                 //var videos = await _videoBLL.GetVideos();
                 //if (videos != null)
@@ -90,7 +82,7 @@ namespace API.Controllers
         {
             try
             {
-                if (video != null)
+                if (!string.IsNullOrEmpty(video.YouTubeId))
                 {
                     var newVideo = await _videoBLL.AddVideo(video);
                     return CreatedAtAction(nameof(GetVideo), new { id = newVideo.Id }, newVideo);
@@ -169,17 +161,9 @@ namespace API.Controllers
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
                 var order = sortOrder ?? "Asc";
-                var type = sortType ?? "Title";
+                var type = sortType ?? "Id";
 
-                var search = await _videoBLL.Search(query, subTopicId, page, size, order, type);
-                if (search != null)
-                {
-                    return Ok(search);
-                }
-                else
-                {
-                    return NotFound($"Søket ga ingen resultater");
-                }
+                return Ok(await _videoBLL.Search(query, subTopicId, page, size, order, type));
             }
             catch (Exception)
             {

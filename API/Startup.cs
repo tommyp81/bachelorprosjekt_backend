@@ -22,6 +22,9 @@ using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
 using Azure.Storage.Queues;
 using DAL.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace API
 {
@@ -60,7 +63,7 @@ namespace API
             services.AddControllers();
 
             // For JWT tokens autentisering
-            //services.Configure<AuthSettings>(Configuration.GetSection("AuthSettings"));
+            // From: https://codeburst.io/jwt-auth-in-asp-net-core-148fb72bed03
 
             // For BLL
             services.AddTransient<IUserBLL, UserBLL>();
@@ -104,9 +107,9 @@ namespace API
 
             app.UseRouting();
 
-            app.UseAuthorization();
             // For JWT tokens autentisering
-            //app.UseMiddleware<JwtMiddleware>();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

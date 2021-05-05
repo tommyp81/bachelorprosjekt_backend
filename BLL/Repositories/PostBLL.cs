@@ -106,37 +106,23 @@ namespace BLL.Repositories
         public async Task<PageResponse<IEnumerable<PostDTO>>> PagedList(int? subTopicId, int page, int size, string order, string type)
         {
             var posts = await _repository.PagedList(subTopicId, page, size, order, type);
-            if (posts != null)
+            var postDTOs = new List<PostDTO>();
+            foreach (var post in posts.Data)
             {
-                var postDTOs = new List<PostDTO>();
-                foreach (var post in posts.Data)
-                {
-                    postDTOs.Add(await AddDTO(post));
-                }
-                return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
+                postDTOs.Add(await AddDTO(post));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
         }
 
         public async Task<PageResponse<IEnumerable<PostDTO>>> Search(string query, int? subTopicId, int page, int size, string order, string type)
         {
             var posts = await _repository.Search(query, subTopicId, page, size, order, type);
-            if (posts != null)
+            var postDTOs = new List<PostDTO>();
+            foreach (var post in posts.Data)
             {
-                var postDTOs = new List<PostDTO>();
-                foreach (var post in posts.Data)
-                {
-                    postDTOs.Add(await AddDTO(post));
-                }
-                return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
+                postDTOs.Add(await AddDTO(post));
             }
-            else
-            {
-                return null;
-            }
+            return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
         }
     }
 }
