@@ -80,7 +80,6 @@ namespace API
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
-
             });
 
             // For BLL
@@ -128,7 +127,6 @@ namespace API
             // For JWT tokens autentisering
             app.UseAuthentication();
             app.UseAuthorization();
-            //app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

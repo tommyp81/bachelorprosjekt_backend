@@ -26,7 +26,7 @@ namespace API.Controllers
 
         // GET: Videos
         // GET: Videos?infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideos(int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

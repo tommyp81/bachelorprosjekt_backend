@@ -28,7 +28,7 @@ namespace API.Controllers
         // GET: Comments?postId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetComments(int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace API.Controllers
         // GET: Comments/1
         [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<UserDTO>> GetComment(int id)
+        public async Task<ActionResult<CommentDTO>> GetComment(int id)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace API.Controllers
         // POST: Comments
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> AddComment([FromForm] IFormFile file, [FromForm] Comment comment)
+        public async Task<ActionResult<CommentDTO>> AddComment([FromForm] IFormFile file, [FromForm] Comment comment)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace API.Controllers
         // PUT: Comments/1
         [Authorize]
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<UserDTO>> UpdateComment(int id, [FromForm] Comment comment)
+        public async Task<ActionResult<CommentDTO>> UpdateComment(int id, [FromForm] Comment comment)
         {
             try
             {
@@ -136,7 +136,7 @@ namespace API.Controllers
         // DELETE: Comments/1
         [Authorize]
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<UserDTO>> DeleteComment(int id)
+        public async Task<ActionResult<CommentDTO>> DeleteComment(int id)
         {
             try
             {

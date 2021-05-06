@@ -1,4 +1,5 @@
-﻿using Model.Domain_models;
+﻿using DAL.Helpers;
+using Model.Domain_models;
 using Model.DTO;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,11 @@ namespace Test.Objects
 {
     public class CommentObject
     {
-        public static ICollection<CommentDTO> TestCommentListDTO()
+        public static PageResponse<IEnumerable<CommentDTO>> TestPagedResponse(string query)
         {
-            var comments = new List<CommentDTO>
+            var comments = new List<Comment>
             {
-                new CommentDTO(null)
+                new Comment
                 {
                     Id = 1,
                     Content = "testkommentar1",
@@ -23,7 +24,7 @@ namespace Test.Objects
                     PostId = 1,
                     DocumentId = 1
                 },
-                new CommentDTO(null)
+                new Comment
                 {
                     Id = 2,
                     Content = "testkommentar2",
@@ -32,7 +33,7 @@ namespace Test.Objects
                     PostId = 2,
                     DocumentId = 2
                 },
-                new CommentDTO(null)
+                new Comment
                 {
                     Id = 3,
                     Content = "testkommentar3",
@@ -42,12 +43,27 @@ namespace Test.Objects
                     DocumentId = 3
                 },
             };
-            return comments;
+
+            var commentDTOs = new List<CommentDTO>();
+            foreach (var comment in comments)
+            {
+                commentDTOs.Add(new CommentDTO(comment));
+            }
+
+            if (string.IsNullOrEmpty(query))
+            {
+                return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs);
+            }
+            else
+            {
+                var searchResult = commentDTOs.AsQueryable().Where(q => q.Content.Contains(query));
+                return new PageResponse<IEnumerable<CommentDTO>>(searchResult);
+            }
         }
 
         public static CommentDTO TestCommentDTO()
         {
-            var comment = new CommentDTO(null)
+            var comment = new Comment()
             {
                 Id = 1,
                 Content = "testkommentar1",
@@ -56,7 +72,7 @@ namespace Test.Objects
                 PostId = 1,
                 DocumentId = 1
             };
-            return comment;
+            return new CommentDTO(comment);
         }
 
         public static Comment TestComment()
