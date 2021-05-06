@@ -1,4 +1,6 @@
-﻿using Model.DTO;
+﻿using Model.Auth;
+using Model.Domain_models;
+using Model.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace Test.Objects
     {
         public static UserDTO TestUserDTO()
         {
-            var user = new UserDTO(null)
+            var user = new User
             {
                 Id = 1,
                 Username = "sysadmin",
@@ -20,7 +22,23 @@ namespace Test.Objects
                 Email = "admin@badminton.no",
                 Admin = true
             };
-            return user;
+            return new UserDTO(user);
+        }
+
+        public static AuthResponse TestAuthResponse()
+        {
+            var user = new User
+            {
+                Id = 1,
+                Username = "sysadmin",
+                FirstName = "Superbruker",
+                LastName = "NFB",
+                Email = "admin@badminton.no"
+                //Token = "test-token"
+            };
+            var authResponse = new AuthResponse(user);
+            authResponse.Token = "test-token";
+            return authResponse;
         }
     }
 }

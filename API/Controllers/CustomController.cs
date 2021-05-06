@@ -195,9 +195,9 @@ namespace API.Controllers
                     return Unauthorized("Feil ved brukernavn, epost eller passord");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, e);//"Feil ved login"
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved login");
             }
         }
 

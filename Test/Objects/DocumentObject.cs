@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DAL.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Model.Domain_models;
 using Model.DTO;
 using System;
@@ -12,11 +13,11 @@ namespace Test.Objects
 {
     class DocumentObject
     {
-        public static ICollection<DocumentDTO> TestDocumentListDTO()
+        public static PageResponse<IEnumerable<DocumentDTO>> TestPagedResponse(string query)
         {
-            var documents = new List<DocumentDTO>
+            var documents = new List<Document>
             {
-                new DocumentDTO(null)
+                new Document
                 {
                     Id = 1,
                     FileName = "Testfil1.txt",
@@ -30,7 +31,7 @@ namespace Test.Objects
                     CommentId = null,
                     InfoTopicId = null
                 },
-                new DocumentDTO(null)
+                new Document
                 {
                     Id = 2,
                     FileName = "Testfil2.txt",
@@ -44,7 +45,7 @@ namespace Test.Objects
                     CommentId = 1,
                     InfoTopicId = null
                 },
-                new DocumentDTO(null)
+                new Document
                 {
                     Id = 3,
                     FileName = "Testfil3.txt",
@@ -59,12 +60,27 @@ namespace Test.Objects
                     InfoTopicId = 1
                 },
             };
-            return documents;
+
+            var documentDTOs = new List<DocumentDTO>();
+            foreach (var document in documents)
+            {
+                documentDTOs.Add(new DocumentDTO(document));
+            }
+
+            if (string.IsNullOrEmpty(query))
+            {
+                return new PageResponse<IEnumerable<DocumentDTO>>(documentDTOs);
+            }
+            else
+            {
+                var searchResult = documentDTOs.AsQueryable().Where(q => q.FileName.Contains(query));
+                return new PageResponse<IEnumerable<DocumentDTO>>(searchResult);
+            }
         }
 
         public static DocumentDTO TestDocumentDTO()
         {
-            var document = new DocumentDTO(null)
+            var document = new Document
             {
                 Id = 1,
                 FileName = "Testfil1.txt",
@@ -78,7 +94,7 @@ namespace Test.Objects
                 CommentId = null,
                 InfoTopicId = null
             };
-            return document;
+            return new DocumentDTO(document);
         }
 
         public static Document TestDocument()
