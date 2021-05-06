@@ -12,27 +12,43 @@ using System.Threading.Tasks;
 
 namespace API.Auth
 {
-    public static class TokenService
+    public interface ITokenService
     {
-        private const double EXPIRE_HOURS = 1.0;
+        string GenerateJwtToken(AuthResponse user);
+    }
 
-        public static string CreateToken(AuthResponse user)
+    public class TokenService : ITokenService
+    {
+        private readonly AuthSettings _authSettings;
+        private readonly byte[] _secret;
+
+        public TokenService(AuthSettings authSettings)
         {
-            var key = Encoding.ASCII.GetBytes(AuthSettings.Secret);
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var descriptor = new SecurityTokenDescriptor
+            _authSettings = authSettings;
+            _secret = Encoding.ASCII.GetBytes(_authSettings.Secret);
+        }
+
+        // From: https://dev.to/moe23/asp-net-core-5-rest-api-authentication-with-jwt-step-by-step-140d
+        public string GenerateJwtToken(AuthResponse user)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
+                Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, user.Username.ToString())
-                    //new Claim(ClaimTypes.Role, user.Role.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, user.Username),
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(EXPIRE_HOURS),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_secret), SecurityAlgorithms.HmacSha512Signature)
             };
 
-            var token = tokenHandler.CreateToken(descriptor);
-            return tokenHandler.WriteToken(token);
+            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+            var jwtToken = jwtTokenHandler.WriteToken(token);
+            return jwtToken;
         }
     }
 }

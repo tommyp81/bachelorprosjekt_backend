@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class SubTopicsController : ControllerBase
@@ -25,7 +27,6 @@ namespace API.Controllers
         }
 
         // GET: SubTopics
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubTopicDTO>>> GetSubTopics()
         {
@@ -40,7 +41,6 @@ namespace API.Controllers
         }
 
         // GET: SubTopics/1
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<SubTopicDTO>> GetSubTopic(int id)
         {
@@ -63,7 +63,6 @@ namespace API.Controllers
         }
 
         // POST: SubTopics
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<SubTopicDTO>> AddSubTopic(SubTopic subtopic)
         {
@@ -87,7 +86,6 @@ namespace API.Controllers
         }
 
         // PUT: SubTopics/1
-        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<SubTopicDTO>> UpdateSubTopic(int id, SubTopic subtopic)
         {
@@ -117,7 +115,6 @@ namespace API.Controllers
         }
 
         // DELETE: SubTopics/1
-        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<SubTopicDTO>> DeleteSubTopic(int id)
         {

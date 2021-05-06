@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class TopicsController : ControllerBase
@@ -25,7 +27,6 @@ namespace API.Controllers
         }
 
         // GET: Topics
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TopicDTO>>> GetTopics()
         {
@@ -40,7 +41,6 @@ namespace API.Controllers
         }
 
         // GET: Topics/1
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<TopicDTO>> GetTopic(int id)
         {
@@ -63,7 +63,6 @@ namespace API.Controllers
         }
 
         // POST: Topics
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<TopicDTO>> AddTopic(Topic topic)
         {
@@ -86,7 +85,6 @@ namespace API.Controllers
         }
 
         // PUT: Topics/1
-        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<TopicDTO>> UpdateTopic(int id, Topic topic)
         {
@@ -116,7 +114,6 @@ namespace API.Controllers
         }
 
         // DELETE: Topics/1
-        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<TopicDTO>> DeleteTopic(int id)
         {

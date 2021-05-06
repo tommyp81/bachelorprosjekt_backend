@@ -258,22 +258,6 @@ namespace DAL.Repositories
             }
         }
 
-        // From: https://jasonwatmore.com/post/2019/10/11/aspnet-core-3-jwt-authentication-tutorial-with-example-api
-        //private string GenerateJwtToken(User user)
-        //{
-        //    // generate token that is valid for 7 days
-        //    var tokenHandler = new JwtSecurityTokenHandler();
-        //    var key = Encoding.ASCII.GetBytes(_authSettings.Secret);
-        //    var tokenDescriptor = new SecurityTokenDescriptor
-        //    {
-        //        Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-        //        Expires = DateTime.UtcNow.AddDays(7),
-        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        //    };
-        //    var token = tokenHandler.CreateToken(tokenDescriptor);
-        //    return tokenHandler.WriteToken(token);
-        //}
-
         // POST: Login
         public async Task<AuthResponse> Login(AuthRequest request)
         {
@@ -330,7 +314,7 @@ namespace DAL.Repositories
             }
             else
             {
-                list = await _context.Documents.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+                list = await _context.Documents.AsQueryable().OrderBy(type + " " + order).Where(q => q.InfoTopicId != null).ToListAsync();
             }
 
             var count = list.Count();
@@ -349,7 +333,7 @@ namespace DAL.Repositories
                 }
                 else
                 {
-                    list = await _context.Documents.AsQueryable().OrderBy(type + " " + order).ToListAsync();
+                    list = await _context.Documents.AsQueryable().OrderBy(type + " " + order).Where(q => q.InfoTopicId != null).ToListAsync();
                 }
 
                 var searchList = list.Where(q => q.FileName.Contains(query));

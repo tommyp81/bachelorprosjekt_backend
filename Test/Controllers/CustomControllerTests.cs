@@ -25,7 +25,7 @@ namespace API.Controllers.Tests
             var pagedResponse = DocumentObject.TestPagedResponse(null);
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.PagedList(null, 1, 10, "Asc", "Date")).ReturnsAsync(pagedResponse);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocuments(null, 1, 10, "Asc", "Date");
@@ -48,7 +48,7 @@ namespace API.Controllers.Tests
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.PagedList(null, 1, 10, "Asc", "Date")).ReturnsAsync((PageResponse<IEnumerable<DocumentDTO>>)null);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocuments(null, 1, 10, "Asc", "Date");
@@ -65,7 +65,7 @@ namespace API.Controllers.Tests
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.PagedList(null, 1, 10, "Asc", "Date")).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocuments(null, 1, 10, "Asc", "Date");
@@ -87,7 +87,7 @@ namespace API.Controllers.Tests
             var documentDTO = DocumentObject.TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.UploadDocument(iFormFile, userId, postId, null, null)).ReturnsAsync(documentDTO).Verifiable();
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.UploadDocument(iFormFile, userId, postId, null, null);
@@ -105,7 +105,7 @@ namespace API.Controllers.Tests
         {
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.UploadDocument(null, null, null, null, null);
@@ -125,7 +125,7 @@ namespace API.Controllers.Tests
             int postId = 1;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.UploadDocument(iFormFile, userId, postId, null, null)).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.UploadDocument(iFormFile, userId, postId, null, null);
@@ -144,7 +144,7 @@ namespace API.Controllers.Tests
             var documentDTO = DocumentObject.TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync(documentDTO);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocumentInfo(id);
@@ -163,7 +163,7 @@ namespace API.Controllers.Tests
             int id = 1;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ReturnsAsync((DocumentDTO)null);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocumentInfo(id);
@@ -181,7 +181,7 @@ namespace API.Controllers.Tests
             int id = 1;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocumentInfo(id)).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocumentInfo(id);
@@ -201,7 +201,7 @@ namespace API.Controllers.Tests
             var documentDTO = DocumentObject.TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocument(id)).ReturnsAsync(file);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocument(id);
@@ -219,7 +219,7 @@ namespace API.Controllers.Tests
             int id = 1;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocument(id)).ReturnsAsync((FileStreamResult)null);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocument(id);
@@ -237,7 +237,7 @@ namespace API.Controllers.Tests
             int id = 1;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.GetDocument(id)).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.GetDocument(id);
@@ -256,7 +256,7 @@ namespace API.Controllers.Tests
             var documentDTO = DocumentObject.TestDocumentDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.DeleteDocument(id)).ReturnsAsync(documentDTO).Verifiable();
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.DeleteDocument(id);
@@ -276,7 +276,7 @@ namespace API.Controllers.Tests
             int id = 1;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.DeleteDocument(id));
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.DeleteDocument(id);
@@ -294,7 +294,7 @@ namespace API.Controllers.Tests
             int id = 1;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.DeleteDocument(id)).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.DeleteDocument(id);
@@ -317,7 +317,7 @@ namespace API.Controllers.Tests
             var authResponse = UserObject.TestAuthResponse();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.Login(authRequest)).ReturnsAsync(authResponse);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.Login(authRequest);
@@ -334,7 +334,7 @@ namespace API.Controllers.Tests
         {
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.Login(null)).ReturnsAsync((AuthResponse)null);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.Login(null);
@@ -351,7 +351,7 @@ namespace API.Controllers.Tests
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.Login(null)).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.Login(null);
@@ -371,7 +371,7 @@ namespace API.Controllers.Tests
             var userDTO = UserObject.TestUserDTO();
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.SetAdmin(id, admin)).ReturnsAsync(userDTO);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.SetAdmin(id, admin);
@@ -391,7 +391,7 @@ namespace API.Controllers.Tests
             bool admin = true;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.SetAdmin(id, admin)).ReturnsAsync((UserDTO)null);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.SetAdmin(id, admin);
@@ -410,7 +410,7 @@ namespace API.Controllers.Tests
             bool admin = true;
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.SetAdmin(id, admin)).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.SetAdmin(id, admin);
@@ -429,7 +429,7 @@ namespace API.Controllers.Tests
             var pagedResponse = DocumentObject.TestPagedResponse(query);
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.Search(query, null, 1, 10, "Asc", "Date")).ReturnsAsync(pagedResponse);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.SearchDocuments(query, null, 1, 10, "Asc", "Date");
@@ -450,7 +450,7 @@ namespace API.Controllers.Tests
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.Search(null, null, 1, 10, "Asc", "Date")).ReturnsAsync((PageResponse<IEnumerable<DocumentDTO>>)null);
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.SearchDocuments(null, null, 1, 10, "Asc", "Date");
@@ -467,7 +467,7 @@ namespace API.Controllers.Tests
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
             mockRepo.Setup(repo => repo.Search(null, null, 1, 10, "Asc", "Date")).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object);
+            var controller = new CustomController(mockRepo.Object, null);
 
             // Act
             var result = await controller.SearchDocuments(null, null, 1, 10, "Asc", "Date");

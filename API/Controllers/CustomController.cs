@@ -1,5 +1,6 @@
 ﻿using API.Auth;
 using BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[action]")]
     [ApiController]
     public class CustomController : ControllerBase
@@ -20,15 +22,16 @@ namespace API.Controllers
         // Controller for Custom API Backend
 
         private readonly ICustomBLL _customBLL;
+        private readonly ITokenService _tokenService;
 
-        public CustomController(ICustomBLL customBLL)
+        public CustomController(ICustomBLL customBLL, ITokenService tokenService)
         {
             _customBLL = customBLL;
+            _tokenService = tokenService;
         }
 
         // GET: GetDocuments
         // GET: GetDocuments?infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentDTO>>> GetDocuments(int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -60,7 +63,6 @@ namespace API.Controllers
         }
 
         // POST: UploadDocument
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<DocumentDTO>> UploadDocument(
             [FromForm] IFormFile file, [FromForm] int? userId, [FromForm] int? postId, [FromForm] int? commentId, [FromForm] int? infoTopicId)
@@ -107,7 +109,6 @@ namespace API.Controllers
         }
 
         // GET: GetDocumentInfo/1
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<DocumentDTO>> GetDocumentInfo(int id)
         {
@@ -130,7 +131,6 @@ namespace API.Controllers
         }
 
         // GET: GetDocument/1
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetDocument(int id)
         {
@@ -153,7 +153,6 @@ namespace API.Controllers
         }
 
         // DELETE: DeleteDocument/1
-        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<DocumentDTO>> DeleteDocument(int id)
         {
@@ -186,8 +185,8 @@ namespace API.Controllers
                 if (response != null)
                 {
                     // Ok hvis brukernavn/epost og passord stemmer
-                    var token = TokenService.CreateToken(response);
-                    response.Token = token;
+                    var jwtToken = _tokenService.GenerateJwtToken(response);
+                    response.Token = jwtToken;
                     return Ok(response);
                 }
                 else
@@ -202,7 +201,6 @@ namespace API.Controllers
         }
 
         // POST: SetAdmin
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<UserDTO>> SetAdmin([FromForm] int id, [FromForm] bool admin)
         {
@@ -226,7 +224,6 @@ namespace API.Controllers
 
         // GET: SearchDocuments?query=eksempel tekst
         // GET: SearchDocuments?query=eksempel tekst&infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentDTO>>> SearchDocuments(string query, int? infoTopicId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

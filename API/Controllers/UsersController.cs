@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -26,7 +28,6 @@ namespace API.Controllers
 
         // GET: Users
         // GET: Users?pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers(int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -57,7 +58,6 @@ namespace API.Controllers
         }
 
         // GET: Users/1
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
@@ -104,7 +104,6 @@ namespace API.Controllers
         }
 
         // PUT: Users/1
-        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<UserDTO>> UpdateUser(int id, NewUser user)
         {
@@ -134,7 +133,6 @@ namespace API.Controllers
         }
 
         // DELETE: Users/1
-        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<UserDTO>> DeleteUser(int id)
         {
@@ -159,7 +157,6 @@ namespace API.Controllers
 
         // GET: Users/Search?query=eksempel tekst
         // GET: Users/Search?query=eksempel tekst&?pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
-        [Authorize]
         [HttpGet("{Search}")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> Search(string query, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

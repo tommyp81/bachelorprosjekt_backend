@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
@@ -26,7 +28,6 @@ namespace API.Controllers
 
         // GET: Comments
         // GET: Comments?postId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {
@@ -57,7 +58,6 @@ namespace API.Controllers
         }
 
         // GET: Comments/1
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<CommentDTO>> GetComment(int id)
         {
@@ -80,7 +80,6 @@ namespace API.Controllers
         }
 
         // POST: Comments
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<CommentDTO>> AddComment([FromForm] IFormFile file, [FromForm] Comment comment)
         {
@@ -104,7 +103,6 @@ namespace API.Controllers
         }
 
         // PUT: Comments/1
-        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<CommentDTO>> UpdateComment(int id, [FromForm] Comment comment)
         {
@@ -134,7 +132,6 @@ namespace API.Controllers
         }
 
         // DELETE: Comments/1
-        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<CommentDTO>> DeleteComment(int id)
         {
@@ -158,7 +155,6 @@ namespace API.Controllers
 
         // GET: Comments/Search?query=eksempel tekst
         // GET: Comments/Search?query=eksempel tekst&postId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Date
-        [Authorize]
         [HttpGet("{Search}")]
         public async Task<ActionResult<IEnumerable<CommentDTO>>> Search(string query, int? postId, int? pageNumber, int? pageSize, string sortOrder, string sortType)
         {

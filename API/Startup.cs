@@ -62,25 +62,33 @@ namespace API
             services.AddControllers();
 
             // For JWT tokens autentisering
-            // From: https://medium.com/the-innovation/asp-net-core-3-authorization-and-authentication-with-bearer-and-jwt-3041c47c8b1d
-            var key = Encoding.ASCII.GetBytes(AuthSettings.Secret);
-            services.AddAuthentication(x =>
+            var jwtTokenConfig = Configuration.GetSection("AuthSettings").Get<AuthSettings>();
+            services.AddSingleton(jwtTokenConfig);
+            var key = Encoding.ASCII.GetBytes(jwtTokenConfig.Secret);
+
+            services.AddAuthentication(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwt =>
             {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                //var key = Encoding.ASCII.GetBytes(Configuration["AuthSettings:Secret"]);
+                jwt.RequireHttpsMetadata = true;
+                jwt.SaveToken = true;
+                jwt.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    RequireExpirationTime = false
                 };
             });
+
+            //services.AddSingleton<TokenService>();
+            services.AddSingleton<ITokenService, TokenService>();
 
             // For BLL
             services.AddTransient<IUserBLL, UserBLL>();
@@ -122,9 +130,8 @@ namespace API
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
-
             // For JWT tokens autentisering
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
 

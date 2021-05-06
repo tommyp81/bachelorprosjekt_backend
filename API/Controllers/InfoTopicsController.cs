@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class InfoTopicsController : ControllerBase
@@ -25,7 +27,6 @@ namespace API.Controllers
         }
 
         // GET: InfoTopics
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<InfoTopicDTO>>> GetInfoTopics()
         {
@@ -40,7 +41,6 @@ namespace API.Controllers
         }
 
         // GET: InfoTopics/1
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<InfoTopicDTO>> GetInfoTopic(int id)
         {
@@ -63,7 +63,6 @@ namespace API.Controllers
         }
 
         // POST: InfoTopics
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<InfoTopicDTO>> AddInfoTopic(InfoTopic infotopic)
         {
@@ -87,7 +86,6 @@ namespace API.Controllers
         }
 
         // PUT: InfoTopics/1
-        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<InfoTopicDTO>> UpdateInfoTopic(int id, InfoTopic infotopic)
         {
@@ -117,7 +115,6 @@ namespace API.Controllers
         }
 
         // DELETE: InfoTopics/1
-        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<InfoTopicDTO>> DeleteInfoTopic(int id)
         {

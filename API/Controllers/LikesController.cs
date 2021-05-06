@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[action]")]
     [ApiController]
     public class LikesController : ControllerBase
@@ -25,7 +27,6 @@ namespace API.Controllers
         }
 
         // POST: GetLike
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<LikeDTO>> GetLike(Like like)
         {
@@ -57,7 +58,6 @@ namespace API.Controllers
         }
 
         // POST: AddLike
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<LikeDTO>> AddLike(Like like)
         {
@@ -89,7 +89,6 @@ namespace API.Controllers
         }
 
         // DELETE: DeleteLike
-        [Authorize]
         [HttpDelete]
         public async Task<ActionResult<LikeDTO>> DeleteLike(Like like)
         {

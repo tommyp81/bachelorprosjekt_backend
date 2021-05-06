@@ -33,11 +33,13 @@ namespace Test.Objects
                 Username = "sysadmin",
                 FirstName = "Superbruker",
                 LastName = "NFB",
-                Email = "admin@badminton.no"
-                //Token = "test-token"
+                Email = "admin@badminton.no",
+                Admin = true
             };
-            var authResponse = new AuthResponse(user);
-            authResponse.Token = "test-token";
+            var authResponse = new AuthResponse(user)
+            {
+                Token = "test-token"
+            };
             return authResponse;
         }
     }
