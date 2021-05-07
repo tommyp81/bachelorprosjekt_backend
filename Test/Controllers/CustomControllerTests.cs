@@ -13,6 +13,7 @@ using Model.DTO;
 using Microsoft.AspNetCore.Http;
 using DAL.Helpers;
 using Model.Auth;
+using API.Auth;
 
 namespace API.Controllers.Tests
 {
@@ -316,16 +317,17 @@ namespace API.Controllers.Tests
             };
             var authResponse = UserObject.TestAuthResponse();
             var mockRepo = new Mock<ICustomBLL>();
+            var mockTokenRepo = new Mock<ITokenService>();
             mockRepo.Setup(repo => repo.Login(authRequest)).ReturnsAsync(authResponse);
-            var controller = new CustomController(mockRepo.Object, null);
+            var controller = new CustomController(mockRepo.Object, mockTokenRepo.Object);
 
             // Act
             var result = await controller.Login(authRequest);
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<AuthResponse>>(result);
-            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
-            var returnValue = Assert.IsType<AuthResponse>(okResult.Value);
+            var objectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var returnValue = Assert.IsType<AuthResponse>(objectResult.Value);
             Assert.Equal(authRequest.Username, returnValue.Username);
         }
 
@@ -333,8 +335,9 @@ namespace API.Controllers.Tests
         public async void LoginTest_Unauthorized()
         {
             var mockRepo = new Mock<ICustomBLL>();
+            var mockTokenRepo = new Mock<ITokenService>();
             mockRepo.Setup(repo => repo.Login(null)).ReturnsAsync((AuthResponse)null);
-            var controller = new CustomController(mockRepo.Object, null);
+            var controller = new CustomController(mockRepo.Object, mockTokenRepo.Object);
 
             // Act
             var result = await controller.Login(null);
@@ -350,8 +353,9 @@ namespace API.Controllers.Tests
         {
             // Arrange
             var mockRepo = new Mock<ICustomBLL>();
+            var mockTokenRepo = new Mock<ITokenService>();
             mockRepo.Setup(repo => repo.Login(null)).ThrowsAsync(new InvalidOperationException());
-            var controller = new CustomController(mockRepo.Object, null);
+            var controller = new CustomController(mockRepo.Object, mockTokenRepo.Object);
 
             // Act
             var result = await controller.Login(null);

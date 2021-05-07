@@ -18,7 +18,6 @@ namespace Model.DTO
         public int Comment_Count { get; set; }
         public int Like_Count { get; set; }
         public int? UserId { get; set; }
-        public string Username { get; set; }
         public int? TopicId { get; set; }
         public int SubTopicId { get; set; }
         public int? DocumentId { get; set; }

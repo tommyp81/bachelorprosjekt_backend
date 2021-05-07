@@ -17,7 +17,6 @@ namespace Model.DTO
         public string UniqueName { get; set; }
         public string Container { get; set; }
         public int? UserId { get; set; }
-        public string Username { get; set; }
         public int? PostId { get; set; }
         public int? CommentId { get; set; }
         public int? InfoTopicId { get; set; }

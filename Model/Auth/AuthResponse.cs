@@ -14,6 +14,7 @@ namespace Model.Auth
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+        public bool Admin { get; set; }
         public string Token { get; set; }
 
         public AuthResponse(User user)
@@ -23,6 +24,7 @@ namespace Model.Auth
             FirstName = user.FirstName;
             LastName = user.LastName;
             Email = user.Email;
+            Admin = user.Admin;
             Token = null;
         }
     }  
