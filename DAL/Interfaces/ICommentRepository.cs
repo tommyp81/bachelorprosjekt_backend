@@ -18,5 +18,6 @@ namespace DAL.Interfaces
         Task<Comment> DeleteComment(int id);
         Task<Response<IEnumerable<Comment>>> PagedList(int? postId, int page, int size, string order, string type);
         Task<Response<IEnumerable<Comment>>> Search(string query, int? postId, int page, int size, string order, string type);
+        Task<string> GetUsername(int? userId);
     }
 }

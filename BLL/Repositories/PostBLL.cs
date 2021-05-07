@@ -22,17 +22,6 @@ namespace BLL.Repositories
             _repository = repository;
         }
 
-        private async Task<PostDTO> AddDTO(Post post)
-        {
-            // Sende med Topic ID i DTO
-            var topicId = await _repository.GetTopicId(post.SubTopicId);
-            var postDTO = new PostDTO(post)
-            {
-                TopicId = topicId
-            };
-            return postDTO;
-        }
-
         public async Task<IEnumerable<PostDTO>> GetPosts()
         {
             var posts = await _repository.GetPosts();
@@ -41,7 +30,9 @@ namespace BLL.Repositories
                 var postDTOs = new List<PostDTO>();
                 foreach (var post in posts)
                 {
-                    postDTOs.Add(await AddDTO(post));
+                    var topicId = await _repository.GetTopicId(post.SubTopicId);
+                    var username = await _repository.GetUsername(post.UserId);
+                    postDTOs.Add(new PostDTO(post, username, topicId));
                 }
                 return postDTOs;
             }
@@ -56,7 +47,9 @@ namespace BLL.Repositories
             var getPost = await _repository.GetPost(id);
             if (getPost != null)
             {
-                return await AddDTO(getPost);
+                var topicId = await _repository.GetTopicId(getPost.SubTopicId);
+                var username = await _repository.GetUsername(getPost.UserId);
+                return new PostDTO(getPost, username, topicId);
             }
             else
             {
@@ -69,7 +62,9 @@ namespace BLL.Repositories
             var addPost = await _repository.AddPost(file, post);
             if (addPost != null)
             {
-                return await AddDTO(addPost);
+                var topicId = await _repository.GetTopicId(addPost.SubTopicId);
+                var username = await _repository.GetUsername(addPost.UserId);
+                return new PostDTO(addPost, username, topicId);
             }
             else
             {
@@ -82,7 +77,9 @@ namespace BLL.Repositories
             var updatePost = await _repository.UpdatePost(post);
             if (updatePost != null)
             {
-                return await AddDTO(updatePost);
+                var topicId = await _repository.GetTopicId(updatePost.SubTopicId);
+                var username = await _repository.GetUsername(updatePost.UserId);
+                return new PostDTO(updatePost, username, topicId);
             }
             else
             {
@@ -95,7 +92,9 @@ namespace BLL.Repositories
             var deletePost = await _repository.DeletePost(id);
             if (deletePost != null)
             {
-                return await AddDTO(deletePost);
+                var topicId = await _repository.GetTopicId(deletePost.SubTopicId);
+                var username = await _repository.GetUsername(deletePost.UserId);
+                return new PostDTO(deletePost, username, topicId);
             }
             else
             {
@@ -109,7 +108,9 @@ namespace BLL.Repositories
             var postDTOs = new List<PostDTO>();
             foreach (var post in posts.Data)
             {
-                postDTOs.Add(await AddDTO(post));
+                var topicId = await _repository.GetTopicId(post.SubTopicId);
+                var username = await _repository.GetUsername(post.UserId);
+                postDTOs.Add(new PostDTO(post, username, topicId));
             }
             return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
         }
@@ -120,7 +121,9 @@ namespace BLL.Repositories
             var postDTOs = new List<PostDTO>();
             foreach (var post in posts.Data)
             {
-                postDTOs.Add(await AddDTO(post));
+                var topicId = await _repository.GetTopicId(post.SubTopicId);
+                var username = await _repository.GetUsername(post.UserId);
+                postDTOs.Add(new PostDTO(post, username, topicId));
             }
             return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
         }

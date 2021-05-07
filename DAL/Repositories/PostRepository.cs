@@ -26,19 +26,6 @@ namespace DAL.Repositories
             _customRepository = customRepository;
         }
 
-        public async Task<int?> GetTopicId(int id)
-        {
-            var subTopicId = await _context.SubTopics.FindAsync(id);
-            if (subTopicId != null)
-            {
-                return subTopicId.TopicId;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         // GET: Posts
         public async Task<IEnumerable<Post>> GetPosts()
         {
@@ -207,6 +194,32 @@ namespace DAL.Repositories
                 var count = searchList.Count();
                 var pagedSearchList = await searchList.ToPagedListAsync(page, size);
                 return new Response<IEnumerable<Post>>(pagedSearchList, count);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<int?> GetTopicId(int? subTopicId)
+        {
+            var subtopic = await _context.SubTopics.FindAsync(subTopicId);
+            if (subtopic != null)
+            {
+                return subtopic.TopicId;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> GetUsername(int? userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                return user.Username;
             }
             else
             {

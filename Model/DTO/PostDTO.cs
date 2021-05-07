@@ -17,12 +17,13 @@ namespace Model.DTO
         public bool Edited { get; set; }
         public int Comment_Count { get; set; }
         public int Like_Count { get; set; }
+        public string Username { get; set; }
         public int? UserId { get; set; }
         public int? TopicId { get; set; }
         public int SubTopicId { get; set; }
         public int? DocumentId { get; set; }
 
-        public PostDTO(Post post)
+        public PostDTO(Post post, string username, int? topicId)
         {
             Id = post.Id;
             Title = post.Title;
@@ -32,7 +33,9 @@ namespace Model.DTO
             Edited = post.Edited;
             Comment_Count = post.Comment_Count;
             Like_Count = post.Like_Count;
+            Username = username;
             UserId = post.UserId;
+            TopicId = topicId;
             SubTopicId = post.SubTopicId;
             DocumentId = post.DocumentId;
         }

@@ -15,11 +15,12 @@ namespace Model.DTO
         public DateTime? EditDate { get; set; }
         public bool Edited { get; set; }
         public int Like_Count { get; set; }
+        public string Username { get; set; }
         public int? UserId { get; set; }
         public int PostId { get; set; }
         public int? DocumentId { get; set; }
 
-        public CommentDTO(Comment comment)
+        public CommentDTO(Comment comment, string username)
         {
             Id = comment.Id;
             Content = comment.Content;
@@ -27,6 +28,7 @@ namespace Model.DTO
             EditDate = comment.EditDate;
             Edited = comment.Edited;
             Like_Count = comment.Like_Count;
+            Username = username;
             UserId = comment.UserId;
             PostId = comment.PostId;
             DocumentId = comment.DocumentId;

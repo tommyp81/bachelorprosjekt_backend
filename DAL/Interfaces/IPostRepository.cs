@@ -11,7 +11,6 @@ namespace DAL.Interfaces
 {
     public interface IPostRepository
     {
-        Task<int?> GetTopicId(int id);
         Task<IEnumerable<Post>> GetPosts();
         Task<Post> GetPost(int id);
         Task<Post> AddPost(IFormFile file, Post post);
@@ -19,5 +18,7 @@ namespace DAL.Interfaces
         Task<Post> DeletePost(int id);
         Task<Response<IEnumerable<Post>>> PagedList(int? subTopicId, int page, int size, string order, string type);
         Task<Response<IEnumerable<Post>>> Search(string query, int? subTopicId, int page, int size, string order, string type);
+        Task<int?> GetTopicId(int? subTopicId);
+        Task<string> GetUsername(int? userId);
     }
 }

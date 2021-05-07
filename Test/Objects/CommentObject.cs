@@ -47,7 +47,7 @@ namespace Test.Objects
             var commentDTOs = new List<CommentDTO>();
             foreach (var comment in comments)
             {
-                commentDTOs.Add(new CommentDTO(comment));
+                commentDTOs.Add(new CommentDTO(comment, "sysadmin"));
             }
 
             if (string.IsNullOrEmpty(query))
@@ -72,7 +72,7 @@ namespace Test.Objects
                 PostId = 1,
                 DocumentId = 1
             };
-            return new CommentDTO(comment);
+            return new CommentDTO(comment, "sysadmin");
         }
 
         public static Comment TestComment()

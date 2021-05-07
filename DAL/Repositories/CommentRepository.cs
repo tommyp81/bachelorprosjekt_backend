@@ -194,5 +194,18 @@ namespace DAL.Repositories
                 return null;
             }
         }
+
+        public async Task<string> GetUsername(int? userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                return user.Username;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

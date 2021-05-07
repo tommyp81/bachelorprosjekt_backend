@@ -29,7 +29,8 @@ namespace BLL.Repositories
                 var commentDTOs = new List<CommentDTO>();
                 foreach (var comment in getComments)
                 {
-                    commentDTOs.Add(new CommentDTO(comment));
+                    var username = await _repository.GetUsername(comment.UserId);
+                    commentDTOs.Add(new CommentDTO(comment, username));
                 }
                 return commentDTOs;
             }
@@ -44,7 +45,8 @@ namespace BLL.Repositories
             var getComment = await _repository.GetComment(id);
             if (getComment != null)
             {
-                return new CommentDTO(getComment);
+                var username = await _repository.GetUsername(getComment.UserId);
+                return new CommentDTO(getComment, username);
             }
             else
             {
@@ -57,7 +59,8 @@ namespace BLL.Repositories
             var addComment = await _repository.AddComment(file, comment);
             if (addComment != null)
             {
-                return new CommentDTO (addComment);
+                var username = await _repository.GetUsername(addComment.UserId);
+                return new CommentDTO (addComment, username);
             }
             else
             {
@@ -70,7 +73,8 @@ namespace BLL.Repositories
             var updateComment = await _repository.UpdateComment(comment);
             if (updateComment != null)
             {
-                return new CommentDTO(updateComment);
+                var username = await _repository.GetUsername(updateComment.UserId);
+                return new CommentDTO(updateComment, username);
             }
             else
             {
@@ -83,7 +87,8 @@ namespace BLL.Repositories
             var deleteComment = await _repository.DeleteComment(id);
             if (deleteComment != null)
             {
-                return new CommentDTO(deleteComment);
+                var username = await _repository.GetUsername(deleteComment.UserId);
+                return new CommentDTO(deleteComment, username);
             }
             else
             {
@@ -97,7 +102,8 @@ namespace BLL.Repositories
             var commentDTOs = new List<CommentDTO>();
             foreach (var comment in comments.Data)
             {
-                commentDTOs.Add(new CommentDTO(comment));
+                var username = await _repository.GetUsername(comment.UserId);
+                commentDTOs.Add(new CommentDTO(comment, username));
             }
             return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
         }
@@ -108,7 +114,8 @@ namespace BLL.Repositories
             var commentDTOs = new List<CommentDTO>();
             foreach (var comment in comments.Data)
             {
-                commentDTOs.Add(new CommentDTO(comment));
+                var username = await _repository.GetUsername(comment.UserId);
+                commentDTOs.Add(new CommentDTO(comment, username));
             }
             return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
         }
