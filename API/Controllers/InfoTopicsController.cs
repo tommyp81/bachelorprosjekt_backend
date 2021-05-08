@@ -68,7 +68,6 @@ namespace API.Controllers
         {
             try
             {
-                // Legg til kommentaren i databasen og fil på Azure Storage og databasen hvis fil er sendt med
                 var newInfoTopic = await _infoTopicBLL.AddInfoTopic(infotopic);
                 if (newInfoTopic != null)
                 {

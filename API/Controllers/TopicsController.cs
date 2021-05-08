@@ -68,14 +68,14 @@ namespace API.Controllers
         {
             try
             {
-                if (!(string.IsNullOrEmpty(topic.Title) || string.IsNullOrEmpty(topic.Description)))
+                var newTopic = await _topicBLL.AddTopic(topic);
+                if (newTopic != null)
                 {
-                    var newTopic = await _topicBLL.AddTopic(topic);
-                    return CreatedAtAction(nameof(GetTopic), new { id = newTopic.Id }, newTopic);
+                    return CreatedAtAction(nameof(newTopic), new { id = newTopic.Id }, newTopic);
                 }
                 else
                 {
-                    return BadRequest("Emne mangler");
+                    return BadRequest("Emne ble ikke opprettet");
                 }
             }
             catch (Exception)

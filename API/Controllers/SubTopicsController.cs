@@ -68,15 +68,14 @@ namespace API.Controllers
         {
             try
             {
-                if (!(string.IsNullOrEmpty(subtopic.Title) || string.IsNullOrEmpty(subtopic.Description)))
+                var newSubTopic = await _subTopicBLL.AddSubTopic(subtopic);
+                if (newSubTopic != null)
                 {
-                    var newSubTopic = await _subTopicBLL.AddSubTopic(subtopic);
-                    return CreatedAtAction(nameof(GetSubTopic), new { id = newSubTopic.Id }, newSubTopic);
-
+                    return CreatedAtAction(nameof(newSubTopic), new { id = newSubTopic.Id }, newSubTopic);
                 }
                 else
                 {
-                    return BadRequest("Underemne mangler");
+                    return BadRequest("Underemne ble ikke opprettet");
                 }
             }
             catch (Exception)

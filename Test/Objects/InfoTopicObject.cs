@@ -10,7 +10,7 @@ namespace Test.Objects
 {
     public class InfoTopicObject
     {
-        public static ICollection<InfoTopicDTO> TestInfoTopicListDTO()
+        public static IEnumerable<InfoTopicDTO> TestInfoTopicListDTO()
         {
             var infotopics = new List<InfoTopic>
             {
