@@ -41,6 +41,7 @@ namespace API.Controllers.Tests
                 Assert.Equal(id, item.Id);
                 id++;
             }
+            Assert.Equal(3, returnValue.Data.Count());
         }
 
         [Fact]
