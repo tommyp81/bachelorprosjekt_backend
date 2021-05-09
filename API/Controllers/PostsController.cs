@@ -51,9 +51,9 @@ namespace API.Controllers
                 //    return NotFound($"Ingen poster ble funnet");
                 //}
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, e);//"Feil ved henting av poster"
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av poster");
             }
         }
 

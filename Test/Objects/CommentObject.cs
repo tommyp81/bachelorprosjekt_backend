@@ -21,8 +21,7 @@ namespace Test.Objects
                     Content = "testkommentar1",
                     Date = DateTime.UtcNow,
                     UserId = 1,
-                    PostId = 1,
-                    DocumentId = 1
+                    PostId = 1
                 },
                 new Comment
                 {
@@ -30,8 +29,7 @@ namespace Test.Objects
                     Content = "testkommentar2",
                     Date = DateTime.UtcNow,
                     UserId = 2,
-                    PostId = 2,
-                    DocumentId = 2
+                    PostId = 2
                 },
                 new Comment
                 {
@@ -39,8 +37,7 @@ namespace Test.Objects
                     Content = "testkommentar3",
                     Date = DateTime.UtcNow,
                     UserId = 3,
-                    PostId = 3,
-                    DocumentId = 3
+                    PostId = 3
                 },
             };
 
@@ -69,8 +66,7 @@ namespace Test.Objects
                 Content = "testkommentar1",
                 Date = DateTime.UtcNow,
                 UserId = 1,
-                PostId = 1,
-                DocumentId = 1
+                PostId = 1
             };
             return new CommentDTO(comment, "sysadmin");
         }
@@ -83,8 +79,7 @@ namespace Test.Objects
                 Content = "testkommentar1",
                 Date = DateTime.UtcNow,
                 UserId = 1,
-                PostId = 1,
-                DocumentId = 1
+                PostId = 1
             };
             return comment;
         }

@@ -53,7 +53,7 @@ namespace API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av video");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av videoer");
             }
         }
 
@@ -85,19 +85,19 @@ namespace API.Controllers
         {
             try
             {
-                if (!string.IsNullOrEmpty(video.YouTubeId))
+                var newVideo = await _videoBLL.AddVideo(video);
+                if (newVideo != null)
                 {
-                    var newVideo = await _videoBLL.AddVideo(video);
-                    return CreatedAtAction(nameof(GetVideo), new { id = newVideo.Id }, newVideo);
+                    return CreatedAtAction(nameof(newVideo), new { id = newVideo.Id }, newVideo);
                 }
                 else
                 {
-                    return BadRequest("Video mangler");
+                    return BadRequest("Video ble ikke opprettet");
                 }
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av ny video");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av video");
             }
         }
 
@@ -170,7 +170,7 @@ namespace API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i kommentarer");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i videoer");
             }
         }
     }

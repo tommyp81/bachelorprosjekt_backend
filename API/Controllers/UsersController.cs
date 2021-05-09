@@ -53,7 +53,7 @@ namespace API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av bruker");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved henting av brukere");
             }
         }
 
@@ -99,7 +99,7 @@ namespace API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av ny bruker");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av bruker");
             }
         }
 
@@ -172,7 +172,7 @@ namespace API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i kommentarer");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved søk i brukere");
             }
         }
     }
