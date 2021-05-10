@@ -94,7 +94,6 @@ namespace API.Controllers
                 else
                 {
                     return BadRequest("Brukernavn eller epost eksisterer allerede");
-                    //return BadRequest("Feil ved oppretting av ny bruker");
                 }
             }
             catch (Exception)

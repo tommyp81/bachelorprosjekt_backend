@@ -48,15 +48,15 @@ namespace DAL.Repositories
         public async Task<User> AddUser(NewUser user)
         {
             // Sjekke om brukernavn eller epost eksisterer først
-            var users = await _context.Users.ToArrayAsync();
+            var users = await _context.Users.ToListAsync();
             if (users != null)
             {
                 foreach (var existingUser in users)
                 {
-                    if (existingUser.Username == user.Username || existingUser.Email == user.Email)
+                    if (existingUser.Username != null && (existingUser.Username.ToLower() == user.Username.ToLower() || existingUser.Email.ToLower() == user.Email.ToLower()))
                     {
-                        // Returnerer existingUser hvis bruker eller epost finnes fra før
-                        return existingUser;
+                        // Returnerer null hvis bruker eller epost finnes fra før
+                        return null;
                     }
                 }
             }
@@ -89,13 +89,13 @@ namespace DAL.Repositories
             if (result != null)
             {
                 // Sjekke om brukernavn eksisterer først
-                var users = await _context.Users.ToArrayAsync();
+                var users = await _context.Users.ToListAsync();
                 if (users != null)
                 {
                     foreach (var existingUser in users)
                     {
                         // Se etter samme brukernavn og epost hvis ID ikke er lik
-                        if (existingUser.Id != user.Id && (existingUser.Username == user.Username || existingUser.Email == user.Email))
+                        if (existingUser.Id != user.Id && (existingUser.Username != null && (existingUser.Username.ToLower() == user.Username.ToLower() || existingUser.Email.ToLower() == user.Email.ToLower())))
                         {
                             // Returnerer null hvis bruker eller epost finnes fra før
                             return null;
