@@ -190,7 +190,7 @@ namespace DAL.Repositories
                     list = await _context.Posts.AsQueryable().OrderBy(type + " " + order).ToListAsync();
                 }
 
-                var searchList = list.Where(q => q.Title.Contains(query) || q.Content.Contains(query));
+                var searchList = list.Where(q => q.Title.ToLower().Contains(query.ToLower()) || q.Content.ToLower().Contains(query.ToLower()));
                 var count = searchList.Count();
                 var pagedSearchList = await searchList.ToPagedListAsync(page, size);
                 return new Response<IEnumerable<Post>>(pagedSearchList, count);

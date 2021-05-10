@@ -184,7 +184,7 @@ namespace DAL.Repositories
                     list = await _context.Comments.AsQueryable().OrderBy(type + " " + order).ToListAsync();
                 }
 
-                var searchList = list.Where(q => q.Content.Contains(query));
+                var searchList = list.Where(q => q.Content.ToLower().Contains(query.ToLower()));
                 var count = searchList.Count();
                 var pagedSearchList = await searchList.ToPagedListAsync(page, size);
                 return new Response<IEnumerable<Comment>>(pagedSearchList, count);

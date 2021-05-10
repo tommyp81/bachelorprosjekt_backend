@@ -336,7 +336,7 @@ namespace DAL.Repositories
                     list = await _context.Documents.AsQueryable().OrderBy(type + " " + order).Where(q => q.InfoTopicId != null).ToListAsync();
                 }
 
-                var searchList = list.Where(q => q.FileName.Contains(query));
+                var searchList = list.Where(q => q.FileName.ToLower().Contains(query.ToLower()));
                 var count = searchList.Count();
                 var pagedSearchList = await searchList.ToPagedListAsync(page, size);
                 return new Response<IEnumerable<Document>>(pagedSearchList, count);

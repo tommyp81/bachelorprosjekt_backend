@@ -181,7 +181,7 @@ namespace DAL.Repositories
             if (!string.IsNullOrEmpty(query))
             {
                 var list = await _context.Users.AsQueryable().OrderBy(type + " " + order).ToListAsync();
-                var searchList = list.Where(q => q.Username.Contains(query) || q.FirstName.Contains(query) || q.LastName.Contains(query) || q.Email.Contains(query));
+                var searchList = list.Where(q => q.Username.ToLower().Contains(query.ToLower()) || q.FirstName.ToLower().Contains(query.ToLower()) || q.LastName.ToLower().Contains(query.ToLower()) || q.Email.ToLower().Contains(query.ToLower()));
                 var count = searchList.Count();
                 var pagedSearchList = await searchList.ToPagedListAsync(page, size);
                 return new Response<IEnumerable<User>>(pagedSearchList, count);

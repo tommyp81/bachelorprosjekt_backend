@@ -131,7 +131,7 @@ namespace DAL.Repositories
                     list = await _context.Videos.AsQueryable().OrderBy(type + " " + order).ToListAsync();
                 }
 
-                var searchList = list.Where(q => q.Title.Contains(query) || q.Description.Contains(query));
+                var searchList = list.Where(q => q.Title.ToLower().Contains(query.ToLower()) || q.Description.ToLower().Contains(query.ToLower()));
                 var count = searchList.Count();
                 var pagedSearchList = await searchList.ToPagedListAsync(page, size);
                 return new Response<IEnumerable<Video>>(pagedSearchList, count);
