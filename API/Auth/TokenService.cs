@@ -21,11 +21,13 @@ namespace API.Auth
     {
         private readonly AuthSettings _authSettings;
         private readonly byte[] _secret;
+        private readonly int _timeout;
 
         public TokenService(AuthSettings authSettings)
         {
             _authSettings = authSettings;
             _secret = Encoding.ASCII.GetBytes(_authSettings.Secret);
+            _timeout = _authSettings.TokenTimeout;
         }
 
         // From: https://dev.to/moe23/asp-net-core-5-rest-api-authentication-with-jwt-step-by-step-140d
@@ -42,7 +44,7 @@ namespace API.Auth
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(8),
+                Expires = DateTime.UtcNow.AddHours(_timeout),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_secret), SecurityAlgorithms.HmacSha512Signature)
             };
 

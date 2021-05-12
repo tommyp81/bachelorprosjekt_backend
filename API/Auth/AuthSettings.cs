@@ -8,5 +8,6 @@ namespace API.Auth
     public class AuthSettings
     {
         public string Secret { get; set; }
+        public int TokenTimeout { get; set; }
     }
 }
