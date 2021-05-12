@@ -47,6 +47,8 @@ namespace DAL.Repositories
         // POST: Videos
         public async Task<Video> AddVideo(Video video)
         {
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            video.Uploaded = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
             var result = await _context.Videos.AddAsync(video);
             await _context.SaveChangesAsync();
             return result.Entity;
@@ -65,6 +67,7 @@ namespace DAL.Repositories
                 result.UserId = result.UserId;
                 result.PostId = result.PostId;
                 result.InfoTopic = result.InfoTopic;
+                result.Uploaded = result.Uploaded;
                 await _context.SaveChangesAsync();
                 return result;
             }

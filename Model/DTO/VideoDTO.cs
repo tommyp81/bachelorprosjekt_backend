@@ -13,6 +13,7 @@ namespace Model.DTO
         public string YouTubeId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public DateTime Uploaded { get; set; }
         public int? UserId { get; set; }
         public int PostId { get; set; }
         public int InfoTopicId { get; set; }
@@ -26,6 +27,7 @@ namespace Model.DTO
             UserId = video.UserId;
             PostId = video.PostId;
             InfoTopicId = video.InfoTopicId;
+            Uploaded = video.Uploaded;
         }
     }
 }

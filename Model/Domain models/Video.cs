@@ -16,6 +16,7 @@ namespace Model.Domain_models
         public string YouTubeId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public DateTime Uploaded { get; set; }
 
         // Relasjoner
         [ForeignKey("User")]
