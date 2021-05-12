@@ -66,7 +66,7 @@ namespace DAL.Repositories
                 result.Description = video.Description;
                 result.UserId = result.UserId;
                 result.PostId = result.PostId;
-                result.InfoTopic = result.InfoTopic;
+                result.InfoTopicId = result.InfoTopicId;
                 result.Uploaded = result.Uploaded;
                 await _context.SaveChangesAsync();
                 return result;
