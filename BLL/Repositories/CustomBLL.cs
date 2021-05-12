@@ -132,6 +132,20 @@ namespace BLL.Repositories
             }
         }
 
+        // POST: SetUsername
+        public async Task<UserDTO> SetUsername(int id, string username)
+        {
+            var setAdmin = await _repository.SetUsername(id, username);
+            if (setAdmin != null)
+            {
+                return new UserDTO(setAdmin);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public async Task<PageResponse<IEnumerable<DocumentDTO>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
             var documents = await _repository.PagedList(infoTopicId, page, size, order, type);

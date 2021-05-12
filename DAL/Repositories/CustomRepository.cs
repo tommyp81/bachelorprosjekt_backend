@@ -305,6 +305,37 @@ namespace DAL.Repositories
             }
         }
 
+        // POST: SetUsername
+        public async Task<User> SetUsername(int id, string username)
+        {
+            var result = await _context.Users.FindAsync(id);
+            if (result != null)
+            {
+                var users = await _context.Users.ToListAsync();
+                if (users != null)
+                {
+                    foreach (var existingUser in users)
+                    {
+                        // Se etter samme brukernavn hvis ID ikke er lik eller null
+                        if (existingUser.Id != id && existingUser.Username != null && existingUser.Username.ToLower() == username.ToLower())
+                        {
+                            // Returnerer null hvis brukernavn finnes
+                            return null;
+                        }
+                    }
+                }
+
+                // Endre brukernavn og lagre
+                result.Username = username;
+                await _context.SaveChangesAsync();
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public async Task<Response<IEnumerable<Document>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
             IEnumerable<Document> list;

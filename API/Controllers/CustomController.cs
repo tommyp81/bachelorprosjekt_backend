@@ -222,6 +222,28 @@ namespace API.Controllers
             }
         }
 
+        // POST: SetUsername
+        [HttpPost]
+        public async Task<ActionResult<UserDTO>> SetUsername([FromForm] int id, [FromForm] string username)
+        {
+            try
+            {
+                var user = await _customBLL.SetUsername(id, username);
+                if (user != null)
+                {
+                    return Ok(user);
+                }
+                else
+                {
+                    return BadRequest("Brukernavn eksisterer allerede");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved endring av brukernavn");
+            }
+        }
+
         // GET: SearchDocuments?query=eksempel tekst
         // GET: SearchDocuments?query=eksempel tekst&infoTopicId=1&pageNumber=1&pageSize=10&sortOrder=Asc&sortType=Id
         [HttpGet]

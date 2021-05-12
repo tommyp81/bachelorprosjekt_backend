@@ -25,6 +25,7 @@ namespace DAL.Interfaces
         Task<Document> DeleteDocument(int id);
         Task<AuthResponse> Login(AuthRequest request);
         Task<User> SetAdmin(int id, bool admin);
+        Task<User> SetUsername(int id, string username);
         Task<Response<IEnumerable<Document>>> PagedList(int? infoTopicId, int page, int size, string order, string type);
         Task<Response<IEnumerable<Document>>> Search(string query, int? infoTopicId, int page, int size, string order, string type);
     }

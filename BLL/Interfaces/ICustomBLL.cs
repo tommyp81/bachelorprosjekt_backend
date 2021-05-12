@@ -21,6 +21,7 @@ namespace BLL.Interfaces
         Task<DocumentDTO> DeleteDocument(int id);
         Task<AuthResponse> Login(AuthRequest request);
         Task<UserDTO> SetAdmin(int id, bool admin);
+        Task<UserDTO> SetUsername(int id, string username);
         Task<PageResponse<IEnumerable<DocumentDTO>>> PagedList(int? infoTopicId, int page, int size, string order, string type);
         Task<PageResponse<IEnumerable<DocumentDTO>>> Search(string query, int? infoTopicId, int page, int size, string order, string type);
     }

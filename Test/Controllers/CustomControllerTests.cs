@@ -427,6 +427,65 @@ namespace API.Controllers.Tests
         }
 
         [Fact]
+        public async void SetUsernameTest_Ok()
+        {
+            // Arrange
+            int id = 1;
+            string username = "sysadmin";
+            var userDTO = UserObject.TestUserDTO();
+            var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.SetUsername(id, username)).ReturnsAsync(userDTO);
+            var controller = new CustomController(mockRepo.Object, null);
+
+            // Act
+            var result = await controller.SetUsername(id, username);
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var returnValue = Assert.IsType<UserDTO>(okResult.Value);
+            Assert.Equal(id, returnValue.Id);
+        }
+
+        [Fact]
+        public async void SetUsernameTest_BadRequest()
+        {
+            // Arrange
+            int id = 1;
+            string username = "sysadmin";
+            var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.SetUsername(id, username)).ReturnsAsync((UserDTO)null);
+            var controller = new CustomController(mockRepo.Object, null);
+
+            // Act
+            var result = await controller.SetUsername(id, username);
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(actionResult.Result);
+            Assert.Equal("Brukernavn eksisterer allerede", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async void SetUsernameTest_InternalServerError()
+        {
+            // Arrange
+            int id = 1;
+            string username = "sysadmin";
+            var mockRepo = new Mock<ICustomBLL>();
+            mockRepo.Setup(repo => repo.SetUsername(id, username)).ThrowsAsync(new InvalidOperationException());
+            var controller = new CustomController(mockRepo.Object, null);
+
+            // Act
+            var result = await controller.SetUsername(id, username);
+
+            // Assert
+            var objectResult = result.Result as ObjectResult;
+            Assert.Equal(500, objectResult.StatusCode);
+            Assert.Equal("Feil ved endring av brukernavn", objectResult.Value);
+        }
+
+        [Fact]
         public async void SearchTest_Ok()
         {
             // Arrange
