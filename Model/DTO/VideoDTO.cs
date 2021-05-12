@@ -24,10 +24,10 @@ namespace Model.DTO
             YouTubeId = video.YouTubeId;
             Title = video.Title;
             Description = video.Description;
+            Uploaded = video.Uploaded;
             UserId = video.UserId;
             PostId = video.PostId;
             InfoTopicId = video.InfoTopicId;
-            Uploaded = video.Uploaded;
         }
     }
 }

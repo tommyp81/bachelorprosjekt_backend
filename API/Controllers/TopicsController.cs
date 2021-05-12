@@ -71,7 +71,7 @@ namespace API.Controllers
                 var newTopic = await _topicBLL.AddTopic(topic);
                 if (newTopic != null)
                 {
-                    return CreatedAtAction(nameof(newTopic), new { id = newTopic.Id }, newTopic);
+                    return CreatedAtAction(nameof(GetTopic), new { id = newTopic.Id }, newTopic);
                 }
                 else
                 {

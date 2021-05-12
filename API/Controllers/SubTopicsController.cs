@@ -71,7 +71,7 @@ namespace API.Controllers
                 var newSubTopic = await _subTopicBLL.AddSubTopic(subtopic);
                 if (newSubTopic != null)
                 {
-                    return CreatedAtAction(nameof(newSubTopic), new { id = newSubTopic.Id }, newSubTopic);
+                    return CreatedAtAction(nameof(GetSubTopic), new { id = newSubTopic.Id }, newSubTopic);
                 }
                 else
                 {

@@ -88,14 +88,14 @@ namespace API.Controllers
                 var newVideo = await _videoBLL.AddVideo(video);
                 if (newVideo != null)
                 {
-                    return CreatedAtAction(nameof(newVideo), new { id = newVideo.Id }, newVideo);
+                    return CreatedAtAction(nameof(GetVideo), new { id = newVideo.Id }, newVideo);
                 }
                 else
                 {
                     return BadRequest("Video ble ikke opprettet");
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil ved oppretting av video");
             }
