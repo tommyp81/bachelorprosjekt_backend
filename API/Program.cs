@@ -25,11 +25,6 @@ namespace API
                 {
                     var context = services.GetRequiredService<DBContext>();
 
-                    // Slett database
-                    // Husk å kommentere ut denne så den ikke sletter hver eneste gang!
-                    // OBS! Fungerer kun på lokal database. Kjøres den i Azure, så slettes databasen men opprettes ikke på nytt.
-                    //context.Database.EnsureDeleted();
-
                     // Opprett database med seeds
                     context.Database.EnsureCreated();
                     DBInit.Initialize(context);

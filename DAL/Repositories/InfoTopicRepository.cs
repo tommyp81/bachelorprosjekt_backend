@@ -23,13 +23,11 @@ namespace DAL.Repositories
             _videoRepository = videoRepository;
         }
 
-        // GET: InfoTopics
         public async Task<IEnumerable<InfoTopic>> GetInfoTopics()
         {
             return await _context.InfoTopics.ToListAsync();
         }
 
-        // GET: InfoTopics/1
         public async Task<InfoTopic> GetInfoTopic(int id)
         {
             var infotopic = await _context.InfoTopics.FindAsync(id);
@@ -43,7 +41,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: InfoTopics
         public async Task<InfoTopic> AddInfoTopic(InfoTopic infotopic)
         {
             var result = await _context.InfoTopics.AddAsync(infotopic);
@@ -51,7 +48,6 @@ namespace DAL.Repositories
             return result.Entity;
         }
 
-        // PUT: InfoTopics/1
         public async Task<InfoTopic> UpdateInfoTopic(InfoTopic infotopic)
         {
             var result = await _context.InfoTopics.FindAsync(infotopic.Id);
@@ -69,7 +65,6 @@ namespace DAL.Repositories
             }
         }
 
-        // DELETE: InfoTopics/1
         public async Task<InfoTopic> DeleteInfoTopic(int id)
         {
             var result = await _context.InfoTopics.FindAsync(id);

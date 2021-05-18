@@ -24,13 +24,11 @@ namespace DAL.Repositories
             _context = context;
         }
 
-        // GET: Users
         public async Task<IEnumerable<User>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
 
-        // GET: Users/1
         public async Task<User> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -44,7 +42,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: Users
         public async Task<User> AddUser(NewUser user)
         {
             // Sjekke om brukernavn eller epost eksisterer først
@@ -82,7 +79,6 @@ namespace DAL.Repositories
             return result.Entity;
         }
 
-        // PUT: Users/1
         public async Task<User> UpdateUser(NewUser user)
         {
             var result = await _context.Users.FindAsync(user.Id);
@@ -123,7 +119,6 @@ namespace DAL.Repositories
             }
         }
 
-        // DELETE: Users/1
         public async Task<User> DeleteUser(int id)
         {
             var result = await _context.Users.FindAsync(id);

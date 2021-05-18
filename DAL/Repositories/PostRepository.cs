@@ -26,13 +26,11 @@ namespace DAL.Repositories
             _customRepository = customRepository;
         }
 
-        // GET: Posts
         public async Task<IEnumerable<Post>> GetPosts()
         {
             return await _context.Posts.ToListAsync();
         }
 
-        // GET: Posts/1
         public async Task<Post> GetPost(int id)
         {
             var post = await _context.Posts.FindAsync(id);
@@ -46,7 +44,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: Posts
         public async Task<Post> AddPost(IFormFile file, Post post)
         {
             // Lagre ny posten i databasen først
@@ -80,7 +77,6 @@ namespace DAL.Repositories
             return result.Entity;
         }
 
-        // PUT: Posts/1
         public async Task<Post> UpdatePost(Post post)
         {
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
@@ -107,7 +103,6 @@ namespace DAL.Repositories
             }
         }
 
-        // DELETE: Posts/1
         public async Task<Post> DeletePost(int id)
         {
             var result = await _context.Posts.FindAsync(id);

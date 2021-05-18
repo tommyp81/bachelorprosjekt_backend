@@ -37,7 +37,7 @@ namespace API.Controllers
         {
             try
             {
-                // Liste videoer med paging
+                // Liste dokumenter med paging
                 var page = pageNumber ?? 1;
                 var size = pageSize ?? 10;
                 var order = sortOrder ?? "Asc";
@@ -45,16 +45,8 @@ namespace API.Controllers
 
                 return Ok(await _customBLL.PagedList(infoTopicId, page, size, order, type));
 
-                // Viser kun dokumenter som har en InfoTopicId
-                //var documents = await _customBLL.GetDocuments();
-                //if (documents != null)
-                //{
-                //    return Ok(documents);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen dokumenter ble funnet");
-                //}
+                // Liste dokumenter uten paging - Viser kun dokumenter som har en InfoTopicId
+                //return Ok(await _customBLL.GetDocuments());
             }
             catch (Exception)
             {
@@ -177,7 +169,7 @@ namespace API.Controllers
         // POST: Login
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<AuthResponse>> Login([FromForm] AuthRequest resquest)//[FromForm] string username, [FromForm] string email, [FromForm] string password
+        public async Task<ActionResult<AuthResponse>> Login([FromForm] AuthRequest resquest)
         {
             try
             {

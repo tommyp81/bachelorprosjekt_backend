@@ -21,13 +21,11 @@ namespace DAL.Repositories
             _subTopicRepository = subTopicRepository;
         }
 
-        // GET: Topics
         public async Task<IEnumerable<Topic>> GetTopics()
         {
             return await _context.Topics.ToListAsync();
         }
 
-        // GET: Topics/1
         public async Task<Topic> GetTopic(int id)
         {
             var topic = await _context.Topics.FindAsync(id);
@@ -41,7 +39,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: Topics
         public async Task<Topic> AddTopic(Topic topic)
         {
             // For å legge til en fil, må metoden også få en IFormFile file
@@ -73,7 +70,6 @@ namespace DAL.Repositories
             return result.Entity;
         }
 
-        // PUT: Topics/1
         public async Task<Topic> UpdateTopic(Topic topic)
         {
             var result = await _context.Topics.FindAsync(topic.Id);
@@ -92,7 +88,6 @@ namespace DAL.Repositories
             }
         }
 
-        // DELETE: Topics/1
         public async Task<Topic> DeleteTopic(int id)
         {
             var result = await _context.Topics.FindAsync(id);

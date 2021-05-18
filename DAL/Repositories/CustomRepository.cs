@@ -31,7 +31,6 @@ namespace DAL.Repositories
             _config = configuration;
         }
 
-        // POST: AddDocument
         public async Task<Document> AddDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId)
         {
             // Tidssone
@@ -122,7 +121,6 @@ namespace DAL.Repositories
             return result.Entity;
         }
 
-        // POST: UploadDocument
         public async Task<Document> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId)
         {
             // Legg til det nye dokumentet
@@ -161,13 +159,11 @@ namespace DAL.Repositories
             return document;
         }
 
-        // GET: GetDocuments
         public async Task<IEnumerable<Document>> GetDocuments()
         {
             return await _context.Documents.ToListAsync();
         }
 
-        // GET: GetDocumentInfo/1
         public async Task<Document> GetDocumentInfo(int id)
         {
             var document = await _context.Documents.FindAsync(id);
@@ -181,7 +177,6 @@ namespace DAL.Repositories
             }
         }
 
-        // GET: GetDocument/1
         public async Task<FileStreamResult> GetDocument(int id)
         {
             var document = await _context.Documents.FindAsync(id);
@@ -204,7 +199,6 @@ namespace DAL.Repositories
             return null;
         }
 
-        // DELETE: DeleteDocument/1
         public async Task<Document> DeleteDocument(int id)
         {
             var result = await _context.Documents.FindAsync(id);
@@ -258,7 +252,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: Login
         public async Task<AuthResponse> Login(AuthRequest request)
         {
             // Liste over alle eksisterende brukere
@@ -289,7 +282,6 @@ namespace DAL.Repositories
             return null;
         }
 
-        // POST: SetAdmin
         public async Task<User> SetAdmin(int id, bool admin)
         {
             var result = await _context.Users.FindAsync(id);
@@ -305,7 +297,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: SetUsername
         public async Task<User> SetUsername(int id, string username)
         {
             var result = await _context.Users.FindAsync(id);

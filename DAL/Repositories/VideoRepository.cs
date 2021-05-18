@@ -24,13 +24,11 @@ namespace DAL.Repositories
             _postRepository = postRepository;
         }
 
-        // GET: Videos
         public async Task<IEnumerable<Video>> GetVideos()
         {
             return await _context.Videos.ToListAsync();
         }
 
-        // GET: Videos/1
         public async Task<Video> GetVideo(int id)
         {
             var video = await _context.Videos.FindAsync(id);
@@ -44,7 +42,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: Videos
         public async Task<Video> AddVideo(Video video)
         {
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
@@ -54,7 +51,6 @@ namespace DAL.Repositories
             return result.Entity;
         }
 
-        // PUT: Videos/1
         public async Task<Video> UpdateVideo(Video video)
         {
             var result = await _context.Videos.FindAsync(video.Id);
@@ -77,7 +73,6 @@ namespace DAL.Repositories
             }
         }
 
-        // DELETE: Videos/1
         public async Task<Video> DeleteVideo(int id)
         {
             var result = await _context.Videos.FindAsync(id);

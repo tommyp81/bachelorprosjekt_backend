@@ -23,7 +23,6 @@ namespace BLL.Repositories
             _repository = repository;
         }
 
-        // GET: GetDocuments
         public async Task<IEnumerable<DocumentDTO>> GetDocuments()
         {
             var documents = await _repository.GetDocuments();
@@ -48,7 +47,6 @@ namespace BLL.Repositories
             }
         }
 
-        // POST: AddDocument
         public async Task<DocumentDTO> UploadDocument(IFormFile file, int? userId, int? postId, int? commentId, int? infoTopicId)
         {
             var addDocument = await _repository.UploadDocument(file, userId, postId, commentId, infoTopicId);
@@ -62,7 +60,6 @@ namespace BLL.Repositories
             }
         }
 
-        // GET: GetDocumentInfo/1
         public async Task<DocumentDTO> GetDocumentInfo(int id)
         {
             var getDocument = await _repository.GetDocumentInfo(id);
@@ -76,7 +73,6 @@ namespace BLL.Repositories
             }
         }
 
-        // GET: GetDocument/1
         public async Task<FileStreamResult> GetDocument(int id)
         {
             var file = await _repository.GetDocument(id);
@@ -90,7 +86,6 @@ namespace BLL.Repositories
             }
         }
 
-        // DELETE: DeleteDocument/1
         public async Task<DocumentDTO> DeleteDocument(int id)
         {
             var deleteDocument = await _repository.DeleteDocument(id);
@@ -104,7 +99,6 @@ namespace BLL.Repositories
             }
         }
 
-        // POST: Login
         public async Task<AuthResponse> Login(AuthRequest request)
         {
             var response = await _repository.Login(request);
@@ -118,7 +112,6 @@ namespace BLL.Repositories
             }
         }
 
-        // POST: SetAdmin
         public async Task<UserDTO> SetAdmin(int id, bool admin)
         {
             var setAdmin = await _repository.SetAdmin(id, admin);
@@ -132,7 +125,6 @@ namespace BLL.Repositories
             }
         }
 
-        // POST: SetUsername
         public async Task<UserDTO> SetUsername(int id, string username)
         {
             var setAdmin = await _repository.SetUsername(id, username);

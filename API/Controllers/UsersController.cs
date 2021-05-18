@@ -41,15 +41,8 @@ namespace API.Controllers
 
                 return Ok(await _userBLL.PagedList(page, size, order, type));
 
-                //var users = await _userBLL.GetUsers();
-                //if (users != null)
-                //{
-                //    return Ok(users);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen brukere ble funnet");
-                //}
+                // Liste brukere uten paging
+                //return Ok(await _userBLL.GetUsers());
             }
             catch (Exception)
             {

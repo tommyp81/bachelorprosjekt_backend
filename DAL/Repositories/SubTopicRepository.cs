@@ -21,13 +21,11 @@ namespace DAL.Repositories
             _postRepository = postRepository;
         }
 
-        // GET: SubTopics
         public async Task<IEnumerable<SubTopic>> GetSubTopics()
         {
             return await _context.SubTopics.ToListAsync();
         }
 
-        // GET: SubTopics/1
         public async Task<SubTopic> GetSubTopic(int id)
         {
             var subTopic = await _context.SubTopics.FindAsync(id);
@@ -41,7 +39,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: SubTopics
         public async Task<SubTopic> AddSubTopic(SubTopic subtopic)
         {
             var result = await _context.SubTopics.AddAsync(subtopic);
@@ -49,7 +46,6 @@ namespace DAL.Repositories
             return result.Entity;
         }
 
-        // PUT: SubTopics/1
         public async Task<SubTopic> UpdateSubTopic(SubTopic subtopic)
         {
             var result = await _context.SubTopics.FindAsync(subtopic.Id);
@@ -68,7 +64,6 @@ namespace DAL.Repositories
             }
         }
 
-        // DELETE: SubTopics/1
         public async Task<SubTopic> DeleteSubTopic(int id)
         {
             var result = await _context.SubTopics.FindAsync(id);

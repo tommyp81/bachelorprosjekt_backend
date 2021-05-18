@@ -24,7 +24,6 @@ namespace DAL.Repositories
             return await _context.Likes.ToListAsync();
         }
 
-        // POST: GetLike
         public async Task<Like> GetLike(Like like)
         {
             // GetLike skal finne likes med UserId og PostId eller CommentId
@@ -63,7 +62,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: AddLike
         public async Task<Like> AddLike(Like like)
         {
             // Sjekk om denne eksisterer
@@ -72,10 +70,6 @@ namespace DAL.Repositories
             // Oppdater om den finnes
             if (updateLike != null)
             {
-                //var updateLike = await _context.Likes.FindAsync(getLike.Id);
-                //updateLike.Id = updateLike.Id;
-                //updateLike.UserId = updateLike.UserId;
-
                 if (updateLike.PostId != null)
                 {
                     // Oppdater post om det er en postId
@@ -131,7 +125,6 @@ namespace DAL.Repositories
             }
         }
 
-        // DELETE: DeleteLike
         public async Task<Like> DeleteLike(Like like)
         {
             // Finn riktig like

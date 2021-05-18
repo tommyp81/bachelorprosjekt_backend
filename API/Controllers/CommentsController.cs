@@ -41,15 +41,8 @@ namespace API.Controllers
 
                 return Ok(await _commentBLL.PagedList(postId, page, size, order, type));
 
-                //var comments = await _commentBLL.GetComments(postId);
-                //if (comments != null)
-                //{
-                //    return Ok(comments);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen kommentarer ble funnet");
-                //}
+                // Liste kommentarer uten paging
+                //return Ok(await _commentBLL.GetComments(postId));
             }
             catch (Exception)
             {

@@ -25,8 +25,6 @@ namespace DAL.Repositories
             _customRepository = customRepository;
         }
 
-        // GET: Comments
-        // GET: Comments?postId=1
         public async Task<IEnumerable<Comment>> GetComments(int? postId)
         {
             if (postId != null)
@@ -40,7 +38,6 @@ namespace DAL.Repositories
             }
         }
 
-        // GET: Comments/1
         public async Task<Comment> GetComment(int id)
         {
             var comment = await _context.Comments.FindAsync(id);
@@ -54,7 +51,6 @@ namespace DAL.Repositories
             }
         }
 
-        // POST: Comments
         public async Task<Comment> AddComment(IFormFile file, Comment comment)
         {
             // Lagre ny kommentar i databasen først
@@ -94,7 +90,6 @@ namespace DAL.Repositories
             return result.Entity;
         }
 
-        // PUT: Comments/1
         public async Task<Comment> UpdateComment(Comment comment)
         {
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
@@ -119,7 +114,6 @@ namespace DAL.Repositories
             }
         }
 
-        // DELETE: Comments/1
         public async Task<Comment> DeleteComment(int id)
         {
             var result = await _context.Comments.FindAsync(id);

@@ -41,15 +41,8 @@ namespace API.Controllers
 
                 return Ok(await _postBLL.PagedList(subTopicId, page, size, order, type));
 
-                //var posts = await _postBLL.GetPosts();
-                //if (posts != null)
-                //{
-                //    return Ok(posts);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen poster ble funnet");
-                //}
+                // Liste poster uten paging
+                //return Ok(await _postBLL.GetPosts());
             }
             catch (Exception)
             {

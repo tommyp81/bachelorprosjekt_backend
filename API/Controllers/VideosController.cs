@@ -41,15 +41,8 @@ namespace API.Controllers
 
                 return Ok(await _videoBLL.PagedList(infoTopicId, page, size, order, type));
 
-                //var videos = await _videoBLL.GetVideos();
-                //if (videos != null)
-                //{
-                //    return Ok(videos);
-                //}
-                //else
-                //{
-                //    return NotFound($"Ingen videoer ble funnet");
-                //}
+                // Liste videoer uten paging
+                //return Ok(await _videoBLL.GetVideos());
             }
             catch (Exception)
             {

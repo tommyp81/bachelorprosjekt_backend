@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Azure;
 using Azure.Storage.Blobs;
 using Azure.Core.Extensions;
-using DAL.Helpers;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -46,17 +45,6 @@ namespace API
             services.AddAzureClients(builder =>
             {
                 builder.AddBlobServiceClient(Configuration["ConnectionStrings:AzureStorageKey:blob"], preferMsi: true);
-                //builder.AddQueueServiceClient(Configuration["ConnectionStrings:AzureStorageKey:queue"], preferMsi: true);
-            });
-
-            // Allow CORS (for localhost) - Fjærn den kommenterte koden under når du skal kjøre frontend mot lokal database
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
-                    });
             });
 
             services.AddControllers();
@@ -87,7 +75,6 @@ namespace API
                 };
             });
 
-            //services.AddSingleton<TokenService>();
             services.AddSingleton<ITokenService, TokenService>();
 
             // For BLL
@@ -121,9 +108,6 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
-            // Allow CORS (for localhost) - Fjærn den kommenterte koden under når du skal kjøre frontend mot lokal database
-            app.UseCors();
-
             // For å vise wwwroot/index.html
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -156,18 +140,5 @@ namespace API
                 return builder.AddBlobServiceClient(serviceUriOrConnectionString);
             }
         }
-
-        //public static IAzureClientBuilder<QueueServiceClient, QueueClientOptions> AddQueueServiceClient(
-        //    this AzureClientFactoryBuilder builder, string serviceUriOrConnectionString, bool preferMsi)
-        //{
-        //    if (preferMsi && Uri.TryCreate(serviceUriOrConnectionString, UriKind.Absolute, out Uri serviceUri))
-        //    {
-        //        return builder.AddQueueServiceClient(serviceUri);
-        //    }
-        //    else
-        //    {
-        //        return builder.AddQueueServiceClient(serviceUriOrConnectionString);
-        //    }
-        //}
     }
 }
