@@ -99,25 +99,39 @@ namespace BLL.Repositories
         public async Task<PageResponse<IEnumerable<CommentDTO>>> PagedList(int? postId, int page, int size, string order, string type)
         {
             var comments = await _repository.PagedList(postId, page, size, order, type);
-            var commentDTOs = new List<CommentDTO>();
-            foreach (var comment in comments.Data)
+            if (comments != null)
             {
-                var username = await _repository.GetUsername(comment.UserId);
-                commentDTOs.Add(new CommentDTO(comment, username));
+                var commentDTOs = new List<CommentDTO>();
+                foreach (var comment in comments.Data)
+                {
+                    var username = await _repository.GetUsername(comment.UserId);
+                    commentDTOs.Add(new CommentDTO(comment, username));
+                }
+                return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
             }
-            return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
+            else
+            {
+                return new PageResponse<IEnumerable<CommentDTO>>(null, 0, postId, page, size, order, type);
+            }
         }
 
         public async Task<PageResponse<IEnumerable<CommentDTO>>> Search(string query, int? postId, int page, int size, string order, string type)
         {
             var comments = await _repository.Search(query, postId, page, size, order, type);
-            var commentDTOs = new List<CommentDTO>();
-            foreach (var comment in comments.Data)
+            if (comments != null)
             {
-                var username = await _repository.GetUsername(comment.UserId);
-                commentDTOs.Add(new CommentDTO(comment, username));
+                var commentDTOs = new List<CommentDTO>();
+                foreach (var comment in comments.Data)
+                {
+                    var username = await _repository.GetUsername(comment.UserId);
+                    commentDTOs.Add(new CommentDTO(comment, username));
+                }
+                return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
             }
-            return new PageResponse<IEnumerable<CommentDTO>>(commentDTOs, comments.Count, postId, page, size, order, type);
+            else
+            {
+                return new PageResponse<IEnumerable<CommentDTO>>(null, 0, postId, page, size, order, type);
+            }
         }
     }
 }

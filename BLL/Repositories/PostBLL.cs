@@ -105,27 +105,41 @@ namespace BLL.Repositories
         public async Task<PageResponse<IEnumerable<PostDTO>>> PagedList(int? subTopicId, int page, int size, string order, string type)
         {
             var posts = await _repository.PagedList(subTopicId, page, size, order, type);
-            var postDTOs = new List<PostDTO>();
-            foreach (var post in posts.Data)
+            if (posts != null)
             {
-                var topicId = await _repository.GetTopicId(post.SubTopicId);
-                var username = await _repository.GetUsername(post.UserId);
-                postDTOs.Add(new PostDTO(post, username, topicId));
+                var postDTOs = new List<PostDTO>();
+                foreach (var post in posts.Data)
+                {
+                    var topicId = await _repository.GetTopicId(post.SubTopicId);
+                    var username = await _repository.GetUsername(post.UserId);
+                    postDTOs.Add(new PostDTO(post, username, topicId));
+                }
+                return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
             }
-            return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
+            else
+            {
+                return new PageResponse<IEnumerable<PostDTO>>(null, 0, subTopicId, page, size, order, type);
+            }
         }
 
         public async Task<PageResponse<IEnumerable<PostDTO>>> Search(string query, int? subTopicId, int page, int size, string order, string type)
         {
             var posts = await _repository.Search(query, subTopicId, page, size, order, type);
-            var postDTOs = new List<PostDTO>();
-            foreach (var post in posts.Data)
+            if (posts != null)
             {
-                var topicId = await _repository.GetTopicId(post.SubTopicId);
-                var username = await _repository.GetUsername(post.UserId);
-                postDTOs.Add(new PostDTO(post, username, topicId));
+                var postDTOs = new List<PostDTO>();
+                foreach (var post in posts.Data)
+                {
+                    var topicId = await _repository.GetTopicId(post.SubTopicId);
+                    var username = await _repository.GetUsername(post.UserId);
+                    postDTOs.Add(new PostDTO(post, username, topicId));
+                }
+                return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
             }
-            return new PageResponse<IEnumerable<PostDTO>>(postDTOs, posts.Count, subTopicId, page, size, order, type);
+            else
+            {
+                return new PageResponse<IEnumerable<PostDTO>>(null, 0, subTopicId, page, size, order, type);
+            }
         }
     }
 }

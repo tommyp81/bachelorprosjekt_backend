@@ -93,23 +93,37 @@ namespace BLL.Repositories
         public async Task<PageResponse<IEnumerable<VideoDTO>>> PagedList(int? infoTopicId, int page, int size, string order, string type)
         {
             var videos = await _repository.PagedList(infoTopicId, page, size, order, type);
-            var videoDTOs = new List<VideoDTO>();
-            foreach (var video in videos.Data)
+            if (videos != null)
             {
-                videoDTOs.Add(new VideoDTO(video));
+                var videoDTOs = new List<VideoDTO>();
+                foreach (var video in videos.Data)
+                {
+                    videoDTOs.Add(new VideoDTO(video));
+                }
+                return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
             }
-            return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
+            else
+            {
+                return new PageResponse<IEnumerable<VideoDTO>>(null, 0, infoTopicId, page, size, order, type);
+            }
         }
 
         public async Task<PageResponse<IEnumerable<VideoDTO>>> Search(string query, int? infoTopicId, int page, int size, string order, string type)
         {
             var videos = await _repository.Search(query, infoTopicId, page, size, order, type);
-            var videoDTOs = new List<VideoDTO>();
-            foreach (var video in videos.Data)
+            if (videos != null)
             {
-                videoDTOs.Add(new VideoDTO(video));
+                var videoDTOs = new List<VideoDTO>();
+                foreach (var video in videos.Data)
+                {
+                    videoDTOs.Add(new VideoDTO(video));
+                }
+                return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
             }
-            return new PageResponse<IEnumerable<VideoDTO>>(videoDTOs, videos.Count, infoTopicId, page, size, order, type);
+            else
+            {
+                return new PageResponse<IEnumerable<VideoDTO>>(null, 0, infoTopicId, page, size, order, type);
+            }
         }
     }
 }
