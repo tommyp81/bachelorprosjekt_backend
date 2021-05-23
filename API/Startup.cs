@@ -61,7 +61,6 @@ namespace API
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(jwt =>
             {
-                //var key = Encoding.ASCII.GetBytes(Configuration["AuthSettings:Secret"]);
                 jwt.RequireHttpsMetadata = true;
                 jwt.SaveToken = true;
                 jwt.TokenValidationParameters = new TokenValidationParameters

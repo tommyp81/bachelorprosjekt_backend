@@ -271,8 +271,7 @@ namespace DAL.Repositories
                         if (passwordCheck == true)
                         {
                             // Sende tilbake brukerobjekt hvis ok
-                            //var token = GenerateJwtToken(user);
-                            return new AuthResponse(user); // tommy er token :D
+                            return new AuthResponse(user);
                         }
                     }
                 }
